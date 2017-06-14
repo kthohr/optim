@@ -1,0 +1,80 @@
+#!/bin/bash
+## OptimLib config script
+
+if [ -z ${CC+x} ]; then 
+    CC=gcc
+fi
+if [ -z ${CXX+x} ]; then 
+    CXX=g++
+fi
+if [ -z ${FC+x} ]; then 
+    FC=gfortran
+fi
+
+if [[ !(-z ${KEITH_DEV_SETTINGS+x}) ]]; then
+    CC=gcc-mp-5
+    CXX=g++-mp-5
+    FC=gfortran-mp-5
+fi
+
+if [ -z ${ARMA_INCLUDE_PATH+x} ]; then 
+    echo "Optim: ARMA_INCLUDE_PATH not set"
+    if [ -f ${PWD}/include/armadillo ]; then 
+        ARMA_INCLUDE_PATH="-I./include"
+    elif [ -f /usr/include/armadillo ]; then
+        ARMA_INCLUDE_PATH="-I/usr/include"
+    elif [ -f /usr/local/include/armadillo ]; then
+        ARMA_INCLUDE_PATH="-I/usr/local/include"
+    elif [ -f /opt/include/armadillo ]; then
+        ARMA_INCLUDE_PATH="-I/opt/include"
+    elif [ -f /opt/local/include/armadillo ]; then
+        ARMA_INCLUDE_PATH="-I/opt/local/include"
+    else 
+        echo "Optim: cannot find armadillo files. Cloning from GitHub"
+        echo ""
+        mkdir ${PWD}/arma_tmp
+        git clone -b unstable --single-branch https://github.com/conradsnicta/armadillo-code ${PWD}/arma_tmp
+        mv ${PWD}/arma_tmp/include/* ${PWD}/include
+        # cp -a $PWD/arma_tmp/include/. $PWD/include
+        rm -rf ${PWD}/arma_tmp
+        ARMA_INCLUDE_PATH="-I./include"
+        echo ""
+    fi
+    echo "Optim: ARMA_INCLUDE_PATH set to ${ARMA_INCLUDE_PATH}"
+fi
+
+OPTIM_OPT_FLAGS="-O2"
+OPTIM_SHLIB_NAME="liboptim.so"
+
+if [[ $OSTYPE == *linux* ]] ; then
+    OPTIM_INSTALL_PATH="/usr"
+else 
+    OPTIM_INSTALL_PATH="/usr/local"
+fi
+
+if [[ $OSTYPE == darwin* ]] ; then
+    if [[ !(-z ${OPTIM_DEV+x}) ]]; then
+        echo "Optim: dev version"
+        OPTIM_SHLIB_FLAGS="-dynamiclib -install_name "${PWD}/${OPTIM_SHLIB_NAME}" -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"
+    else
+        OPTIM_SHLIB_FLAGS="-dynamiclib -install_name "${OPTIM_INSTALL_PATH}/lib/${OPTIM_SHLIB_NAME}" -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"
+    fi
+    OPTIM_BLAS_LAPACK="-framework Accelerate"
+elif [[ $OSTYPE == *linux* ]] ; then
+    OPTIM_OPT_FLAGS="-fPIC ${OPTIM_OPT_FLAGS}"
+    OPTIM_SHLIB_FLAGS="-fPIC -shared -L${OPTIM_INSTALL_PATH}/lib -Wl,-Bsymbolic-functions -Wl,-z,relro"
+    OPTIM_BLAS_LAPACK="-lblas -llapack"
+else
+    OPTIM_BLAS_LAPACK="-lblas -llapack"
+fi
+
+sed -e "s|@CC@|${CC}|" \
+    -e "s|@CXX@|${CXX}|" \
+    -e "s|@FC@|${FC}|" \
+    -e "s|@ARMA_INCLUDE_PATH@|${ARMA_INCLUDE_PATH}|" \
+    -e "s|@OPTIM_BLAS_LAPACK@|${OPTIM_BLAS_LAPACK}|" \
+    -e "s|@OPTIM_OPT_FLAGS@|${OPTIM_OPT_FLAGS}|" \
+    -e "s|@OPTIM_SHLIB_NAME@|${OPTIM_SHLIB_NAME}|" \
+    -e "s|@OPTIM_SHLIB_FLAGS@|${OPTIM_SHLIB_FLAGS}|" \
+    -e "s|@OPTIM_INSTALL_PATH@|${OPTIM_INSTALL_PATH}|" \
+    Makefile.in > Makefile

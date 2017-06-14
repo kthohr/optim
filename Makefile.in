@@ -1,0 +1,95 @@
+
+# core compiling options
+CC  = @CC@
+CXX = @CXX@
+FC  = @FC@
+
+CXX_STD = -std=c++11
+OPT_FLAGS = @OPTIM_OPT_FLAGS@
+
+ARMA_INCLUDE_PATH = @ARMA_INCLUDE_PATH@
+
+# install location
+INSTALL_PATH=@OPTIM_INSTALL_PATH@
+
+# source directories
+SDIR = .
+OPTIM_DIR = $(SDIR)
+OPTIM_SRC_DIR = $(SDIR)/src
+OPTIM_HEADER_DIR = $(SDIR)/include
+OPTIM_TEST_DIR = $(SDIR)/tests
+
+# shared library name and flags
+SHLIB = @OPTIM_SHLIB_NAME@
+SHLIB_FLAGS = $(CXX_STD) @OPTIM_SHLIB_FLAGS@
+
+# general flags
+CFLAGS = -Wall $(OPT_FLAGS) -I$(OPTIM_HEADER_DIR)
+CXXFLAGS = $(CXX_STD) -Wall $(OPT_FLAGS) $(ARMA_INCLUDE_PATH) -I$(OPTIM_HEADER_DIR)
+FFLAGS = $(OPT_FLAGS)
+LIBS= @OPTIM_BLAS_LAPACK@
+
+# core Optim files
+
+SOURCES_OPTIM_MISC= $(OPTIM_SRC_DIR)/misc/logit_transform.cpp
+OBJECTS_OPTIM_MISC= $(SOURCES_OPTIM_MISC:.cpp=.o)
+
+SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp $(OPTIM_SRC_DIR)/line_search/wolfe.cpp
+OBJECTS_OPTIM_LS= $(SOURCES_OPTIM_LS:.cpp=.o)
+
+SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de/de.cpp $(OPTIM_SRC_DIR)/unconstrained/simplex/nelder_mead.cpp
+OBJECTS_OPTIM_UNCONSTR= $(SOURCES_OPTIM_UNCONSTR:.cpp=.o)
+
+SOURCES_OPTIM_CONSTR= $(OPTIM_SRC_DIR)/constrained/sumt/sumt.cpp
+OBJECTS_OPTIM_CONSTR= $(SOURCES_OPTIM_CONSTR:.cpp=.o)
+
+SOURCES_OPTIM_GNR= $(OPTIM_SRC_DIR)/generic/generic_optim.cpp $(OPTIM_SRC_DIR)/generic/generic_constr_optim.cpp
+OBJECTS_OPTIM_GNR= $(SOURCES_OPTIM_GNR:.cpp=.o)
+
+SOURCES_OPTIM_ZEROS= $(OPTIM_SRC_DIR)/zeros/broyden/broyden.cpp
+OBJECTS_OPTIM_ZEROS= $(SOURCES_OPTIM_ZEROS:.cpp=.o)
+
+OBJECTS_OPTIM= $(OBJECTS_OPTIM_MISC) $(OBJECTS_OPTIM_LS) $(OBJECTS_OPTIM_UNCONSTR) $(OBJECTS_OPTIM_CONSTR) $(OBJECTS_OPTIM_GNR) $(OBJECTS_OPTIM_ZEROS)
+
+all: $(OPTIM_DIR)/$(SHLIB) $(OBJECTS_OPTIM)
+
+# core Optim files
+$(OPTIM_SRC_DIR)/misc/%.o: $(OPTIM_SRC_DIR)/misc/%.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+$(OPTIM_SRC_DIR)/line_search/%.o: $(OPTIM_SRC_DIR)/line_search/%.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+$(OPTIM_SRC_DIR)/unconstrained/%.o: $(OPTIM_SRC_DIR)/unconstrained/%.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+$(OPTIM_SRC_DIR)/constrained/%.o: $(OPTIM_SRC_DIR)/constrained/%.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+$(OPTIM_SRC_DIR)/generic/%.o: $(OPTIM_SRC_DIR)/generic/%.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+$(OPTIM_SRC_DIR)/zeros/%.o: $(OPTIM_SRC_DIR)/zeros/%.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+
+# shared library
+$(OPTIM_DIR)/$(SHLIB): $(OBJECTS_OPTIM)
+	$(CXX) $(SHLIB_FLAGS) -o $@ $^ $(LP_LIBS) $(NLOPT_LIBS) $(LIBS)
+#    ar -rvs ../../inst/libs/liboptim.a $^
+
+# cleanup and install
+.PHONY: clean
+clean:
+	@rm -f *.so ./tests/*/*.test ./tests/*/*.o $(OPTIM_SRC_DIR)/*/*.o $(OPTIM_SRC_DIR)/*/*/*.o
+
+.PHONY: vclean
+vclean:
+	@rm -f *.so ./tests/*/*.test ./tests/*/*.o $(OPTIM_SRC_DIR)/*/*.o $(OPTIM_SRC_DIR)/*/*/*.o
+	@rm -rf ./include/armadillo*
+
+.PHONY: install
+install: $(SHLIB)
+	@cp $(OPTIM_DIR)/$(SHLIB) $(INSTALL_PATH)/lib/$(SHLIB)
+	@mkdir -p $(INSTALL_PATH)/include/optim
+	@cp -r $(OPTIM_DIR)/include/* $(INSTALL_PATH)/include/optim
