@@ -16,7 +16,7 @@
   ##
   ################################################################################*/
 
-#include "bfgs/bfgs.hpp"
-#include "cg/cg.hpp"
-#include "de/de.hpp"
-#include "simplex/nelder_mead.hpp"
+#include "bfgs.hpp"
+#include "cg.hpp"
+#include "de.hpp"
+#include "nelder_mead.hpp"

@@ -37,16 +37,16 @@ OBJECTS_OPTIM_MISC= $(SOURCES_OPTIM_MISC:.cpp=.o)
 SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp $(OPTIM_SRC_DIR)/line_search/wolfe.cpp
 OBJECTS_OPTIM_LS= $(SOURCES_OPTIM_LS:.cpp=.o)
 
-SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de/de.cpp $(OPTIM_SRC_DIR)/unconstrained/simplex/nelder_mead.cpp
+SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/nelder_mead.cpp
 OBJECTS_OPTIM_UNCONSTR= $(SOURCES_OPTIM_UNCONSTR:.cpp=.o)
 
-SOURCES_OPTIM_CONSTR= $(OPTIM_SRC_DIR)/constrained/sumt/sumt.cpp
+SOURCES_OPTIM_CONSTR= $(OPTIM_SRC_DIR)/constrained/sumt.cpp
 OBJECTS_OPTIM_CONSTR= $(SOURCES_OPTIM_CONSTR:.cpp=.o)
 
 SOURCES_OPTIM_GNR= $(OPTIM_SRC_DIR)/generic/generic_optim.cpp $(OPTIM_SRC_DIR)/generic/generic_constr_optim.cpp
 OBJECTS_OPTIM_GNR= $(SOURCES_OPTIM_GNR:.cpp=.o)
 
-SOURCES_OPTIM_ZEROS= $(OPTIM_SRC_DIR)/zeros/broyden/broyden.cpp
+SOURCES_OPTIM_ZEROS= $(OPTIM_SRC_DIR)/zeros/broyden.cpp
 OBJECTS_OPTIM_ZEROS= $(SOURCES_OPTIM_ZEROS:.cpp=.o)
 
 OBJECTS_OPTIM= $(OBJECTS_OPTIM_MISC) $(OBJECTS_OPTIM_LS) $(OBJECTS_OPTIM_UNCONSTR) $(OBJECTS_OPTIM_CONSTR) $(OBJECTS_OPTIM_GNR) $(OBJECTS_OPTIM_ZEROS)
