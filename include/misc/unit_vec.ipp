@@ -23,7 +23,9 @@
  * 11/28/2014
  */
 
-inline arma::vec unit_vec(int j, int n)
+inline
+arma::vec
+unit_vec(const int j, const int n)
 {
     arma::vec ret = arma::zeros(n,1);
     ret(j) = 1;

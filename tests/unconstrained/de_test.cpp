@@ -1,8 +1,8 @@
 //
 // DE tests
 //
-// g++-mp-5 -O2 -Wall -std=c++11 -I/opt/local/include de_test.cpp -o de.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-5 -O2 -Wall -std=c++11 -I./../../../include de_test.cpp -o de.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include de_test.cpp -o de.test -L/opt/local/lib -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include de_test.cpp -o de.test -L./../../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"

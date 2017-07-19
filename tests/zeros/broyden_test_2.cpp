@@ -7,7 +7,7 @@
 // 
 // solution is: (0.5671,0.5671)
 //
-// g++-mp-5 -O2 -Wall -std=c++11 -I./../../../include broyden_test_2.cpp -o broyden_2.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include broyden_test_2.cpp -o broyden_2.test -L./../../.. -loptim -framework Accelerate
 //
 
 

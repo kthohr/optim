@@ -23,13 +23,14 @@
  * 01/03/2017
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #ifndef _optim_broyden_HPP
 #define _optim_broyden_HPP
 
 // without jacobian
+
 bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                  arma::vec* value_out, optim_opt_settings* opt_params);
 
@@ -45,6 +46,7 @@ bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec&
              arma::vec& value_out, optim_opt_settings& opt_params);
 
 // with jacobian
+
 bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                  std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
                  arma::vec* value_out, optim_opt_settings* opt_params);
@@ -65,6 +67,7 @@ bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec&
              arma::vec& value_out, optim_opt_settings& opt_params);
 
 // derivative-free method
+
 bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                     arma::vec* value_out, optim_opt_settings* opt_params);
 
@@ -79,7 +82,8 @@ bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::v
 bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                 arma::vec& value_out, optim_opt_settings& opt_params);
 
-// derivative-free method w jacobian
+// derivative-free method with jacobian
+
 bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                     std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
                     arma::vec* value_out, optim_opt_settings* opt_params);

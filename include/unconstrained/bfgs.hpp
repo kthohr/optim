@@ -23,7 +23,7 @@
  * 12/23/2016
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #ifndef _optim_bfgs_HPP

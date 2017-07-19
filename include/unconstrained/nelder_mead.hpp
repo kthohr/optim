@@ -23,7 +23,7 @@
  * 01/03/2017
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #ifndef _optim_nelder_mead_HPP

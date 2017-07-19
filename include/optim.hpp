@@ -19,6 +19,7 @@
 #ifndef OPTIMLIB_INCLUDES
 #define OPTIMLIB_INCLUDES
 
+
 #include "armadillo"
 
 #include "misc/OPTIM_OPTIONS.hpp"
@@ -32,19 +33,24 @@ namespace optim
     #include "misc/misc.hpp"
 
     // line search
-    #include "line_search/line_search.hpp"
+    #include "line_search/more_thuente.hpp"
+    #include "line_search/wolfe.hpp"
 
     // unconstrained optimization
-    #include "unconstrained/unconstrained.hpp"
+    #include "unconstrained/bfgs.hpp"
+    #include "unconstrained/cg.hpp"
+    #include "unconstrained/de.hpp"
+    #include "unconstrained/nelder_mead.hpp"
 
     // constrained optimization
-    #include "constrained/constrained.hpp"
+    #include "constrained/sumt.hpp"
 
     // generic wrappers
-    #include "generic/generic.hpp"
+    #include "generic/generic_optim.hpp"
+    #include "generic/generic_constr_optim.hpp"
 
     // solving systems of nonlinear equations
-    #include "zeros/zeros.hpp"
+    #include "zeros/broyden.hpp"
 }
 
 #endif

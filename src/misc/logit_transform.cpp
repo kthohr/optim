@@ -21,6 +21,9 @@
  *
  * Keith O'Hara
  * 11/28/2014
+ *
+ * This version:
+ * 07/19/2017
  */
 
 #include "optim.hpp"
@@ -51,18 +54,12 @@ arma::vec optim::logit_trans(const arma::vec& pars, const arma::vec& lower_bound
 // logit_trans with [0,1] support
 arma::vec optim::logit_trans(const arma::vec& pars)
 {
-	//
-	arma::vec pars_trans = arma::log(pars/(1 - pars));
-	//
-	return pars_trans;
+	return arma::log(pars/(1 - pars));
 }
 
-double optim::logit_trans(const double& pars, const double& lower_bounds, const double& upper_bounds)
+double optim::logit_trans(const double pars, const double lower_bounds, const double upper_bounds)
 {
-	//
-	double pars_trans = std::log((pars - lower_bounds)/(upper_bounds - pars));
-	//
-	return pars_trans;
+	return std::log((pars - lower_bounds)/(upper_bounds - pars));
 }
 
 /*
@@ -71,25 +68,16 @@ double optim::logit_trans(const double& pars, const double& lower_bounds, const 
 
 arma::vec optim::logit_inv_trans(const arma::vec& pars_trans, const arma::vec& lower_bounds, const arma::vec& upper_bounds)
 {
-	//
-	arma::vec pars = (lower_bounds + upper_bounds % arma::exp(pars_trans)) / (1 + arma::exp(pars_trans));
-	//
-	return pars;
+	return (lower_bounds + upper_bounds % arma::exp(pars_trans)) / (1 + arma::exp(pars_trans));
 }
 
 // logit_inv_trans with [0,1] support
 arma::vec optim::logit_inv_trans(const arma::vec& pars_trans)
 {
-	//
-	arma::vec pars = arma::exp(pars_trans) / (1 + arma::exp(pars_trans));
-	//
-	return pars;
+	return arma::exp(pars_trans) / (1 + arma::exp(pars_trans));
 }
 
-double optim::logit_inv_trans(const double& pars_trans, const double& lower_bounds, const double& upper_bounds)
+double optim::logit_inv_trans(const double pars_trans, const double lower_bounds, const double upper_bounds)
 {
-	//
-	double pars = (lower_bounds + upper_bounds * std::exp(pars_trans)) / (1 + std::exp(pars_trans));
-	//
-	return pars;
+	return (lower_bounds + upper_bounds * std::exp(pars_trans)) / (1 + std::exp(pars_trans));
 }

@@ -23,7 +23,7 @@
  * 12/23/2016
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #ifndef _optim_cg_HPP
@@ -44,6 +44,6 @@ bool cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_in
         double& value_out, optim_opt_settings& opt_params);
 
 // internal update function
-double cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, int iter, int* method_cg_inp);
+double cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const int iter, const int* method_cg_inp);
 
 #endif

@@ -7,7 +7,7 @@
 // 
 // solution is: (0.3532,0.6061)
 //
-// g++-mp-5 -O2 -Wall -std=c++11 -I./../../../include broyden_test_1.cpp -o broyden_1.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include broyden_test_1.cpp -o broyden_1.test -L./../../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"

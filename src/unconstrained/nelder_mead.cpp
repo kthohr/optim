@@ -23,7 +23,7 @@
  * 01/03/2017
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #include "optim.hpp"
@@ -34,17 +34,17 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
 {
     bool success = false;
     
-    int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max   = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (opt_params) ? opt_params->err_tol  : OPTIM_DEFAULT_ERR_TOL;
 
     // expansion / contraction parameters
-    double alpha = (opt_params) ? opt_params->alpha_nm : OPTIM_DEFAULT_NM_ALPHA;
-    double beta  = (opt_params) ? opt_params->beta_nm  : OPTIM_DEFAULT_NM_BETA;
-    double gamma = (opt_params) ? opt_params->gamma_nm : OPTIM_DEFAULT_NM_GAMMA;
-    double delta = (opt_params) ? opt_params->delta_nm : OPTIM_DEFAULT_NM_DELTA;
+    const double alpha = (opt_params) ? opt_params->alpha_nm : OPTIM_DEFAULT_NM_ALPHA;
+    const double beta  = (opt_params) ? opt_params->beta_nm  : OPTIM_DEFAULT_NM_BETA;
+    const double gamma = (opt_params) ? opt_params->gamma_nm : OPTIM_DEFAULT_NM_GAMMA;
+    const double delta = (opt_params) ? opt_params->delta_nm : OPTIM_DEFAULT_NM_DELTA;
     //
-    int n_vals = init_out_vals.n_elem;
+    const int n_vals = init_out_vals.n_elem;
     arma::vec simplex_fn_vals(n_vals+1);
     arma::mat simplex_points(n_vals+1,n_vals);
     
@@ -166,31 +166,23 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    bool success = nelder_mead_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
-    //
-    return success;
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
 }
 
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    bool success = nelder_mead_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
-    //
-    return success;
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
 }
 
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    bool success = nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
-    //
-    return success;
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
 }
 
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
 {
-    bool success = nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
-    //
-    return success;
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
 }

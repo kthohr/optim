@@ -23,7 +23,7 @@
  * 12/23/2016
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #include "optim.hpp"
@@ -35,14 +35,14 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     bool success = false;
 
-    int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
 
-    int method_cg = (opt_params) ? opt_params->method_cg : OPTIM_DEFAULT_CG_METHOD; // update method
+    const int method_cg = (opt_params) ? opt_params->method_cg : OPTIM_DEFAULT_CG_METHOD; // update method
 
-    double wolfe_cons_1 = 1E-03; // line search tuning parameters
-    double wolfe_cons_2 = 0.10;
+    const double wolfe_cons_1 = 1E-03; // line search tuning parameters
+    const double wolfe_cons_2 = 0.10;
     //
     int n_vals = init_out_vals.n_elem;
     arma::vec x = init_out_vals;
@@ -99,43 +99,35 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    bool success = cg_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
-    //
-    return success;
+    return cg_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
 }
 
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    bool success = cg_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
-    //
-    return success;
+    return cg_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
 }
 
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    bool success = cg_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
-    //
-    return success;
+    return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
 }
 
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
 {
-    bool success = cg_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
-    //
-    return success;
+    return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
 }
 
 //
 // update formula
 
-double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, int iter, int* method_cg_inp)
+double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const int iter, const int* method_cg_inp)
 {
-    int method_cg = (method_cg_inp) ? *method_cg_inp : OPTIM_DEFAULT_CG_METHOD;
+    const int method_cg = (method_cg_inp) ? *method_cg_inp : OPTIM_DEFAULT_CG_METHOD;
     //
-    double beta = 1;
+    double beta = 1.0;
 
     if (method_cg==1) { // Fletcher-Reeves (FR)
         beta = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
@@ -144,8 +136,8 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
         beta = std::max(beta,0.0); 
     } else if (method_cg==3) { // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
         if (iter > 1) {
-            double beta_FR = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
-            double beta_PR = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
+            const double beta_FR = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
+            const double beta_PR = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
             
             if (beta_PR < - beta_FR) {
                 beta = -beta_FR;

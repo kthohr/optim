@@ -21,6 +21,9 @@
  *
  * Keith O'Hara
  * 11/28/2014
+ *
+ * This version:
+ * 07/19/2017
  */
 
 #ifndef _optim_logit_transform_HPP
@@ -28,10 +31,10 @@
 
 arma::vec logit_trans(const arma::vec& pars, const arma::vec& lower_bounds, const arma::vec& upper_bounds);
 arma::vec logit_trans(const arma::vec& pars);
-double logit_trans(const double& pars, const double& lower_bounds, const double& upper_bounds);
+double logit_trans(const double pars, const double lower_bounds, const double upper_bounds);
 
 arma::vec logit_inv_trans(const arma::vec& pars_trans, const arma::vec& lower_bounds, const arma::vec& upper_bounds);
 arma::vec logit_inv_trans(const arma::vec& pars_trans);
-double logit_inv_trans(const double& pars_trans, const double& lower_bounds, const double& upper_bounds);
+double logit_inv_trans(const double pars_trans, const double lower_bounds, const double upper_bounds);
 
 #endif

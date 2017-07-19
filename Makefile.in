@@ -76,12 +76,11 @@ $(OPTIM_SRC_DIR)/zeros/%.o: $(OPTIM_SRC_DIR)/zeros/%.cpp
 # shared library
 $(OPTIM_DIR)/$(SHLIB): $(OBJECTS_OPTIM)
 	$(CXX) $(SHLIB_FLAGS) -o $@ $^ $(LP_LIBS) $(NLOPT_LIBS) $(LIBS)
-#    ar -rvs ../../inst/libs/liboptim.a $^
 
 # cleanup and install
 .PHONY: clean
 clean:
-	@rm -f *.so ./tests/*/*.test ./tests/*/*.o $(OPTIM_SRC_DIR)/*/*.o $(OPTIM_SRC_DIR)/*/*/*.o
+	@rm -f *.so ./tests/*/*.test ./tests/*/*.o $(OPTIM_SRC_DIR)/*/*.o $(OPTIM_SRC_DIR)/*/*.gcov $(OPTIM_SRC_DIR)/*/*.gcno $(OPTIM_SRC_DIR)/*/*.gcda $(OPTIM_SRC_DIR)/*/*.dSYM $(OPTIM_SRC_DIR)/*/*/*.o $(OPTIM_SRC_DIR)/*/*/*.gcov $(OPTIM_SRC_DIR)/*/*/*.gcno $(OPTIM_SRC_DIR)/*/*/*.gcda $(OPTIM_SRC_DIR)/*/*/*.dSYM
 
 .PHONY: vclean
 vclean:

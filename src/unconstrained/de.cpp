@@ -23,7 +23,7 @@
  * 12/19/2016
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #include "optim.hpp"
@@ -33,19 +33,19 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 {
     bool success = false;
 
-    double BIG_POS_VAL = OPTIM_BIG_POS_NUM;
+    const double BIG_POS_VAL = OPTIM_BIG_POS_NUM;
 
-    int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    int n_gen = (opt_params) ? opt_params->de_n_gen : OPTIM_DEFAULT_DE_NGEN;
-    double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int n_gen = (opt_params) ? opt_params->de_n_gen : OPTIM_DEFAULT_DE_NGEN;
+    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
 
-    double par_F  = (opt_params) ? opt_params->de_F  : OPTIM_DEFAULT_DE_F; // tuning parameters
-    double par_CR = (opt_params) ? opt_params->de_CR : OPTIM_DEFAULT_DE_CR;
+    const double par_F  = (opt_params) ? opt_params->de_F  : OPTIM_DEFAULT_DE_F; // tuning parameters
+    const double par_CR = (opt_params) ? opt_params->de_CR : OPTIM_DEFAULT_DE_CR;
     //
-    int n_vals = init_out_vals.n_elem;
-    int N = n_vals*10;
+    const int n_vals = init_out_vals.n_elem;
+    const int N = n_vals*10;
 
-    int check_int = (n_gen >= 500) ? 100 : 20;
+    const int check_int = (n_gen >= 500) ? 100 : 20;
 
     int c_1, c_2, c_3, j, k;
     //
@@ -125,31 +125,23 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    bool success = de_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
-    //
-    return success;
+    return de_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    bool success = de_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
-    //
-    return success;
+    return de_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    bool success = de_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
-    //
-    return success;
+    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
 {
-    bool success = de_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
-    //
-    return success;
+    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
 }

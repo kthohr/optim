@@ -23,13 +23,13 @@
  * 06/11/2016
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 inline
 void
 error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-                bool& success, double* value_out, double err, double err_tol, int iter, int iter_max, int conv_failure_switch)
+                bool& success, double* value_out, const double err, const double err_tol, const int iter, const int iter_max, const int conv_failure_switch)
 {
     success = false;
 
@@ -82,7 +82,7 @@ error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double 
 inline
 void
 error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-                bool success, double* value_out, int conv_failure_switch)
+                bool& success, double* value_out, const int conv_failure_switch)
 {
     if (conv_failure_switch == 0 || conv_failure_switch == 1) {
         out_vals = x_p;
@@ -107,7 +107,7 @@ error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double 
 inline
 void
 error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                bool& success, arma::vec* value_out, double err, double err_tol, int iter, int iter_max, int conv_failure_switch)
+                bool& success, arma::vec* value_out, const double err, const double err_tol, const int iter, const int iter_max, const int conv_failure_switch)
 {
     success = false;
 

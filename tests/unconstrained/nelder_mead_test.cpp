@@ -1,8 +1,8 @@
 //
 // NM tests
 //
-// g++-mp-5 -O2 -Wall -std=c++11 -I/opt/local/include nelder_mead_test.cpp -o nelder_mead.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-5 -O2 -Wall -std=c++11 -I./../../../include nelder_mead_test.cpp -o nelder_mead.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include nelder_mead_test.cpp -o nelder_mead.test -L/opt/local/lib -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include nelder_mead_test.cpp -o nelder_mead.test -L./../../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"

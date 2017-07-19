@@ -6,7 +6,7 @@
 // 
 // solution is: (1,3)
 //
-// g++-mp-5 -O2 -Wall -std=c++11 -I/opt/local/include booth_test.cpp -o booth.test -L/opt/local/lib -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include booth_test.cpp -o booth.test -L/opt/local/lib -loptim -framework Accelerate
 //
 
 #include "optim/optim.hpp"

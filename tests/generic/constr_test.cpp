@@ -7,7 +7,7 @@
 // 
 // solution is: (6,7)
 //
-// g++-mp-5 -O2 -Wall -std=c++11 -I/opt/local/include constr_test.cpp -o constr.test -L/opt/local/lib -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include constr_test.cpp -o constr.test -L/opt/local/lib -loptim -framework Accelerate
 //
 
 #include "optim/optim.hpp"

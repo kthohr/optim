@@ -23,11 +23,13 @@
  * 01/11/2017
  *
  * This version:
- * 06/12/2017
+ * 07/19/2017
  */
 
 #ifndef _optim_generic_optim_HPP
 #define _optim_generic_optim_HPP
+
+// without box constraints
 
 bool generic_optim_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, 
                        double* value_out, optim_opt_settings* opt_params);
@@ -43,7 +45,8 @@ bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::v
 bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
                    double& value_out, optim_opt_settings& opt_params);
 
-// box constraints
+// with box constraints
+
 bool generic_optim_int(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                        std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
                        double* value_out, optim_opt_settings* opt_params);

@@ -25,22 +25,22 @@
  * 01/03/2017
  *
  * This version:
- * 01/11/2017
+ * 07/18/2017
  */
 
 #include "optim.hpp"
 
-double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, double* wolfe_cons_1_inp, double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
+double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, const double* wolfe_cons_1_inp, const double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    int iter_max = 100;
+    const int iter_max = 100;
 
-    double step_min = 0.0;
-    double step_max = 10.0;
-    double xtol = 1E-04;
+    const double step_min = 0.0;
+    const double step_max = 10.0;
+    const double xtol = 1E-04;
 
     // Wolfe parameters
-    double wolfe_cons_1 = (wolfe_cons_1_inp) ? *wolfe_cons_1_inp : 1E-03; // tolerence on the Armijo sufficient decrease condition; sometimes labelled 'mu'.
-    double wolfe_cons_2 = (wolfe_cons_2_inp) ? *wolfe_cons_2_inp : 0.90;  // tolerence on the curvature condition; sometimes labelled 'eta'.
+    const double wolfe_cons_1 = (wolfe_cons_1_inp) ? *wolfe_cons_1_inp : 1E-03; // tolerence on the Armijo sufficient decrease condition; sometimes labelled 'mu'.
+    const double wolfe_cons_2 = (wolfe_cons_2_inp) ? *wolfe_cons_2_inp : 0.90;  // tolerence on the curvature condition; sometimes labelled 'eta'.
     //
     int info = 0, infoc = 1;
     double extrap_delta = 4; // page 20 'delta'
@@ -151,7 +151,9 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     return step;
 }
 
+//
 // update 'interval of uncertainty'
+
 int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
 {
     bool bound = false;
@@ -312,10 +314,7 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
     return info;
 }
 
-double optim::mt_sup_norm(double a, double b, double c)
+double optim::mt_sup_norm(const double a, const double b, const double c)
 {
-    double ret = std::max(std::abs(a), std::abs(b));
-    ret = std::max(ret, std::abs(c));
-
-    return ret;
+    return std::max( std::max(std::abs(a), std::abs(b)), std::abs(c) );
 }
