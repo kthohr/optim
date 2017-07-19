@@ -2,11 +2,11 @@
 // CG tests
 //
 // g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include cg_test.cpp -o cg.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include cg_test.cpp -o cg.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include cg.cpp -o cg.test -L./../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"
-#include "./../../test_fns/test_fns.hpp"
+#include "./../test_fns/test_fns.hpp"
 
 int main()
 {
