@@ -1,0 +1,2 @@
+
+rm -rf ./*/*.gcov ./*/*.gcno ./*/*.gcda ./*/*.dSYM ./*/*.test

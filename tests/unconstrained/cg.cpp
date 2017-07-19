@@ -74,5 +74,25 @@ int main()
 
     arma::cout << "cg: solution to test_4:\n" << x_4 << arma::endl;
 
+    //
+    // for coverage
+
+    optim::optim_opt_settings opt_settings;
+    opt_settings.method_cg = 3;
+
+    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    opt_settings.method_cg = 4;
+    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    opt_settings.method_cg = 5;
+    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    opt_settings.method_cg = 6;
+    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+
+    double val_out;
+
+    optim::cg(x_1,unconstr_test_fn_1,NULL);
+    optim::cg(x_1,unconstr_test_fn_1,NULL,val_out);
+    optim::cg(x_1,unconstr_test_fn_1,NULL,val_out,opt_settings);
+
     return 0;
 }
