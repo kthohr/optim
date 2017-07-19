@@ -2,7 +2,7 @@
 // BFGS tests
 //
 // g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include bfgs_test.cpp -o bfgs.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include bfgs_test.cpp -o bfgs.test -L./../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include bfgs.cpp -o bfgs.test -L./../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"

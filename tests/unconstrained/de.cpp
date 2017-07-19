@@ -1,12 +1,12 @@
 //
 // DE tests
 //
-// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include de_test.cpp -o de.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include de_test.cpp -o de.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include de.cpp -o de.test -L/opt/local/lib -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include de.cpp -o de.test -L./../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"
-#include "./../../test_fns/test_fns.hpp"
+#include "./../test_fns/test_fns.hpp"
 
 int main()
 {
@@ -67,6 +67,17 @@ int main()
     }
 
     arma::cout << "de: solution to test_4:\n" << x_4 << arma::endl;
+
+    //
+    // for coverage
+
+    optim::optim_opt_settings opt_settings;
+    double val_out;
+
+    optim::de(x_1,unconstr_test_fn_1,NULL);
+    optim::de(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    optim::de(x_1,unconstr_test_fn_1,NULL,val_out);
+    optim::de(x_1,unconstr_test_fn_1,NULL,val_out,opt_settings);
 
     return 0;
 }

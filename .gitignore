@@ -11,3 +11,7 @@ Makefile
 *.test
 *.vscode
 include/armadillo*
+*.gcda
+*.gcno
+*.gcov
+*.dSYM

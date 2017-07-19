@@ -2,11 +2,11 @@
 // NM tests
 //
 // g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include nelder_mead_test.cpp -o nelder_mead.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../../include nelder_mead_test.cpp -o nelder_mead.test -L./../../.. -loptim -framework Accelerate
+// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include nelder_mead.cpp -o nelder_mead.test -L./../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"
-#include "./../../test_fns/test_fns.hpp"
+#include "./../test_fns/test_fns.hpp"
 
 int main()
 {
@@ -67,6 +67,17 @@ int main()
     // }
 
     // arma::cout << "nelder_mead: solution to test_4:\n" << x_4 << arma::endl;
+
+    //
+    // for coverage
+
+    optim::optim_opt_settings opt_settings;
+    double val_out;
+
+    optim::nelder_mead(x_1,unconstr_test_fn_1,NULL);
+    optim::nelder_mead(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    optim::nelder_mead(x_1,unconstr_test_fn_1,NULL,val_out);
+    optim::nelder_mead(x_1,unconstr_test_fn_1,NULL,val_out,opt_settings);
 
     return 0;
 }

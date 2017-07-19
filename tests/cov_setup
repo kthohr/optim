@@ -1,0 +1,15 @@
+
+cd ..
+export ARMA_INCLUDE_PATH="-I$PWD/include"
+export CXXCOV=gcov
+export LD_LIBRARY_PATH="$PWD":$LD_LIBRARY_PATH
+cd tests
+
+cd unconstrained
+./configure -b dev -c y
+make
+./cov_check
+
+cd ../..
+rm -rf ./include/armadillo*
+cd tests
