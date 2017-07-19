@@ -78,13 +78,20 @@ int main()
     // for coverage
 
     optim::optim_opt_settings opt_settings;
+    x_1 = arma::ones(2,1);
     opt_settings.method_cg = 3;
 
     optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+
+    x_1 = arma::ones(2,1);
     opt_settings.method_cg = 4;
     optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+
+    x_1 = arma::ones(2,1);
     opt_settings.method_cg = 5;
     optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    
+    x_1 = arma::ones(2,1);
     opt_settings.method_cg = 6;
     optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
 
