@@ -16,15 +16,34 @@
   ##
   ################################################################################*/
 
-#ifndef OPTIMLIB_TEST_INCLUDES
-#define OPTIMLIB_TEST_INCLUDES
+//
+// this example is from
+// https://en.wikipedia.org/wiki/Test_functions_for_optimization
+//
+// f(x) = (x_1 + 2*x_2 - 7)^2 + (2*x + y - 5)^2   s.t. -10 <= x_1, x_2 <= 10
+// 
+// solution is: (1,3)
+//
 
-#include "unconstr_test_fn_1.hpp"
-#include "unconstr_test_fn_2.hpp"
-#include "unconstr_test_fn_3.hpp"
-#include "unconstr_test_fn_4.hpp"
-#include "unconstr_test_fn_5.hpp"
+#ifndef _optim_test_fn_5_HPP
+#define _optim_test_fn_5_HPP
 
-#include "constr_test_fn_1.hpp"
+double unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad, void* opt_data);
+
+double
+unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
+{
+    double x_1 = vals_inp(0);
+    double x_2 = vals_inp(1);
+
+    double obj_val = std::pow(x_1 + 2*x_2 - 7.0,2) + std::pow(2*x_1 + x_2 - 5.0,2);
+    //
+    if (grad) {
+        (*grad)(0) = 2*(x_1 + 2*x_2 - 7.0) + 2*(2*x_1 + x_2 - 5.0)*2;
+        (*grad)(1) = 2*(x_1 + 2*x_2 - 7.0)*2 + 2*(2*x_1 + x_2 - 5.0);
+    }
+    //
+    return obj_val;
+}
 
 #endif

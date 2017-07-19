@@ -28,8 +28,6 @@
 #ifndef _optim_constr_test_fn_1_HPP
 #define _optim_constr_test_fn_1_HPP
 
-double beale_obj(const arma::vec& vals_inp, arma::vec* grad, void* opt_data);
-
 double
 constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
 {
