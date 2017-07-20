@@ -126,7 +126,7 @@ int main()
 
     arma::cout << "broyden: solution to test_2:\n" << x_2 << arma::endl;
 
-     //
+    //
     // coverage tests
 
     optim::broyden(x_1,zeros_test_objfn_1,NULL);

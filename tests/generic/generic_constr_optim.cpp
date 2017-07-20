@@ -19,12 +19,29 @@ int main()
     bool success_1 = optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL);
 
     if (success_1) {
-        std::cout << "sumt: test_1 completed successfully." << std::endl;
+        std::cout << "generic_constr_optim: test_1 completed successfully." << std::endl;
     } else {
-        std::cout << "sumt: test_1 completed unsuccessfully." << std::endl;
+        std::cout << "generic_constr_optim: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "sumt: solution to test_1:\n" << x_1 << arma::endl;
+    arma::cout << "generic_constr_optim: solution to test_1:\n" << x_1 << arma::endl;
+
+    //
+    // coverage tests
+
+    arma::vec x_c = arma::ones(2,1);
+    optim::optim_opt_settings opt_settings;
+    double val_out;
+
+    optim::generic_constr_optim(x_c,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL);
+    optim::generic_constr_optim(x_c,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,opt_settings);
+    optim::generic_constr_optim(x_c,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out);
+    optim::generic_constr_optim(x_c,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out,opt_settings);
+
+    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL);
+    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,opt_settings);
+    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out);
+    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out,opt_settings);
 
     return 0;
 }

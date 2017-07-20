@@ -48,7 +48,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     // initialization
     arma::vec f_val = opt_objfn(x,opt_data);
 
-    double err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+    double err = arma::accu(arma::abs(f_val));
     if (err <= err_tol) {
         return true;
     }
@@ -58,7 +58,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     arma::vec x_p = x + d;
     arma::vec f_val_p = opt_objfn(x_p,opt_data);
 
-    err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+    err = arma::accu(arma::abs(f_val_p));
     if (err <= err_tol) {
         init_out_vals = x_p;
         return true;
@@ -82,7 +82,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         x_p = x + d;
         f_val_p = opt_objfn(x_p,opt_data);
 
-        err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+        err = arma::accu(arma::abs(f_val_p));
 
         if (err <= err_tol) {
             break;
@@ -151,7 +151,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     // initialization
     arma::vec f_val = opt_objfn(x,opt_data);
 
-    double err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+    double err = arma::accu(arma::abs(f_val));
     if (err <= err_tol) {
         return true;
     }
@@ -161,7 +161,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     arma::vec x_p = x + d;
     arma::vec f_val_p = opt_objfn(x_p,opt_data);
 
-    err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+    err = arma::accu(arma::abs(f_val_p));
     if (err <= err_tol) {
         init_out_vals = x_p;
         return true;
@@ -185,7 +185,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         x_p = x + d;
         f_val_p = opt_objfn(x_p,opt_data);
 
-        err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+        err = arma::accu(arma::abs(f_val_p));
 
         if (err <= err_tol) {
             break;
@@ -264,7 +264,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // initialization
     arma::vec f_val = opt_objfn(x,opt_data);
-    double err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+    double err = arma::accu(arma::abs(f_val));
 
     if (err <= err_tol) {
         return true;
@@ -275,7 +275,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     arma::vec d = -f_val; // step 1
 
     arma::vec f_val_p = opt_objfn(x + d,opt_data);
-    err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+    err = arma::accu(arma::abs(f_val_p));
 
     if (err <= err_tol) {
         init_out_vals = x + d;
@@ -311,7 +311,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         d = arma::solve(B,-f_val);
         f_val_p = opt_objfn(x + d,opt_data);
 
-        err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+        err = arma::accu(arma::abs(f_val));
 
         if (err <= err_tol) {
             break;
@@ -392,7 +392,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // initialization
     arma::vec f_val = opt_objfn(x,opt_data);
-    double err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+    double err = arma::accu(arma::abs(f_val));
 
     if (err <= err_tol) {
         return true;
@@ -403,7 +403,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     arma::vec d = arma::solve(B,-f_val); // step 1
 
     arma::vec f_val_p = opt_objfn(x + d,opt_data);
-    err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+    err = arma::accu(arma::abs(f_val_p));
 
     if (err <= err_tol) {
         init_out_vals = x + d;
@@ -439,7 +439,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         d = arma::solve(B,-f_val);
         f_val_p = opt_objfn(x + d,opt_data);
 
-        err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+        err = arma::accu(arma::abs(f_val));
 
         if (err <= err_tol) {
             break;
@@ -613,7 +613,7 @@ bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const 
     double t_init = 1;
 
     arma::vec f_val = opt_objfn(x,opt_data);
-    double err = arma::as_scalar(arma::sum(arma::abs(f_val)));
+    double err = arma::accu(arma::abs(f_val));
 
     if (err <= err_tol) {
         return true;
@@ -627,7 +627,7 @@ bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const 
     arma::cout << x_p << arma::endl;
 
     arma::vec f_val_p = opt_objfn(x_p,opt_data);
-    err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+    err = arma::accu(arma::abs(f_val_p));
 
     if (err <= err_tol) {
         init_out_vals = x_p;
@@ -653,7 +653,7 @@ bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const 
         t = line_search_mt(t_init, x_p, grad_mt, d, &wolfe_cons_1, &wolfe_cons_2, ls_objfn, opt_data);
 
         f_val_p = opt_objfn(x_p,opt_data);
-        err = arma::as_scalar(arma::sum(arma::abs(f_val_p)));
+        err = arma::accu(arma::abs(f_val_p));
 
         if (err <= err_tol) {
             break;
