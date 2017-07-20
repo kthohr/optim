@@ -91,6 +91,9 @@ int main()
     optim::bfgs(x_1,unconstr_test_fn_1,NULL,opt_settings);
 
     //
+    x_4 = arma::ones(2,1);
+    optim::bfgs(x_4,unconstr_test_fn_4,NULL,val_out,opt_settings);
+
     opt_settings.conv_failure_switch = 2;
     opt_settings.iter_max = 2000;
 

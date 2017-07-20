@@ -14,6 +14,8 @@ script:
   - cd ./tests
   - ./cov_setup
   - cd ..
+  - rm -rf ./include/misc/error_reporting.*
+  - rm -rf ./src/misc/logit_transform.*
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
