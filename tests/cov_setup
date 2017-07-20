@@ -15,6 +15,11 @@ cd ../generic
 make
 ./cov_check
 
+cd ../misc
+./configure -b dev -c y
+make
+./cov_check
+
 cd ../unconstrained
 ./configure -b dev -c y
 make
