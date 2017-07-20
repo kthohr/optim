@@ -23,5 +23,16 @@ int main()
 
     arma::cout << "sumt: solution to test_1:\n" << x_1 << arma::endl;
 
+    //
+    // coverage tests
+
+    optim::optim_opt_settings opt_settings;
+    double val_out;
+
+    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL);
+    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,opt_settings);
+    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out);
+    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out,opt_settings);
+
     return 0;
 }
