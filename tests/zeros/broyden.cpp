@@ -4,30 +4,8 @@
 //
 
 #include "optim.hpp"
+#include "./../test_fns/test_fns.hpp"
 
-//
-// this example is from Matlab's help page
-// https://www.mathworks.com/help/optim/ug/fsolve.html
-//
-// F(x) = [exp(-exp(-(x_1+x_2))) - x_2*(1+x_1^2);
-//         x_1*cos(x_2) + x_2*sin(x_1) - 0.5     ]
-// 
-// solution is: (0.3532,0.6061)
-
-arma::vec zero_objfn_1(const arma::vec& vals_inp, void* opt_data)
-{
-    double x_1 = vals_inp(0);
-    double x_2 = vals_inp(1);
-
-    arma::vec ret(2);
-
-    ret(0) = std::exp(-std::exp(-(x_1+x_2))) - x_2*(1 + std::pow(x_1,2));
-    ret(1) = x_1*std::cos(x_2) + x_2*std::sin(x_1) - 0.5;
-    //
-    return ret;
-}
-
-//
 // this example is from Matlab's help page
 // https://www.mathworks.com/help/optim/ug/fsolve.html
 //
@@ -37,25 +15,93 @@ arma::vec zero_objfn_1(const arma::vec& vals_inp, void* opt_data)
 // solution is: (0.5671,0.5671)
 //
 
-arma::vec zero_objfn_2(const arma::vec& vals_inp, void* opt_data)
-{
-    double x_1 = vals_inp(0);
-    double x_2 = vals_inp(1);
-
-    arma::vec ret(2);
-
-    ret(0) = 2*x_1 - x_2 - std::exp(-x_1);
-    ret(1) = -x_1 + 2*x_2 - std::exp(-x_2);
-    //
-    return ret;
-}
-
 int main()
 {
     //
+    // test 1
+
     arma::vec x_1 = arma::zeros(2,1);
 
-    bool success_1 = optim::broyden_df(x_1,zero_objfn_1,NULL);
+    bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,NULL);
+
+    if (success_1) {
+        std::cout << "broyden_df: test_1 completed successfully." << std::endl;
+    } else {
+        std::cout << "broyden_df: test_1 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "broyden_df: solution to test_1:\n" << x_1 << arma::endl;
+
+    //
+    // test 2
+
+    arma::vec x_2 = arma::zeros(2,1);
+
+    bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,NULL);
+
+    if (success_2) {
+        std::cout << "broyden_df: test_2 completed successfully." << std::endl;
+    } else {
+        std::cout << "broyden_df: test_2 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "broyden_df: solution to test_2:\n" << x_2 << arma::endl;
+
+    //
+    // coverage tests
+
+    arma::vec val_out;
+    optim::optim_opt_settings opt_params;
+
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL);
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,opt_params);
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,val_out);
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,val_out,opt_params);
+
+    //
+    // test 1
+
+    x_1 = arma::zeros(2,1);
+
+    success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
+
+    if (success_1) {
+        std::cout << "broyden_df w jacobian: test_1 completed successfully." << std::endl;
+    } else {
+        std::cout << "broyden_df w jacobian: test_1 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "broyden_df w jacobian: solution to test_1:\n" << x_1 << arma::endl;
+
+    //
+    // test 2
+
+    x_2 = arma::zeros(2,1);
+
+    success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,NULL,zeros_test_jacob_2,NULL);
+
+    if (success_2) {
+        std::cout << "broyden_df w jacobian: test_2 completed successfully." << std::endl;
+    } else {
+        std::cout << "broyden_df w jacobian: test_2 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "broyden_df w jacobian: solution to test_2:\n" << x_2 << arma::endl;
+
+    //
+    // coverage tests
+
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,opt_params);
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out);
+    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out,opt_params);
+
+    //
+    // test 1
+
+    x_1 = arma::zeros(2,1);
+
+    success_1 = optim::broyden(x_1,zeros_test_objfn_1,NULL);
 
     if (success_1) {
         std::cout << "broyden: test_1 completed successfully." << std::endl;
@@ -68,9 +114,9 @@ int main()
     //
     // test 2
 
-    arma::vec x_2 = arma::zeros(2,1);
+    x_2 = arma::zeros(2,1);
 
-    bool success_2 = optim::broyden_df(x_2,zero_objfn_2,NULL);
+    success_2 = optim::broyden(x_2,zeros_test_objfn_2,NULL);
 
     if (success_2) {
         std::cout << "broyden: test_2 completed successfully." << std::endl;
@@ -79,6 +125,53 @@ int main()
     }
 
     arma::cout << "broyden: solution to test_2:\n" << x_2 << arma::endl;
+
+     //
+    // coverage tests
+
+    optim::broyden(x_1,zeros_test_objfn_1,NULL);
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,opt_params);
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,val_out);
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,val_out,opt_params);
+
+    //
+    // test 1
+
+    x_1 = arma::zeros(2,1);
+
+    success_1 = optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
+
+    if (success_1) {
+        std::cout << "broyden w jacobian: test_1 completed successfully." << std::endl;
+    } else {
+        std::cout << "broyden w jacobian: test_1 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "broyden w jacobian: solution to test_1:\n" << x_1 << arma::endl;
+
+    //
+    // test 2
+
+    x_2 = arma::zeros(2,1);
+
+    success_2 = optim::broyden(x_2,zeros_test_objfn_2,NULL,zeros_test_jacob_2,NULL);
+
+    if (success_2) {
+        std::cout << "broyden w jacobian: test_2 completed successfully." << std::endl;
+    } else {
+        std::cout << "broyden w jacobian: test_2 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "broyden w jacobian: solution to test_2:\n" << x_2 << arma::endl;
+
+    //
+    // coverage tests
+
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,opt_params);
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out);
+    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out,opt_params);
+
 
     return 0;
 }

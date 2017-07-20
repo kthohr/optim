@@ -34,7 +34,8 @@ LIBS= @OPTIM_BLAS_LAPACK@
 SOURCES_OPTIM_MISC= $(OPTIM_SRC_DIR)/misc/logit_transform.cpp
 OBJECTS_OPTIM_MISC= $(SOURCES_OPTIM_MISC:.cpp=.o)
 
-SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp $(OPTIM_SRC_DIR)/line_search/wolfe.cpp
+#SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp $(OPTIM_SRC_DIR)/line_search/wolfe.cpp
+SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp
 OBJECTS_OPTIM_LS= $(SOURCES_OPTIM_LS:.cpp=.o)
 
 SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/nelder_mead.cpp

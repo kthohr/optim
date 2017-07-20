@@ -27,4 +27,7 @@
 
 #include "constr_test_fn_1.hpp"
 
+#include "zeros_test_fn_1.hpp"
+#include "zeros_test_fn_2.hpp"
+
 #endif
