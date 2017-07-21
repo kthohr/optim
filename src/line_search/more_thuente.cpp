@@ -43,7 +43,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     const double wolfe_cons_2 = (wolfe_cons_2_inp) ? *wolfe_cons_2_inp : 0.90;  // tolerence on the curvature condition; sometimes labelled 'eta'.
     //
     int info = 0, infoc = 1;
-    double extrap_delta = 4; // page 20 'delta'
+    const double extrap_delta = 4; // 'delta' on page 20
 
     arma::vec x_0 = x;
 
@@ -51,6 +51,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 
     double dgrad_init = arma::dot(grad,direc);
     if (dgrad_init >= 0.0) {
+        printf("line search: grad' * direc > 0.\n");
         return step;
     }
     double dgrad = dgrad_init;

@@ -79,30 +79,5 @@ int main()
     optim::bfgs(x_1,unconstr_test_fn_1,NULL,val_out);
     optim::bfgs(x_1,unconstr_test_fn_1,NULL,val_out,opt_settings);
 
-    //
-    // testing error reporting function
-    opt_settings.conv_failure_switch = 1;
-
-    x_1 = arma::ones(2,1);
-    optim::bfgs(x_1,unconstr_test_fn_1,NULL,val_out,opt_settings);
-
-    x_1 = arma::ones(2,1);
-    opt_settings.iter_max = 1;
-    optim::bfgs(x_1,unconstr_test_fn_1,NULL,opt_settings);
-
-    //
-    x_4 = arma::ones(2,1);
-    optim::bfgs(x_4,unconstr_test_fn_4,NULL,val_out,opt_settings);
-
-    opt_settings.conv_failure_switch = 2;
-    opt_settings.iter_max = 2000;
-
-    x_4 = arma::ones(2,1);
-    optim::bfgs(x_4,unconstr_test_fn_4,NULL,val_out,opt_settings);
-
-    opt_settings.iter_max = 1;
-    x_4 = arma::ones(2,1);
-    optim::bfgs(x_4,unconstr_test_fn_4,NULL,val_out,opt_settings);
-
     return 0;
 }
