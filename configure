@@ -120,6 +120,8 @@ fi
 
 if [[ "${OPTIM_COVERAGE}" == "y" ]]; then 
     OPTIM_SHLIB_FLAGS="--coverage ${OPTIM_SHLIB_FLAGS}"
+else
+    OPTIM_SHLIB_FLAGS="-O3 ${OPTIM_SHLIB_FLAGS}"
 fi
 
 sed -e "s|@CC@|${CC}|" \
