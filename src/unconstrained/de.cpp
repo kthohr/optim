@@ -56,7 +56,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     for (int i=0; i < N; i++) {
         X.row(i) = init_out_vals.t() + arma::randu(1,n_vals) - 0.5;
 
-        prop_objfn_val = opt_objfn(X.row(i).t(),NULL,opt_data);
+        prop_objfn_val = opt_objfn(X.row(i).t(),nullptr,opt_data);
 
         if (std::isnan(prop_objfn_val)) {
             prop_objfn_val = BIG_POS_VAL;
@@ -98,7 +98,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 k++;
             } while((k < n_vals) && (rand_unif(k) < par_CR));
             //
-            prop_objfn_val = opt_objfn(X_prop,NULL,opt_data);
+            prop_objfn_val = opt_objfn(X_prop,nullptr,opt_data);
             
             if (prop_objfn_val <= past_objfn_vals(i)) {
                 X.row(i) = X_prop.t();
@@ -125,19 +125,19 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
+    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
+    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
+    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool

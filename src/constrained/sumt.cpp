@@ -103,7 +103,7 @@ bool
 optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
             std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data)
 {
-    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,NULL,NULL);
+    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr,nullptr);
 }
 
 bool
@@ -111,7 +111,7 @@ optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& val
             std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data,
             optim_opt_settings& opt_params)
 {
-    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,NULL,&opt_params);
+    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr,&opt_params);
 }
 
 bool
@@ -119,7 +119,7 @@ optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& val
             std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data,
             double& value_out)
 {
-    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&value_out,NULL);
+    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&value_out,nullptr);
 }
 
 bool

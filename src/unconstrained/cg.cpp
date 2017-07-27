@@ -99,19 +99,19 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return cg_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
+    return cg_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    return cg_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
+    return cg_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
+    return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool

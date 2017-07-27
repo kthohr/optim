@@ -54,7 +54,7 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     // initialization
 
     arma::mat W = arma::eye(n_vals,n_vals); // initial approx. to (inverse) Hessian 
-    arma::mat I_mat = arma::eye(n_vals,n_vals);
+    const arma::mat I_mat = arma::eye(n_vals,n_vals);
 
     arma::vec grad(n_vals); // gradient vector
     opt_objfn(x,&grad,opt_data);
@@ -152,19 +152,19 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 bool
 optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return bfgs_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
+    return bfgs_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
 optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    return bfgs_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
+    return bfgs_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
 optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    return bfgs_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
+    return bfgs_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool

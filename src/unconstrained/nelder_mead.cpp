@@ -48,12 +48,12 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
     arma::vec simplex_fn_vals(n_vals+1);
     arma::mat simplex_points(n_vals+1,n_vals);
     
-    simplex_fn_vals(0) = opt_objfn(init_out_vals,NULL,opt_data);
+    simplex_fn_vals(0) = opt_objfn(init_out_vals,nullptr,opt_data);
     simplex_points.row(0) = init_out_vals.t();
 
     for (int i=1; i < n_vals + 1; i++) {
         simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
-        simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),NULL,opt_data);
+        simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
     }
 
     double min_val = simplex_fn_vals.min();
@@ -82,7 +82,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
 
         x_r = centroid + alpha*(centroid - simplex_points.row(n_vals).t());
 
-        f_r = opt_objfn(x_r,NULL,opt_data);
+        f_r = opt_objfn(x_r,nullptr,opt_data);
 
         if (f_r >= simplex_fn_vals(0) && f_r < simplex_fn_vals(n_vals-1)) {
             // reflected point is neither best nor worst in the new simplex
@@ -96,7 +96,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
             // reflected point is better than the current best; try to go farther along this direction
             x_e = centroid + beta*(x_r - centroid);
 
-            f_e = opt_objfn(x_e,NULL,opt_data);
+            f_e = opt_objfn(x_e,nullptr,opt_data);
 
             if (f_e < f_r) {
                 simplex_points.row(n_vals) = x_e.t();
@@ -118,7 +118,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
                 // outside contraction
                 x_oc = centroid + gamma*(x_r - centroid);
 
-                f_oc = opt_objfn(x_oc,NULL,opt_data);
+                f_oc = opt_objfn(x_oc,nullptr,opt_data);
 
                 if (f_oc <= f_r) {
                     simplex_points.row(n_vals) = x_oc.t();
@@ -128,7 +128,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
                 // inside contraction
                 x_ic = centroid - gamma*(x_r - centroid);
 
-                f_ic = opt_objfn(x_ic,NULL,opt_data);
+                f_ic = opt_objfn(x_ic,nullptr,opt_data);
 
                 if (f_ic < simplex_fn_vals(n_vals)) {
                     simplex_points.row(n_vals) = x_ic.t();
@@ -149,7 +149,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
         // check change in fn_val
 
         for (int i=0; i < n_vals + 1; i++) {
-            simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),NULL,opt_data);
+            simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
         }
 
         err = std::abs(min_val - simplex_fn_vals.max());
@@ -166,19 +166,19 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,NULL,NULL);
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
-    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,NULL,&opt_params);
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
 optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,NULL);
+    return nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool

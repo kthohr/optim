@@ -16,7 +16,7 @@ int main()
 
     arma::vec x_1 = arma::ones(2,1) + 4.0;
 
-    bool success_1 = optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,NULL);
+    bool success_1 = optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr);
 
     if (success_1) {
         std::cout << "generic_optim: test_5 completed successfully." << std::endl;
@@ -33,15 +33,15 @@ int main()
     optim::optim_opt_settings opt_settings;
     double val_out;
 
-    optim::generic_optim(x_c,unconstr_test_fn_1,NULL);
-    optim::generic_optim(x_c,unconstr_test_fn_1,NULL,opt_settings);
-    optim::generic_optim(x_c,unconstr_test_fn_1,NULL,val_out);
-    optim::generic_optim(x_c,unconstr_test_fn_1,NULL,val_out,opt_settings);
+    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr);
+    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,opt_settings);
+    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,val_out);
+    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,val_out,opt_settings);
 
-    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,NULL);
-    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,NULL,opt_settings);
-    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,NULL,val_out);
-    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,NULL,val_out,opt_settings);
+    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr);
+    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,opt_settings);
+    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,val_out);
+    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,val_out,opt_settings);
 
     return 0;
 }

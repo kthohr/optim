@@ -37,7 +37,7 @@ error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double 
         out_vals = x_p;
 
         if (value_out) {
-            *value_out = opt_objfn(x_p,NULL,opt_data);
+            *value_out = opt_objfn(x_p,nullptr,opt_data);
         }
 
         if (err <= err_tol && iter <= iter_max) {
@@ -47,7 +47,7 @@ error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double 
         out_vals = x_p;
 
         if (value_out) {
-            *value_out = opt_objfn(x_p,NULL,opt_data);
+            *value_out = opt_objfn(x_p,nullptr,opt_data);
         }
 
         if (err <= err_tol && iter <= iter_max) {
@@ -64,7 +64,7 @@ error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double 
             success = true;
 
             if (value_out) {
-                *value_out = opt_objfn(x_p,NULL,opt_data);
+                *value_out = opt_objfn(x_p,nullptr,opt_data);
             }
         } else {
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
@@ -88,14 +88,14 @@ error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double 
         out_vals = x_p;
 
         if (value_out) {
-            *value_out = opt_objfn(x_p,NULL,opt_data);
+            *value_out = opt_objfn(x_p,nullptr,opt_data);
         }
     } else if (conv_failure_switch == 2) {
         if (success) {
             out_vals = x_p;
 
             if (value_out) {
-                *value_out = opt_objfn(x_p,NULL,opt_data);
+                *value_out = opt_objfn(x_p,nullptr,opt_data);
             }
         }
     } else {

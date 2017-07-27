@@ -13,7 +13,7 @@ int main()
     //
     arma::vec x_1 = arma::ones(2,1);
 
-    bool success_1 = optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL);
+    bool success_1 = optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
 
     if (success_1) {
         std::cout << "sumt: test_1 completed successfully." << std::endl;
@@ -29,10 +29,10 @@ int main()
     optim::optim_opt_settings opt_settings;
     double val_out;
 
-    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL);
-    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,opt_settings);
-    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out);
-    optim::sumt(x_1,constr_test_objfn_1,NULL,constr_test_constrfn_1,NULL,val_out,opt_settings);
+    optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
+    optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,opt_settings);
+    optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out);
+    optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out,opt_settings);
 
     return 0;
 }

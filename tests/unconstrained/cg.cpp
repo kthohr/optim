@@ -20,7 +20,7 @@ int main()
 
     arma::vec x_1 = arma::ones(2,1);
 
-    bool success_1 = optim::cg(x_1,unconstr_test_fn_1,NULL,opt_params);
+    bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_params);
 
     if (success_1) {
         std::cout << "cg: test_1 completed successfully." << std::endl;
@@ -35,7 +35,7 @@ int main()
 
     arma::vec x_2 = arma::zeros(2,1);
 
-    bool success_2 = optim::cg(x_2,unconstr_test_fn_2,NULL);
+    bool success_2 = optim::cg(x_2,unconstr_test_fn_2,nullptr);
 
     if (success_2) {
         std::cout << "cg: test_2 completed successfully." << std::endl;
@@ -50,7 +50,7 @@ int main()
     int test_3_dim = 5;
     arma::vec x_3 = arma::ones(test_3_dim,1);
 
-    bool success_3 = optim::cg(x_3,unconstr_test_fn_3,NULL);
+    bool success_3 = optim::cg(x_3,unconstr_test_fn_3,nullptr);
 
     if (success_3) {
         std::cout << "cg: test_3 completed successfully." << std::endl;
@@ -64,7 +64,7 @@ int main()
     // test 4
     arma::vec x_4 = arma::ones(2,1);
 
-    bool success_4 = optim::cg(x_4,unconstr_test_fn_4,NULL);
+    bool success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr);
 
     if (success_4) {
         std::cout << "cg: test_4 completed successfully." << std::endl;
@@ -81,25 +81,25 @@ int main()
     x_1 = arma::ones(2,1);
     opt_settings.method_cg = 3;
 
-    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
 
     x_1 = arma::ones(2,1);
     opt_settings.method_cg = 4;
-    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
 
     x_1 = arma::ones(2,1);
     opt_settings.method_cg = 5;
-    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
     
     x_1 = arma::ones(2,1);
     opt_settings.method_cg = 6;
-    optim::cg(x_1,unconstr_test_fn_1,NULL,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
 
     double val_out;
 
-    optim::cg(x_1,unconstr_test_fn_1,NULL);
-    optim::cg(x_1,unconstr_test_fn_1,NULL,val_out);
-    optim::cg(x_1,unconstr_test_fn_1,NULL,val_out,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out,opt_settings);
 
     return 0;
 }

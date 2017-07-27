@@ -22,7 +22,7 @@ int main()
 
     arma::vec x_1 = arma::zeros(2,1);
 
-    bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,NULL);
+    bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
 
     if (success_1) {
         std::cout << "broyden_df: test_1 completed successfully." << std::endl;
@@ -37,7 +37,7 @@ int main()
 
     arma::vec x_2 = arma::zeros(2,1);
 
-    bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,NULL);
+    bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr);
 
     if (success_2) {
         std::cout << "broyden_df: test_2 completed successfully." << std::endl;
@@ -53,17 +53,17 @@ int main()
     arma::vec val_out;
     optim::optim_opt_settings opt_params;
 
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL);
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,opt_params);
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,val_out);
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,val_out,opt_params);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,opt_params);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,val_out);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,val_out,opt_params);
 
     //
     // test 1
 
     x_1 = arma::zeros(2,1);
 
-    success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
+    success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
 
     if (success_1) {
         std::cout << "broyden_df w jacobian: test_1 completed successfully." << std::endl;
@@ -78,7 +78,7 @@ int main()
 
     x_2 = arma::zeros(2,1);
 
-    success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,NULL,zeros_test_jacob_2,NULL);
+    success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
 
     if (success_2) {
         std::cout << "broyden_df w jacobian: test_2 completed successfully." << std::endl;
@@ -91,17 +91,17 @@ int main()
     //
     // coverage tests
 
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,opt_params);
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out);
-    optim::broyden_df(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out,opt_params);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,opt_params);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out);
+    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out,opt_params);
 
     //
     // test 1
 
     x_1 = arma::zeros(2,1);
 
-    success_1 = optim::broyden(x_1,zeros_test_objfn_1,NULL);
+    success_1 = optim::broyden(x_1,zeros_test_objfn_1,nullptr);
 
     if (success_1) {
         std::cout << "broyden: test_1 completed successfully." << std::endl;
@@ -116,7 +116,7 @@ int main()
 
     x_2 = arma::zeros(2,1);
 
-    success_2 = optim::broyden(x_2,zeros_test_objfn_2,NULL);
+    success_2 = optim::broyden(x_2,zeros_test_objfn_2,nullptr);
 
     if (success_2) {
         std::cout << "broyden: test_2 completed successfully." << std::endl;
@@ -129,17 +129,17 @@ int main()
     //
     // coverage tests
 
-    optim::broyden(x_1,zeros_test_objfn_1,NULL);
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,opt_params);
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,val_out);
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,val_out,opt_params);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,opt_params);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,val_out);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,val_out,opt_params);
 
     //
     // test 1
 
     x_1 = arma::zeros(2,1);
 
-    success_1 = optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
+    success_1 = optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
 
     if (success_1) {
         std::cout << "broyden w jacobian: test_1 completed successfully." << std::endl;
@@ -154,7 +154,7 @@ int main()
 
     x_2 = arma::zeros(2,1);
 
-    success_2 = optim::broyden(x_2,zeros_test_objfn_2,NULL,zeros_test_jacob_2,NULL);
+    success_2 = optim::broyden(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
 
     if (success_2) {
         std::cout << "broyden w jacobian: test_2 completed successfully." << std::endl;
@@ -167,10 +167,10 @@ int main()
     //
     // coverage tests
 
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL);
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,opt_params);
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out);
-    optim::broyden(x_1,zeros_test_objfn_1,NULL,zeros_test_jacob_1,NULL,val_out,opt_params);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,opt_params);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out);
+    optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out,opt_params);
 
 
     return 0;
