@@ -71,15 +71,16 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         init_out_vals = x_p;
         return true;
     }
+
     //
     // begin loop
+
     int iter = 0;
-    double beta;
 
     while (err > err_tol && iter < iter_max) {
         iter++;
         //
-        beta = cg_update(grad,grad_p,d,iter,cg_method,cg_restart_threshold);
+        double beta = cg_update(grad,grad_p,d,iter,cg_method,cg_restart_threshold);
         d_p = - grad_p + beta*d;
         //
         t_init = t * (arma::dot(grad,d) / arma::dot(grad_p,d_p));
