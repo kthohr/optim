@@ -41,5 +41,11 @@ int main()
     optim::logit_inv_trans(vals_tr);
     optim::logit_inv_trans(val_tr,lb_in,ub_in);
 
+    arma::vec vals2(2,1);
+    vals2(0) = 0.0;
+    vals2(1) = 1.0;
+
+    optim::logit_trans(vals2,lb,ub); // this will trigger pars_trans.has_inf()
+
     return 0;
 }
