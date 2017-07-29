@@ -4,17 +4,6 @@
 
 #include "optim.hpp"
 
-double optim_simple_fn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
-{
-    return 1.0;
-}
-
-arma::vec optim_simple_fn_2(const arma::vec& vals_inp, void* opt_data)
-{
-    int n = vals_inp.n_elem;
-    return arma::zeros(n,1);
-}
-
 int main()
 {
     
