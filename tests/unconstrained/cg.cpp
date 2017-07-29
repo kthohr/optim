@@ -16,7 +16,7 @@ int main()
 
     opt_params.iter_max = 2000;
     opt_params.conv_failure_switch = 1;
-    opt_params.method_cg = 1;
+    opt_params.cg_method = 5;
 
     arma::vec x_1 = arma::ones(2,1);
 
@@ -78,22 +78,44 @@ int main()
     // for coverage
 
     optim::optim_opt_settings opt_settings;
-    x_1 = arma::ones(2,1);
-    opt_settings.method_cg = 3;
 
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    x_1 = arma::zeros(2,1);
+    opt_settings.cg_method = 1;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
 
-    x_1 = arma::ones(2,1);
-    opt_settings.method_cg = 4;
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    arma::cout << "cg: solution to test_2 using cg_method = 1\n" << x_1 << arma::endl;
 
-    x_1 = arma::ones(2,1);
-    opt_settings.method_cg = 5;
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    x_1 = arma::zeros(2,1);
+    opt_settings.cg_method = 2;
+
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+
+    arma::cout << "cg: solution to test_2 using cg_method = 2\n" << x_1 << arma::endl;
+
+    x_1 = arma::zeros(2,1);
+    opt_settings.cg_method = 3;
+
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+
+    arma::cout << "cg: solution to test_2 using cg_method = 3\n" << x_1 << arma::endl;
+
+    x_1 = arma::zeros(2,1);
+    opt_settings.cg_method = 4;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+
+    arma::cout << "cg: solution to test_2 using cg_method = 4\n" << x_1 << arma::endl;
+
+    x_1 = arma::zeros(2,1);
+    opt_settings.cg_method = 5;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+
+    arma::cout << "cg: solution to test_2 using cg_method = 5\n" << x_1 << arma::endl;
     
-    x_1 = arma::ones(2,1);
-    opt_settings.method_cg = 6;
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    x_1 = arma::zeros(2,1);
+    opt_settings.cg_method = 6;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+
+    arma::cout << "cg: solution to test_2 using cg_method = 6\n" << x_1 << arma::endl;
 
     double val_out;
 

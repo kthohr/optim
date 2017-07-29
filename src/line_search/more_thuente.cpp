@@ -50,10 +50,11 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     double f_step = opt_objfn(x,&grad,opt_data); // q(0)
 
     double dgrad_init = arma::dot(grad,direc);
+    
     if (dgrad_init >= 0.0) {
-        printf("line search: grad' * direc > 0.\n");
         return step;
     }
+
     double dgrad = dgrad_init;
     //
     bool bracket = false, stage_1 = true;

@@ -35,7 +35,8 @@ struct optim_opt_settings {
     double delta_nm = OPTIM_DEFAULT_NM_DELTA;
 
     // CG
-    int method_cg = OPTIM_DEFAULT_CG_METHOD;
+    int cg_method = OPTIM_DEFAULT_CG_METHOD;
+    double cg_restart_threshold = OPTIM_DEFAULT_CG_RESTART_THRESHOLD;
 
     // DE
     int de_n_gen = OPTIM_DEFAULT_DE_NGEN;

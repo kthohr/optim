@@ -1,12 +1,12 @@
 #!/bin/bash
 ## Optim tests config script
 
-while getopts b:c: option
+while getopts b:c option
 do
     case "${option}"
     in
     b) OPTIM_BUILD=${OPTARG};;
-    c) OPTIM_COVERAGE=${OPTARG};;
+    c) OPTIM_COVERAGE="y";;
     esac
 done
 
@@ -53,7 +53,7 @@ if [[ "${OPTIM_COVERAGE}" == "y" ]]; then
     echo "Optim tests: coverage build"
     OPTIM_OPT_FLAGS="-g -O0 -Wall --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
 else
-    OPTIM_OPT_FLAGS="-O3"
+    OPTIM_OPT_FLAGS="-O3 -Wall"
 fi
 
 OPTIM_SHLIB_NAME="optim"
@@ -67,9 +67,7 @@ if [[ "${OPTIM_BUILD}" == "dev" ]]; then
     OPTIM_INSTALL_PATH=${PWD}
     cd ${WDIR}
 else
-    if [[ $OSTYPE == *linux* ]] ; then
-        OPTIM_INSTALL_PATH="/usr"
-    else 
+    if [ -z ${OPTIM_INSTALL_PATH+x} ]; then
         OPTIM_INSTALL_PATH="/usr/local"
     fi
 fi

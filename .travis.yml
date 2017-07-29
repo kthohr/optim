@@ -9,12 +9,11 @@ install:
     - sudo apt-get install gfortran libblas-dev liblapack-dev
 
 script:
-  - ./configure -b dev -c y
+  - ./configure -b dev -c
   - make
   - cd ./tests
   - ./cov_setup
   - cd ..
-  - rm -rf ./src/misc/logit_transform.*
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

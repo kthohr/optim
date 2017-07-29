@@ -2,12 +2,12 @@
 ## OptimLib config script
 
 # inputs
-while getopts b:c:o: option
+while getopts b:co: option
 do
     case "${option}"
     in
     b) OPTIM_BUILD=${OPTARG};;
-    c) OPTIM_COVERAGE=${OPTARG};;
+    c) OPTIM_COVERAGE="y";;
     o) OPTIM_OPT=${OPTARG};;
     esac
 done
@@ -63,7 +63,6 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
         mkdir ${WDIR}/arma_tmp
         git clone -b unstable --single-branch https://github.com/conradsnicta/armadillo-code ${WDIR}/arma_tmp
         mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
-        # cp -a ${WDIR}/arma_tmp/include/. ${WDIR}/include
         rm -rf ${WDIR}/arma_tmp
         ARMA_INCLUDE_PATH="-I./include"
 

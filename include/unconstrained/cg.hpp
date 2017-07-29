@@ -44,6 +44,6 @@ bool cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_in
         double& value_out, optim_opt_settings& opt_params);
 
 // internal update function
-double cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const int iter, const int* method_cg_inp);
+double cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const int iter, const int cg_method_inp, const double cg_restart_threshold);
 
 #endif
