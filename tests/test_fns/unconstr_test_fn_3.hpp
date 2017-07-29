@@ -37,8 +37,8 @@ unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_dat
 {
     double obj_val = arma::dot(vals_inp,vals_inp);
     //
-    if (grad) {
-        *grad = 2.0*vals_inp;
+    if (grad_out) {
+        *grad_out = 2.0*vals_inp;
     }
     //
     return obj_val;

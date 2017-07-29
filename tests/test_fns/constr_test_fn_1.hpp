@@ -36,9 +36,9 @@ constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_da
 
     double obj_val = std::pow(x_1 - 5.0,2) + std::pow(x_2 - 4.0,2);
     //
-    if (grad) {
-        (*grad)(0) = 2.0*(x_1 - 5.0);
-        (*grad)(1) = 2.0*(x_2 - 4.0);
+    if (grad_out) {
+        (*grad_out)(0) = 2.0*(x_1 - 5.0);
+        (*grad_out)(1) = 2.0*(x_2 - 4.0);
     }
     //
     return obj_val;
@@ -52,9 +52,9 @@ constr_test_constrfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt
 
     double constr_val = -2*x_1 - x_2 + 14.0;
     //
-    if (grad) {
-        (*grad)(0) = -2.0;
-        (*grad)(1) = -1.0;
+    if (grad_out) {
+        (*grad_out)(0) = -2.0;
+        (*grad_out)(1) = -1.0;
     }
     //
     return constr_val;

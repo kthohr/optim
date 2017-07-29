@@ -97,7 +97,6 @@ fi
 
 if [[ $OSTYPE == darwin* ]] ; then
     if [[ "${OPTIM_BUILD}" == "dev" ]]; then
-        echo "Optim: dev version"
         OPTIM_SHLIB_FLAGS="-dynamiclib -install_name ${WDIR}/${OPTIM_SHLIB_NAME} -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"
     else
         OPTIM_SHLIB_FLAGS="-dynamiclib -install_name ${OPTIM_INSTALL_PATH}/lib/${OPTIM_SHLIB_NAME} -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"

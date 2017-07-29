@@ -39,9 +39,9 @@ unconstr_test_fn_2(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_dat
 
     double obj_val = 100*std::pow(x_2 - std::pow(x_1,2),2) + std::pow(1-x_1,2);
     //
-    if (grad) {
-        (*grad)(0) = -400*(x_2 - std::pow(x_1,2))*x_1 - 2*(1-x_1);
-        (*grad)(1) = 200*(x_2 - std::pow(x_1,2));
+    if (grad_out) {
+        (*grad_out)(0) = -400*(x_2 - std::pow(x_1,2))*x_1 - 2*(1-x_1);
+        (*grad_out)(1) = 200*(x_2 - std::pow(x_1,2));
     }
     //
     return obj_val;

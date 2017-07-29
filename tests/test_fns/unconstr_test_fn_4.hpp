@@ -41,9 +41,9 @@ unconstr_test_fn_4(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_dat
 
     double obj_val = std::pow(1.5 - x_1 + x_1*x_2,2) + std::pow(2.25 - x_1 + x_1*std::pow(x_2,2),2) + std::pow(2.625 - x_1 + x_1*std::pow(x_2,3),2);
     //
-    if (grad) {
-        (*grad)(0) = 2*(1.5 - x_1 + x_1*x_2)*(-1 + x_2) + 2*(2.25 - x_1 + x_1*std::pow(x_2,2))*(-1 + std::pow(x_2,2)) + 2*(2.625 - x_1 + x_1*std::pow(x_2,3))*(- 1 + std::pow(x_2,3));
-        (*grad)(1) = 2*(1.5 - x_1 + x_1*x_2)*(x_1) + 2*(2.25 - x_1 + x_1*std::pow(x_2,2))*(x_1*2*x_2) + 2*(2.625 - x_1 + x_1*std::pow(x_2,3))*(x_1*3*std::pow(x_2,2));
+    if (grad_out) {
+        (*grad_out)(0) = 2*(1.5 - x_1 + x_1*x_2)*(-1 + x_2) + 2*(2.25 - x_1 + x_1*std::pow(x_2,2))*(-1 + std::pow(x_2,2)) + 2*(2.625 - x_1 + x_1*std::pow(x_2,3))*(- 1 + std::pow(x_2,3));
+        (*grad_out)(1) = 2*(1.5 - x_1 + x_1*x_2)*(x_1) + 2*(2.25 - x_1 + x_1*std::pow(x_2,2))*(x_1*2*x_2) + 2*(2.625 - x_1 + x_1*std::pow(x_2,3))*(x_1*3*std::pow(x_2,2));
     }
     //
     return obj_val;

@@ -60,14 +60,14 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
         if (constr_val < 0.0) {
             ret = opt_objfn(vals_inp,&grad_obj,opt_data);
 
-            if (grad) {
-                *grad = grad_obj;
+            if (grad_out) {
+                *grad_out = grad_obj;
             }
         } else {
             ret = opt_objfn(vals_inp,&grad_obj,opt_data) + c_pen*(constr_val*constr_val / 2.0);
 
-            if (grad) {
-                *grad = grad_obj + c_pen*grad_constr;
+            if (grad_out) {
+                *grad_out = grad_obj + c_pen*grad_constr;
             }
         }
         //

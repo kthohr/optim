@@ -594,16 +594,16 @@ bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const 
         double ret = arma::dot(Fx,Fx)/2.0;
         std::cout << "lambda ret: " << ret << std::endl;
 
-        if (grad) {
+        if (grad_out) {
             arma::vec Fx_p, Fx_m;
             for (int jj=0; jj < n_vals; jj++) {
                 arma::vec Fx_p = opt_objfn(vals_inp + eps_diff*unit_vec(jj,n_vals),opt_data);
                 //arma::vec Fx_m = opt_objfn(vals_inp - eps_diff*unit_vec(jj,n_vals),opt_data);
                 
                 //grad(jj) = (arma::dot(Fx_p,Fx_p)/2.0 - arma::dot(Fx_m,Fx_m)/2.0) / (2*eps_diff);
-                (*grad)(jj) = (arma::dot(Fx_p,Fx_p)/2.0 - arma::dot(Fx,Fx)/2.0) / (eps_diff);
+                (*grad_out)(jj) = (arma::dot(Fx_p,Fx_p)/2.0 - arma::dot(Fx,Fx)/2.0) / (eps_diff);
             }
-            arma::cout << "lambda grad: " << (*grad).t() << arma::endl;
+            arma::cout << "lambda grad: " << (*grad_out).t() << arma::endl;
         }
         //
         return ret;

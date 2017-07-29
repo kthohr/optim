@@ -72,13 +72,13 @@ bool optim::generic_optim_int(arma::vec& init_out_vals, const arma::vec& lower_b
         //
         double ret;
         
-        if (grad) {
-            arma::vec grad_obj = *grad;
+        if (grad_out) {
+            arma::vec grad_obj = *grad_out;
             ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
             arma::mat jacob_correct = jacob_matrix_logit(vals_inp,lower_bounds,upper_bounds);
 
-            *grad = jacob_correct.t() * grad_obj; // correct gradient for transformation
+            *grad_out = jacob_correct.t() * grad_obj; // correct gradient for transformation
         } else {
             ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
         }
