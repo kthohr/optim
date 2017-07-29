@@ -30,10 +30,10 @@
 #ifndef _optim_test_fn_3_HPP
 #define _optim_test_fn_3_HPP
 
-double unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad, void* opt_data);
+double unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
 
 double
-unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
+unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     double obj_val = arma::dot(vals_inp,vals_inp);
     //

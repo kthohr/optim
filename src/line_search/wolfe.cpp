@@ -33,7 +33,7 @@
 #include "optim.hpp"
 
 // a simple update
-double optim::line_search_wolfe_simple(double t_init, const arma::vec& x, const arma::vec& d, double* c_1_inp, double* c_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
+double optim::line_search_wolfe_simple(double t_init, const arma::vec& x, const arma::vec& d, double* c_1_inp, double* c_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     int n_vals = x.n_elem;
 
@@ -84,7 +84,7 @@ double optim::line_search_wolfe_simple(double t_init, const arma::vec& x, const 
 }
 
 // cubic update
-double optim::line_search_wolfe_cubic(double t_init, const arma::vec& x, const arma::vec& d, double* c_1_inp, double* c_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
+double optim::line_search_wolfe_cubic(double t_init, const arma::vec& x, const arma::vec& d, double* c_1_inp, double* c_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     int n_vals = x.n_elem;
 

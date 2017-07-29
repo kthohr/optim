@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params)
+optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params)
 {
     // notation: 'p' stands for '+1'.
     //
@@ -97,25 +97,25 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 }
 
 bool
-optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
+optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     return cg_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
-optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
     return cg_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
-optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
+optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
     return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool
-optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
 {
     return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
 }

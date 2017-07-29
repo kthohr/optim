@@ -7,7 +7,7 @@
 
 #include "optim.hpp"
 
-double optim_simple_fn_1(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
+double optim_simple_fn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     return 1.0;
 }

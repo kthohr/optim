@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params)
+optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params)
 {
     bool success = false;
 
@@ -123,25 +123,25 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     return de_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
     return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
     return de_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
 {
     return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
 }

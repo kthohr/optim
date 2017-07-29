@@ -29,7 +29,7 @@
 #define _optim_constr_test_fn_1_HPP
 
 double
-constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
+constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
@@ -45,7 +45,7 @@ constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
 }
 
 double
-constr_test_constrfn_1(const arma::vec& vals_inp, arma::vec* grad, void* opt_data)
+constr_test_constrfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);

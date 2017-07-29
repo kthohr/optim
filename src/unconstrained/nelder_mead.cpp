@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
+optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
                        double* value_out, optim_opt_settings* opt_params)
 {
     bool success = false;
@@ -164,25 +164,25 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
 }
 
 bool
-optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data)
+optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     return nelder_mead_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
-optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
 {
     return nelder_mead_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
 }
 
 bool
-optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
+optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
     return nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool
-optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::nelder_mead(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
 {
     return nelder_mead_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
 }

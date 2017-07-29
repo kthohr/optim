@@ -29,8 +29,8 @@
 #include "optim.hpp"
 
 bool
-optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-                std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data,
+optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
+                std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
                 double* value_out, optim_opt_settings* opt_params)
 {
     // notation: 'p' stands for '+1'.
@@ -46,7 +46,7 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     arma::vec x = init_out_vals;
     //
     // lambda function that combines the objective function with the constraints
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* sumt_data)> sumt_objfn = [opt_objfn, opt_data, constr_fn, constr_data] (const arma::vec& vals_inp, arma::vec* grad, void* sumt_data) -> double {
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* sumt_data)> sumt_objfn = [opt_objfn, opt_data, constr_fn, constr_data] (const arma::vec& vals_inp, arma::vec* grad_out, void* sumt_data) -> double {
         sumt_struct *d = reinterpret_cast<sumt_struct*>(sumt_data);
         double c_pen = d->c_pen;
         //
@@ -100,31 +100,31 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 }
 
 bool
-optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-            std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data)
+optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
+            std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data)
 {
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr,nullptr);
 }
 
 bool
-optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-            std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data,
+optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
+            std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
             optim_opt_settings& opt_params)
 {
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr,&opt_params);
 }
 
 bool
-optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-            std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data,
+optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
+            std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
             double& value_out)
 {
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&value_out,nullptr);
 }
 
 bool
-optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> opt_objfn, void* opt_data,
-            std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* constr_data)> constr_fn, void* constr_data,
+optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
+            std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
             double& value_out, optim_opt_settings& opt_params)
 {
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&value_out,&opt_params);

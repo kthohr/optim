@@ -567,7 +567,7 @@ bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const 
 
     arma::mat B = arma::eye(n_vals,n_vals); // initial approx. to (inverse) Jacobian
     //
-    // std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> ls_objfn = [opt_objfn, &B] (const arma::vec& vals_inp, arma::vec* grad, void* opt_data) -> double {
+    // std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> ls_objfn = [opt_objfn, &B] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
     //     int n_vals = vals_inp.n_elem;
     //     double eps_diff = 1e-04;
 
@@ -586,7 +586,7 @@ bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const 
     //     //
     //     return ret;
     // };
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad, void* opt_data)> ls_objfn = [opt_objfn, &B] (const arma::vec& vals_inp, arma::vec* grad, void* opt_data) -> double {
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> ls_objfn = [opt_objfn, &B] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
         int n_vals = vals_inp.n_elem;
         double eps_diff = 1e-06;
 
