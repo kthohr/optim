@@ -110,7 +110,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
         // steps 4, 5, 6
 
         if (!next_iter && f_r >= simplex_fn_vals(n_vals-1)) {
-            // reflected point is still worse than xn; contract
+            // reflected point is still worse than x_n; contract
 
             // step 4, 5
 
@@ -158,6 +158,7 @@ optim::nelder_mead_int(arma::vec& init_out_vals, std::function<double (const arm
     }
     //
     arma::vec prop_out = simplex_points.row(index_min(simplex_fn_vals)).t();
+    
     error_reporting(init_out_vals,prop_out,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
     //
     return success;

@@ -40,8 +40,9 @@ struct optim_opt_settings {
 
     // DE
     int de_n_gen = OPTIM_DEFAULT_DE_NGEN;
-    double de_F = OPTIM_DEFAULT_DE_F;
-    double de_CR = OPTIM_DEFAULT_DE_CR;
+    int de_check_freq = OPTIM_DEFAULT_DE_CHECK_FREQ;
+    double de_par_F = OPTIM_DEFAULT_DE_PAR_F;
+    double de_par_CR = OPTIM_DEFAULT_DE_PAR_CR;
 };
 
 #endif

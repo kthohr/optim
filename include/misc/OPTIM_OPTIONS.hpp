@@ -56,12 +56,16 @@
     #define OPTIM_DEFAULT_DE_NGEN 2000;
 #endif
 
-#ifndef OPTIM_DEFAULT_DE_F
-    #define OPTIM_DEFAULT_DE_F 0.8;
+#ifndef OPTIM_DEFAULT_DE_CHECK_FREQ
+    #define OPTIM_DEFAULT_DE_CHECK_FREQ 20;
 #endif
 
-#ifndef OPTIM_DEFAULT_DE_CR
-    #define OPTIM_DEFAULT_DE_CR 0.9;
+#ifndef OPTIM_DEFAULT_DE_PAR_F
+    #define OPTIM_DEFAULT_DE_PAR_F 0.8;
+#endif
+
+#ifndef OPTIM_DEFAULT_DE_PAR_CR
+    #define OPTIM_DEFAULT_DE_PAR_CR 0.9;
 #endif
 
 // Nelder-Mead

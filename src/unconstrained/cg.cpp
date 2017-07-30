@@ -132,7 +132,6 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
 {
     // threshold test
     double ratio_value = std::abs( arma::dot(grad_p,grad) ) / arma::dot(grad_p,grad_p);
-    // std::cout << "cg_restart_threshold = " << cg_restart_threshold << std::endl;
 
     if ( ratio_value > cg_restart_threshold ) {
         return 0.0;
@@ -176,7 +175,7 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
         }
         //
         beta = std::max(beta,0.0); 
-        // std::cout << "beta = " << beta << std::endl;
+
         return beta;
     }
 }
