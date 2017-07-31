@@ -94,7 +94,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         if (!next_iter && f_r < simplex_fn_vals(0)) {
             // reflected point is better than the current best; try to go farther along this direction
-            x_e = centroid + par_beta*(x_r - centroid);
+            x_e = centroid + par_gamma*(x_r - centroid);
 
             f_e = opt_objfn(x_e,nullptr,opt_data);
 
@@ -116,7 +116,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             if (f_r < simplex_fn_vals(n_vals)) {
                 // outside contraction
-                x_oc = centroid + par_gamma*(x_r - centroid);
+                x_oc = centroid + par_beta*(x_r - centroid);
 
                 f_oc = opt_objfn(x_oc,nullptr,opt_data);
 
@@ -126,7 +126,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 }
             } else {
                 // inside contraction
-                x_ic = centroid - par_gamma*(x_r - centroid);
+                x_ic = centroid - par_beta*(x_r - centroid);
 
                 f_ic = opt_objfn(x_ic,nullptr,opt_data);
 

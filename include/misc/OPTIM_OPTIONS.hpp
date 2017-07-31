@@ -67,19 +67,19 @@
 // Nelder-Mead
 
 #ifndef OPTIM_DEFAULT_NM_PAR_ALPHA
-    #define OPTIM_DEFAULT_NM_PAR_ALPHA 1.0;
+    #define OPTIM_DEFAULT_NM_PAR_ALPHA 1.0; // reflection parameter
 #endif
 
 #ifndef OPTIM_DEFAULT_NM_PAR_BETA
-    #define OPTIM_DEFAULT_NM_PAR_BETA 2.0;
+    #define OPTIM_DEFAULT_NM_PAR_BETA 0.5; // contraction parameter
 #endif
 
 #ifndef OPTIM_DEFAULT_NM_PAR_GAMMA
-    #define OPTIM_DEFAULT_NM_PAR_GAMMA 0.5;
+    #define OPTIM_DEFAULT_NM_PAR_GAMMA 2.0; // expansion parameter
 #endif
 
 #ifndef OPTIM_DEFAULT_NM_PAR_DELTA
-    #define OPTIM_DEFAULT_NM_PAR_DELTA 0.5;
+    #define OPTIM_DEFAULT_NM_PAR_DELTA 0.5; // shrinkage parameter
 #endif
 
 // SUMT
