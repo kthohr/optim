@@ -41,7 +41,7 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
     const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
     
-    const double eta = (opt_params) ? opt_params->eta : OPTIM_DEFAULT_PENALTY_GROWTH; // growth of penalty parameter
+    const double par_eta = (opt_params) ? opt_params->sumt_par_eta : OPTIM_DEFAULT_SUMT_PENALTY_GROWTH; // growth of penalty parameter
     //
     arma::vec x = init_out_vals;
     //
@@ -90,7 +90,7 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
         bfgs(x_p,sumt_objfn,&sumt_data);
         err = arma::norm(x_p - x,2);
         //
-        sumt_data.c_pen = eta*sumt_data.c_pen; // increase penalization parameter value
+        sumt_data.c_pen = par_eta*sumt_data.c_pen; // increase penalization parameter value
         x = x_p;
     }
     //

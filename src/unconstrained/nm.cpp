@@ -39,10 +39,10 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const double err_tol = (opt_params) ? opt_params->err_tol  : OPTIM_DEFAULT_ERR_TOL;
 
     // expansion / contraction parameters
-    const double alpha = (opt_params) ? opt_params->alpha_nm : OPTIM_DEFAULT_NM_ALPHA;
-    const double beta  = (opt_params) ? opt_params->beta_nm  : OPTIM_DEFAULT_NM_BETA;
-    const double gamma = (opt_params) ? opt_params->gamma_nm : OPTIM_DEFAULT_NM_GAMMA;
-    const double delta = (opt_params) ? opt_params->delta_nm : OPTIM_DEFAULT_NM_DELTA;
+    const double par_alpha = (opt_params) ? opt_params->nm_par_alpha : OPTIM_DEFAULT_NM_PAR_ALPHA;
+    const double par_beta  = (opt_params) ? opt_params->nm_par_beta  : OPTIM_DEFAULT_NM_PAR_BETA;
+    const double par_gamma = (opt_params) ? opt_params->nm_par_gamma : OPTIM_DEFAULT_NM_PAR_GAMMA;
+    const double par_delta = (opt_params) ? opt_params->nm_par_delta : OPTIM_DEFAULT_NM_PAR_DELTA;
     //
     const int n_vals = init_out_vals.n_elem;
     arma::vec simplex_fn_vals(n_vals+1);
@@ -80,7 +80,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         centroid = arma::trans(arma::sum(simplex_points.rows(0,n_vals-1),0)) / (double) n_vals;
 
-        x_r = centroid + alpha*(centroid - simplex_points.row(n_vals).t());
+        x_r = centroid + par_alpha*(centroid - simplex_points.row(n_vals).t());
 
         f_r = opt_objfn(x_r,nullptr,opt_data);
 
@@ -94,7 +94,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         if (!next_iter && f_r < simplex_fn_vals(0)) {
             // reflected point is better than the current best; try to go farther along this direction
-            x_e = centroid + beta*(x_r - centroid);
+            x_e = centroid + par_beta*(x_r - centroid);
 
             f_e = opt_objfn(x_e,nullptr,opt_data);
 
@@ -116,7 +116,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             if (f_r < simplex_fn_vals(n_vals)) {
                 // outside contraction
-                x_oc = centroid + gamma*(x_r - centroid);
+                x_oc = centroid + par_gamma*(x_r - centroid);
 
                 f_oc = opt_objfn(x_oc,nullptr,opt_data);
 
@@ -126,7 +126,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 }
             } else {
                 // inside contraction
-                x_ic = centroid - gamma*(x_r - centroid);
+                x_ic = centroid - par_gamma*(x_r - centroid);
 
                 f_ic = opt_objfn(x_ic,nullptr,opt_data);
 
@@ -140,7 +140,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             if (!next_iter) {
                 // neither outside nor inside contraction was acceptable; shrink the simplex toward x(0)
                 for (int i=1; i < n_vals + 1; i++) {
-                    simplex_points.row(i) = simplex_points.row(0) + delta*(simplex_points.row(i) - simplex_points.row(0));
+                    simplex_points.row(i) = simplex_points.row(0) + par_delta*(simplex_points.row(i) - simplex_points.row(0));
                 }
             }
 
