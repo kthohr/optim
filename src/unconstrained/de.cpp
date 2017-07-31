@@ -50,12 +50,12 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     double prop_objfn_val = 0.0;
     arma::vec X_prop = init_out_vals, past_objfn_vals(N), rand_unif(n_vals);
-    arma::mat X(N,n_vals);
+    arma::mat X(N,n_vals), X_next(N,n_vals);
 
     for (int i=0; i < N; i++) {
-        X.row(i) = init_out_vals.t() + arma::randu(1,n_vals) - 0.5; // initial values + U[-0.5,0.5]
+        X_next.row(i) = init_out_vals.t() + arma::randu(1,n_vals) - 0.5; // initial values + U[-0.5,0.5]
 
-        prop_objfn_val = opt_objfn(X.row(i).t(),nullptr,opt_data);
+        prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
 
         if (std::isnan(prop_objfn_val)) {
             prop_objfn_val = BIG_POS_VAL;
@@ -72,16 +72,18 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     while (err > err_tol && iter < n_gen) {
         iter++;
         //
+        X = X_next;
+
         for (int i=0; i < N; i++) {
-            do { // 'r_1' in paper's notation
+            do { // 'r_2' in paper's notation
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
             } while(c_1==i);
 
-            do { // 'r_2' in paper's notation
+            do { // 'r_3' in paper's notation
                 c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
             } while(c_2==i || c_2==c_1);
 
-            do { // 'r_3' in paper's notation
+            do { // 'r_1' in paper's notation
                 c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
             } while(c_3==i || c_3==c_1 || c_3==c_2);
 
@@ -103,7 +105,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             prop_objfn_val = opt_objfn(X_prop,nullptr,opt_data);
             
             if (prop_objfn_val <= past_objfn_vals(i)) {
-                X.row(i) = X_prop.t();
+                X_next.row(i) = X_prop.t();
                 past_objfn_vals(i) = prop_objfn_val;
             } else {
                 X_prop = X.row(i).t();
@@ -111,13 +113,13 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         }
         //
         if (iter%check_freq == 0) {
-            err = std::abs(past_objfn_vals.min() - best_objfn_val);
+            err = std::abs(past_objfn_vals.min() - best_objfn_val) / (std::abs(best_objfn_val) + 1E-08);
             best_objfn_val = past_objfn_vals.min();
         }
     }
     //
     arma::uword min_i = past_objfn_vals.index_min();
-    X_prop = X.row(min_i).t();
+    X_prop = X_next.row(min_i).t();
 
     error_reporting(init_out_vals,X_prop,opt_objfn,opt_data,success,value_out,err,err_tol,iter,n_gen,conv_failure_switch);
     //
