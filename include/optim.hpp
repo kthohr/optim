@@ -40,7 +40,7 @@ namespace optim
     #include "unconstrained/bfgs.hpp"
     #include "unconstrained/cg.hpp"
     #include "unconstrained/de.hpp"
-    #include "unconstrained/nelder_mead.hpp"
+    #include "unconstrained/nm.hpp"
 
     // constrained optimization
     #include "constrained/sumt.hpp"

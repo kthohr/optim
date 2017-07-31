@@ -38,7 +38,7 @@ OBJECTS_OPTIM_MISC= $(SOURCES_OPTIM_MISC:.cpp=.o)
 SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp
 OBJECTS_OPTIM_LS= $(SOURCES_OPTIM_LS:.cpp=.o)
 
-SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/nelder_mead.cpp
+SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/nm.cpp
 OBJECTS_OPTIM_UNCONSTR= $(SOURCES_OPTIM_UNCONSTR:.cpp=.o)
 
 SOURCES_OPTIM_CONSTR= $(OPTIM_SRC_DIR)/constrained/sumt.cpp
