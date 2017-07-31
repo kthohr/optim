@@ -20,16 +20,17 @@
 // simple constrained optim problem
 // 
 // f(x) = (x_1 - 5)^2 + (x_2 - 4)^2
-// g(x) = -2*x_1 - x_2 + 14 <= 0
+// g_1(x) = -2*x_1 - x_2 + 14 <= 0
+// g_2(x) = x_1 + x_2 - 9 <= 0
 // 
 // solution is: (5,4)
 //
 
-#ifndef _optim_constr_test_fn_1_HPP
-#define _optim_constr_test_fn_1_HPP
+#ifndef _optim_constr_test_fn_2_HPP
+#define _optim_constr_test_fn_2_HPP
 
 double
-constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+constr_test_objfn_2(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
@@ -45,19 +46,22 @@ constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_da
 }
 
 arma::vec
-constr_test_constrfn_1(const arma::vec& vals_inp, arma::mat* jacob_out, void* opt_data)
+constr_test_constrfn_2(const arma::vec& vals_inp, arma::mat* jacob_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
-    arma::vec constr_vals(1);
+    arma::vec constr_vals(2);
     constr_vals(0) = -2*x_1 - x_2 + 14.0;
+    constr_vals(1) = x_1 + x_2 - 9.0;
     //
     if (jacob_out) {
-        jacob_out->set_size(1,2);
+        jacob_out->set_size(2,2);
 
         (*jacob_out)(0,0) = -2.0;
         (*jacob_out)(0,1) = -1.0;
+        (*jacob_out)(1,0) = 1.0;
+        (*jacob_out)(1,1) = 1.0;
     }
     //
     return constr_vals;

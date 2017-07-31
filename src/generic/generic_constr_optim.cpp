@@ -29,34 +29,34 @@
 #include "optim.hpp"
 
 bool optim::generic_constr_optim_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                     std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                     std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                      double* value_out, optim_opt_settings* opt_params)
 {
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,value_out,opt_params);
 }
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data)
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data)
 {
     return generic_constr_optim_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr,nullptr);
 }
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                  optim_opt_settings& opt_params)
 {
     return generic_constr_optim_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr,&opt_params);
 }
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                  double& value_out)
 {
     return generic_constr_optim_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&value_out,nullptr);
 }
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                  double& value_out, optim_opt_settings& opt_params)
 {
     return generic_constr_optim_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&value_out,&opt_params);
@@ -67,7 +67,7 @@ bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double 
 
 bool optim::generic_constr_optim_int(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
 							         std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                     std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                     std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                      double* value_out, optim_opt_settings* opt_params)
 {
     // notation: 'p' stands for '+1'.
@@ -86,23 +86,32 @@ bool optim::generic_constr_optim_int(arma::vec& init_out_vals, const arma::vec& 
     std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* sumt_data)> sumt_objfn = [opt_objfn, opt_data, constr_fn, constr_data] (const arma::vec& vals_inp, arma::vec* grad_out, void* sumt_data) -> double {
         sumt_struct *d = reinterpret_cast<sumt_struct*>(sumt_data);
         double c_pen = d->c_pen;
-        //
+        
         int n_vals = vals_inp.n_elem;
-        arma::vec grad_obj(n_vals), grad_constr(n_vals);
+        arma::vec grad_obj(n_vals);
+        arma::mat jacob_constr;
         //
-        //double ret = opt_objfn(vals_inp,grad_obj,opt_data) + c_pen*(std::pow(std::max(0.0,constr_fn(vals_inp,grad_constr,constr_data)),2) / 2.0);
-        double ret = 1E06;
-        double constr_val = constr_fn(vals_inp,&grad_constr,constr_data);
+        double ret = 1E08;
 
-        if (constr_val < 0.0) {
-            ret = opt_objfn(vals_inp,&grad_obj,opt_data);
+        arma::vec constr_vals = constr_fn(vals_inp,&jacob_constr,constr_data);
+        arma::uvec z_inds = arma::find(constr_vals <= 0.0);
+
+        constr_vals.elem(z_inds).zeros();
+        jacob_constr.rows(z_inds).zeros();
+
+        double constr_valsq = arma::dot(constr_vals,constr_vals);
+
+        if (constr_valsq > 0) {
+            ret = opt_objfn(vals_inp,&grad_obj,opt_data) + c_pen*(constr_valsq / 2.0);
+
             if (grad_out) {
-                *grad_out = grad_obj;
+                *grad_out = grad_obj + c_pen*arma::trans(arma::sum(jacob_constr,0));
             }
         } else {
-            ret = opt_objfn(vals_inp,&grad_obj,opt_data) + c_pen*(constr_val*constr_val / 2.0);
+            ret = opt_objfn(vals_inp,&grad_obj,opt_data);
+
             if (grad_out) {
-                *grad_out = grad_obj + c_pen*grad_constr;
+                *grad_out = grad_obj;
             }
         }
         //
@@ -136,14 +145,14 @@ bool optim::generic_constr_optim_int(arma::vec& init_out_vals, const arma::vec& 
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
 						         std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data)
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data)
 {
     return generic_constr_optim_int(init_out_vals,lower_bounds,upper_bounds,opt_objfn,opt_data,constr_fn,constr_data,nullptr,nullptr);
 }
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
 						         std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                  optim_opt_settings& opt_params)
 {
     return generic_constr_optim_int(init_out_vals,lower_bounds,upper_bounds,opt_objfn,opt_data,constr_fn,constr_data,nullptr,&opt_params);
@@ -151,7 +160,7 @@ bool optim::generic_constr_optim(arma::vec& init_out_vals, const arma::vec& lowe
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
 					             std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                  double& value_out)
 {
     return generic_constr_optim_int(init_out_vals,lower_bounds,upper_bounds,opt_objfn,opt_data,constr_fn,constr_data,&value_out,nullptr);
@@ -159,7 +168,7 @@ bool optim::generic_constr_optim(arma::vec& init_out_vals, const arma::vec& lowe
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
 					             std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                                 std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* constr_data)> constr_fn, void* constr_data,
+                                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
                                  double& value_out, optim_opt_settings& opt_params)
 {
     return generic_constr_optim_int(init_out_vals,lower_bounds,upper_bounds,opt_objfn,opt_data,constr_fn,constr_data,&value_out,&opt_params);

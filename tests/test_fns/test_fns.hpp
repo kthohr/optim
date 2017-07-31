@@ -26,6 +26,7 @@
 #include "unconstr_test_fn_5.hpp"
 
 #include "constr_test_fn_1.hpp"
+#include "constr_test_fn_2.hpp"
 
 #include "zeros_test_fn_1.hpp"
 #include "zeros_test_fn_2.hpp"
