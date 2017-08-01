@@ -77,31 +77,21 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
                 *grad_out = grad_obj;
             }
         }
-
-        // if (constr_val < 0.0) {
-        //     ret = opt_objfn(vals_inp,&grad_obj,opt_data);
-
-        //     if (grad_out) {
-        //         *grad_out = grad_obj;
-        //     }
-        // } else {
-        //     ret = opt_objfn(vals_inp,&grad_obj,opt_data) + c_pen*(constr_val*constr_val / 2.0);
-
-        //     if (grad_out) {
-        //         *grad_out = grad_obj + c_pen*grad_constr;
-        //     }
-        // }
         //
         return ret;
     };
+
     //
     // initialization
+
     sumt_struct sumt_data;
     sumt_data.c_pen = 1.0;
 
     arma::vec x_p = x;
+
     //
     // begin loop
+    
     int iter = 0;
     double err = 2*err_tol;
 

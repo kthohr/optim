@@ -23,7 +23,7 @@
  * 11/28/2014
  *
  * This version:
- * 07/19/2017
+ * 07/31/2017
  */
 
 #include "optim.hpp"
@@ -35,11 +35,12 @@ arma::vec optim::logit_trans(const arma::vec& pars, const arma::vec& lower_bound
 	//
 	if (pars_trans.has_inf()) {
 		arma::uvec inf_ind = arma::find_nonfinite(pars_trans);
-		int n_inf = inf_ind.n_elem;
-		double small_num = 1E-08;
+		const int n_inf = inf_ind.n_elem;
+		const double small_num = 1E-08;
 		
 		for (int i=0; i < n_inf; i++) {
 			int inf_ind_i = inf_ind(i);
+
 			if (pars_trans(inf_ind_i) < 0) {
 				pars_trans(inf_ind_i) = std::log((pars(inf_ind_i) + small_num - lower_bounds(inf_ind_i))/(upper_bounds(inf_ind_i) - pars(inf_ind_i) - small_num));
 			} else {

@@ -16,21 +16,32 @@
   ##
   ################################################################################*/
 
-#ifndef OPTIMLIB_TEST_INCLUDES
-#define OPTIMLIB_TEST_INCLUDES
+//
+// this example is from
+// https://en.wikipedia.org/wiki/Test_functions_for_optimization
+//
+// Ackley's function:
+//
+// f(x) = -20*exp(-0.2*sqrt(0.5*(x^2 + y^2))) - exp(0.5*(cos(2*pi*x) + cos(2*pi*y))) + exp(1) + 20
+// 
+// solution is: (0,0)
+//
 
-#include "unconstr_test_fn_1.hpp"
-#include "unconstr_test_fn_2.hpp"
-#include "unconstr_test_fn_3.hpp"
-#include "unconstr_test_fn_4.hpp"
-#include "unconstr_test_fn_5.hpp"
-#include "unconstr_test_fn_6.hpp"
-#include "unconstr_test_fn_7.hpp"
+#ifndef _optim_test_fn_7_HPP
+#define _optim_test_fn_7_HPP
 
-#include "constr_test_fn_1.hpp"
-#include "constr_test_fn_2.hpp"
+double unconstr_test_fn_7(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
 
-#include "zeros_test_fn_1.hpp"
-#include "zeros_test_fn_2.hpp"
+double
+unconstr_test_fn_7(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+{
+    const double x = vals_inp(0);
+    const double y = vals_inp(1);
+    const double pi = arma::datum::pi;
+
+    double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + std::exp(1) + 20;
+    //
+    return obj_val;
+}
 
 #endif
