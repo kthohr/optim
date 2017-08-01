@@ -69,6 +69,23 @@ int main()
     arma::cout << "de: solution to test_4:\n" << x_4 << arma::endl;
 
     //
+    // test 6
+    unconstr_test_fn_6_data test_6_data;
+    test_6_data.A = 10;
+
+    arma::vec x_6 = arma::ones(2,1);
+
+    bool success_6 = optim::de(x_6,unconstr_test_fn_6,&test_6_data);
+
+    if (success_6) {
+        std::cout << "de: test_6 completed successfully." << std::endl;
+    } else {
+        std::cout << "de: test_6 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "de: solution to test_6:\n" << x_6 << arma::endl;
+
+    //
     // for coverage
 
     optim::optim_opt_settings opt_settings;

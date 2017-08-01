@@ -20,30 +20,35 @@
 // this example is from
 // https://en.wikipedia.org/wiki/Test_functions_for_optimization
 //
-// Booth's function:
+// Rastrigin function:
 //
-// f(x) = (x_1 + 2*x_2 - 7)^2 + (2*x + y - 5)^2
-// s.t. -10 <= x_1, x_2 <= 10
+// f(x) = A*n + sum_{i=1}^n (x_i^2 - A cos(2*pi*x_i))
+// where A = 10
 // 
-// solution is: (1,3)
+// solution is: (0,0)
 //
 
-#ifndef _optim_test_fn_5_HPP
-#define _optim_test_fn_5_HPP
+#ifndef _optim_test_fn_6_HPP
+#define _optim_test_fn_6_HPP
 
-double unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
+struct unconstr_test_fn_6_data {
+    double A;
+};
+
+double unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
 
 double
-unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
-    double x_1 = vals_inp(0);
-    double x_2 = vals_inp(1);
+    const int n = vals_inp.n_elem;
 
-    double obj_val = std::pow(x_1 + 2*x_2 - 7.0,2) + std::pow(2*x_1 + x_2 - 5.0,2);
+    unconstr_test_fn_6_data* objfn_data = reinterpret_cast<unconstr_test_fn_6_data*>(opt_data);
+    const double A = objfn_data->A;
+
+    double obj_val = A*n + arma::accu( arma::pow(vals_inp,2) - A*arma::cos(2*arma::datum::pi*vals_inp) );
     //
     if (grad_out) {
-        (*grad_out)(0) = 2*(x_1 + 2*x_2 - 7.0) + 2*(2*x_1 + x_2 - 5.0)*2;
-        (*grad_out)(1) = 2*(x_1 + 2*x_2 - 7.0)*2 + 2*(2*x_1 + x_2 - 5.0);
+        *grad_out = 2*vals_inp + A*2*arma::datum::pi*arma::sin(2*arma::datum::pi*vals_inp);
     }
     //
     return obj_val;

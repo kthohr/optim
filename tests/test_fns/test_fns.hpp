@@ -24,6 +24,7 @@
 #include "unconstr_test_fn_3.hpp"
 #include "unconstr_test_fn_4.hpp"
 #include "unconstr_test_fn_5.hpp"
+#include "unconstr_test_fn_6.hpp"
 
 #include "constr_test_fn_1.hpp"
 #include "constr_test_fn_2.hpp"
