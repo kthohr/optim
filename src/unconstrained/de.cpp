@@ -23,7 +23,7 @@
  * 12/19/2016
  *
  * This version:
- * 07/19/2017
+ * 07/31/2017
  */
 
 #include "optim.hpp"
@@ -39,14 +39,12 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
 
     const int n_gen = (opt_params) ? opt_params->de_n_gen : OPTIM_DEFAULT_DE_NGEN;
-    const int check_freq = (opt_params) ? opt_params->de_check_freq : 20;
+    const int check_freq = (opt_params) ? opt_params->de_check_freq : OPTIM_DEFAULT_DE_CHECK_FREQ;
     const double par_F  = (opt_params) ? opt_params->de_par_F  : OPTIM_DEFAULT_DE_PAR_F; // tuning parameters
     const double par_CR = (opt_params) ? opt_params->de_par_CR : OPTIM_DEFAULT_DE_PAR_CR;
     //
     const int n_vals = init_out_vals.n_elem;
     const int N = n_vals*10;
-
-    int c_1, c_2, c_3, j, k;
     //
     double prop_objfn_val = 0.0;
     arma::vec X_prop = init_out_vals, past_objfn_vals(N), rand_unif(n_vals);
@@ -75,6 +73,9 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         X = X_next;
 
         for (int i=0; i < N; i++) {
+
+            int c_1, c_2, c_3;
+
             do { // 'r_2' in paper's notation
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
             } while(c_1==i);
@@ -89,16 +90,15 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             //
 
-            j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+            int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
             rand_unif = arma::randu(n_vals);
-            k = 0;
-            do {
-                X_prop(j) = X(c_3,j) + par_F*(X(c_1,j) - X(c_2,j));
 
-                j = (j+1)%n_vals;
-                k++;
-            } while((k < n_vals) && (rand_unif(k) < par_CR));
+            for (int k=0; k < n_vals; k++) {
+                if ( (rand_unif(k) < par_CR) || k == j ) {
+                    X_prop(k) = X(c_3,k) + par_F*(X(c_1,k) - X(c_2,k));
+                }
+            }
 
             //
 
