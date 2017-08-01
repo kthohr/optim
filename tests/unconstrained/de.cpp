@@ -100,6 +100,20 @@ int main()
     arma::cout << "de: solution to test_7:\n" << x_7 << arma::endl;
 
     //
+    // test 8
+    arma::vec x_8 = arma::ones(2,1);
+
+    bool success_8 = optim::de(x_8,unconstr_test_fn_8,nullptr);
+
+    if (success_8) {
+        std::cout << "de: test_8 completed successfully." << std::endl;
+    } else {
+        std::cout << "de: test_8 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "de: solution to test_8:\n" << x_8 << arma::endl;
+
+    //
     // for coverage
 
     optim::optim_opt_settings opt_settings;

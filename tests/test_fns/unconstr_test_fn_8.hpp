@@ -16,22 +16,32 @@
   ##
   ################################################################################*/
 
-#ifndef OPTIMLIB_TEST_INCLUDES
-#define OPTIMLIB_TEST_INCLUDES
+//
+// this example is from
+// https://en.wikipedia.org/wiki/Test_functions_for_optimization
+//
+// Levi function:
+//
+// f(x) = (sin(3*pi*x))^2 + (x-1)^2 (1 + (sin(3*pi*y))^2) + (y-1)^2 (1 + (sin(2*pi*x))^2)
+// 
+// solution is: (1,1)
+//
 
-#include "unconstr_test_fn_1.hpp"
-#include "unconstr_test_fn_2.hpp"
-#include "unconstr_test_fn_3.hpp"
-#include "unconstr_test_fn_4.hpp"
-#include "unconstr_test_fn_5.hpp"
-#include "unconstr_test_fn_6.hpp"
-#include "unconstr_test_fn_7.hpp"
-#include "unconstr_test_fn_8.hpp"
+#ifndef _optim_test_fn_8_HPP
+#define _optim_test_fn_8_HPP
 
-#include "constr_test_fn_1.hpp"
-#include "constr_test_fn_2.hpp"
+double unconstr_test_fn_8(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
 
-#include "zeros_test_fn_1.hpp"
-#include "zeros_test_fn_2.hpp"
+double
+unconstr_test_fn_8(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+{
+    const double x = vals_inp(0);
+    const double y = vals_inp(1);
+    const double pi = arma::datum::pi;
+
+    double obj_val = std::pow( std::sin(3*pi*x), 2) + std::pow(x-1,2)*(1 + std::pow( std::sin(3*pi*y), 2)) + std::pow(y-1,2)*(1 + std::pow( std::sin(2*pi*x), 2));
+    //
+    return obj_val;
+}
 
 #endif
