@@ -47,9 +47,9 @@ unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_dat
 
     double obj_val = A*n + arma::accu( arma::pow(vals_inp,2) - A*arma::cos(2*arma::datum::pi*vals_inp) );
     //
-    if (grad_out) {
-        *grad_out = 2*vals_inp + A*2*arma::datum::pi*arma::sin(2*arma::datum::pi*vals_inp);
-    }
+    // if (grad_out) {
+    //     *grad_out = 2*vals_inp + A*2*arma::datum::pi*arma::sin(2*arma::datum::pi*vals_inp);
+    // }
     //
     return obj_val;
 }
