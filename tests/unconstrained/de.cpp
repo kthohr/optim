@@ -70,12 +70,16 @@ int main()
 
     //
     // test 6
+    optim::optim_opt_settings opt_settings_6;
+    // opt_settings_6.de_rand_F = true; // randomize F between [0.5,1] at each generation
+    opt_settings_6.de_check_freq=100;
+
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
 
-    arma::vec x_6 = arma::ones(2,1);
+    arma::vec x_6 = arma::ones(2,1) + 1.0;
 
-    bool success_6 = optim::de(x_6,unconstr_test_fn_6,&test_6_data);
+    bool success_6 = optim::de(x_6,unconstr_test_fn_6,&test_6_data,opt_settings_6);
 
     if (success_6) {
         std::cout << "de: test_6 completed successfully." << std::endl;
@@ -101,7 +105,7 @@ int main()
 
     //
     // test 8
-    arma::vec x_8 = arma::ones(2,1);
+    arma::vec x_8 = arma::zeros(2,1);
 
     bool success_8 = optim::de(x_8,unconstr_test_fn_8,nullptr);
 
@@ -123,6 +127,12 @@ int main()
     optim::de(x_1,unconstr_test_fn_1,nullptr,opt_settings);
     optim::de(x_1,unconstr_test_fn_1,nullptr,val_out);
     optim::de(x_1,unconstr_test_fn_1,nullptr,val_out,opt_settings);
+
+    opt_settings.de_rand_F = true; // randomize F between [0.5,1] at each generation
+    x_7 = arma::ones(2,1) + 1.0;
+    optim::de(x_7,unconstr_test_fn_7,nullptr,opt_settings);
+
+    arma::cout << "de: solution to test_7:\n" << x_7 << arma::endl;
 
     return 0;
 }

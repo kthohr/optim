@@ -37,6 +37,7 @@ struct optim_opt_settings {
     int de_check_freq = OPTIM_DEFAULT_DE_CHECK_FREQ;
     double de_par_F = OPTIM_DEFAULT_DE_PAR_F;
     double de_par_CR = OPTIM_DEFAULT_DE_PAR_CR;
+    bool de_rand_F = OPTIM_DEFAULT_DE_RAND_F;
 
     // Nelder-Mead
     double nm_par_alpha = OPTIM_DEFAULT_NM_PAR_ALPHA;

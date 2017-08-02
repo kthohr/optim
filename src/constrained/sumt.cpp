@@ -57,10 +57,12 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
         double ret = 1E08;
 
         arma::vec constr_vals = constr_fn(vals_inp,&jacob_constr,constr_data);
-        arma::uvec z_inds = arma::find(constr_vals <= 0.0);
+        arma::uvec z_inds = arma::find(constr_vals <= 0);
 
-        constr_vals.elem(z_inds).zeros();
-        jacob_constr.rows(z_inds).zeros();
+        if (z_inds.n_elem > 0) {
+            constr_vals.elem(z_inds).zeros();
+            jacob_constr.rows(z_inds).zeros();
+        }
 
         double constr_valsq = arma::dot(constr_vals,constr_vals);
 
@@ -99,7 +101,9 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
         iter++;
         //
         bfgs(x_p,sumt_objfn,&sumt_data);
-        err = arma::norm(x_p - x,2);
+        if (iter % 10 == 0) {
+            err = arma::norm(x_p - x,2);
+        }
         //
         sumt_data.c_pen = par_eta*sumt_data.c_pen; // increase penalization parameter value
         x = x_p;

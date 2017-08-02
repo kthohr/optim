@@ -40,14 +40,15 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     const int n_gen = (opt_params) ? opt_params->de_n_gen : OPTIM_DEFAULT_DE_NGEN;
     const int check_freq = (opt_params) ? opt_params->de_check_freq : OPTIM_DEFAULT_DE_CHECK_FREQ;
-    const double par_F  = (opt_params) ? opt_params->de_par_F  : OPTIM_DEFAULT_DE_PAR_F; // tuning parameters
+    double par_F  = (opt_params) ? opt_params->de_par_F  : OPTIM_DEFAULT_DE_PAR_F; // tuning parameters
     const double par_CR = (opt_params) ? opt_params->de_par_CR : OPTIM_DEFAULT_DE_PAR_CR;
+    const bool rand_F = (opt_params) ? opt_params->de_rand_F : OPTIM_DEFAULT_DE_RAND_F;
     //
     const int n_vals = init_out_vals.n_elem;
     const int N = n_vals*10;
     //
     double prop_objfn_val = 0.0;
-    arma::vec X_prop = init_out_vals, past_objfn_vals(N), rand_unif(n_vals);
+    arma::vec X_prop = init_out_vals, past_objfn_vals(N);
     arma::mat X(N,n_vals), X_next(N,n_vals);
 
     for (int i=0; i < N; i++) {
@@ -72,6 +73,9 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         //
         X = X_next;
 
+#ifdef OPTIM_OMP
+        #pragma omp parallel for firstprivate(prop_objfn_val,X_prop) 
+#endif
         for (int i=0; i < N; i++) {
 
             int c_1, c_2, c_3;
@@ -92,11 +96,13 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
-            rand_unif = arma::randu(n_vals);
+            arma::vec rand_unif = arma::randu(n_vals);
 
             for (int k=0; k < n_vals; k++) {
                 if ( (rand_unif(k) < par_CR) || k == j ) {
                     X_prop(k) = X(c_3,k) + par_F*(X(c_1,k) - X(c_2,k));
+                } else {
+                    X_prop(k) = X(i,k);
                 }
             }
 
@@ -107,11 +113,13 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             if (prop_objfn_val <= past_objfn_vals(i)) {
                 X_next.row(i) = X_prop.t();
                 past_objfn_vals(i) = prop_objfn_val;
-            } else {
-                X_prop = X.row(i).t();
             }
         }
         //
+        if (rand_F) {
+            par_F = 0.5*arma::as_scalar(arma::randu()) + 0.5;
+        }
+
         if (iter%check_freq == 0) {
             err = std::abs(past_objfn_vals.min() - best_objfn_val) / (std::abs(best_objfn_val) + 1E-08);
             best_objfn_val = past_objfn_vals.min();

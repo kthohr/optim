@@ -36,6 +36,19 @@ int main()
 
     arma::cout << "sumt: solution to test_2:\n" << x_2 << arma::endl;
 
+    // this is particularly troublesome
+    arma::vec x_3 = arma::zeros(2,1) + 1.2;
+
+    bool success_3 = optim::sumt(x_3,constr_test_objfn_3,nullptr,constr_test_constrfn_3,nullptr);
+
+    if (success_3) {
+        std::cout << "sumt: test_3 completed successfully." << std::endl;
+    } else {
+        std::cout << "sumt: test_3 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "sumt: solution to test_3:\n" << x_3 << arma::endl;
+
     //
     // coverage tests
 

@@ -64,6 +64,10 @@
     #define OPTIM_DEFAULT_DE_PAR_CR 0.9;
 #endif
 
+#ifndef OPTIM_DEFAULT_DE_RAND_F
+    #define OPTIM_DEFAULT_DE_RAND_F false;
+#endif
+
 // Nelder-Mead
 
 #ifndef OPTIM_DEFAULT_NM_PAR_ALPHA
@@ -85,5 +89,5 @@
 // SUMT
 
 #ifndef OPTIM_DEFAULT_SUMT_PENALTY_GROWTH
-    #define OPTIM_DEFAULT_SUMT_PENALTY_GROWTH 2.0;
+    #define OPTIM_DEFAULT_SUMT_PENALTY_GROWTH 10.0;
 #endif

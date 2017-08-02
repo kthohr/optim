@@ -2,13 +2,13 @@
 ## OptimLib config script
 
 # inputs
-while getopts b:co: option
-do
-    case "${option}"
-    in
-    b) OPTIM_BUILD=${OPTARG};;
-    c) OPTIM_COVERAGE="y";;
-    o) OPTIM_OPT=${OPTARG};;
+while getopts :b:c:m:op option; do
+    case "${option}" in
+        b) OPTIM_BUILD=${OPTARG};;
+        c) OPTIM_COVERAGE="y";;
+        m) OPTIM_MATRIX_OPS=${OPTARG};;
+        o) OPTIM_OPT=${OPTARG};;
+        p) OPTIM_PARALLEL="y";;
     esac
 done
 
@@ -81,6 +81,11 @@ else
     else
         OPTIM_OPT_FLAGS="-O3 -Wall"
     fi
+
+    if [[ "${OPTIM_PARALLEL}" == "y" ]]; then
+        echo "Optim: using OpenMP"
+        OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -fopenmp -DOPTIM_OMP"
+    fi
 fi
 
 # shared library names
@@ -116,10 +121,20 @@ else
     OPTIM_BLAS_LAPACK="-lblas -llapack"
 fi
 
+if [[ !(-z ${OPTIM_MATRIX_OPS+x}) ]]; then
+    OPTIM_BLAS_LAPACK="${OPTIM_MATRIX_OPS}"
+    echo ""
+    echo "Optim: BLAS and Lapack libraries set to ${OPTIM_BLAS_LAPACK}"
+fi
+
 if [[ "${OPTIM_COVERAGE}" == "y" ]]; then 
     OPTIM_SHLIB_FLAGS="--coverage ${OPTIM_SHLIB_FLAGS}"
 else
     OPTIM_SHLIB_FLAGS="-O3 ${OPTIM_SHLIB_FLAGS}"
+fi
+
+if [[ "${OPTIM_PARALLEL}" == "y" ]]; then 
+    OPTIM_SHLIB_FLAGS="-fopenmp ${OPTIM_SHLIB_FLAGS}"
 fi
 
 sed -e "s|@CC@|${CC}|" \
