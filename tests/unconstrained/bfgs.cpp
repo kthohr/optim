@@ -69,6 +69,20 @@ int main()
     arma::cout << "bfgs: solution to test_4:\n" << x_4 << arma::endl;
 
     //
+    // test 5
+    arma::vec x_5 = arma::zeros(2,1);
+
+    bool success_5 = optim::bfgs(x_5,unconstr_test_fn_5,nullptr);
+
+    if (success_5) {
+        std::cout << "bfgs: test_5 completed successfully." << std::endl;
+    } else {
+        std::cout << "bfgs: test_5 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "bfgs: solution to test_5:\n" << x_5 << arma::endl;
+
+    //
     // for coverage
 
     optim::optim_opt_settings opt_settings;

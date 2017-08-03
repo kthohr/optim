@@ -75,6 +75,24 @@ int main()
     arma::cout << "cg: solution to test_4:\n" << x_4 << arma::endl;
 
     //
+    // test 5
+    optim::optim_opt_settings opt_params_5;
+    opt_params_5.iter_max = 10000;
+    opt_params_5.cg_method = 5;
+
+    arma::vec x_5 = arma::zeros(2,1) + 2;
+
+    bool success_5 = optim::cg(x_5,unconstr_test_fn_5,nullptr,opt_params_5);
+
+    if (success_5) {
+        std::cout << "cg: test_5 completed successfully." << std::endl;
+    } else {
+        std::cout << "cg: test_5 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "cg: solution to test_5:\n" << x_5 << arma::endl;
+
+    //
     // for coverage
 
     optim::optim_opt_settings opt_settings;
