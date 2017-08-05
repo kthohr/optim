@@ -56,17 +56,90 @@ int main()
 
     //
     // test 4
-    // arma::vec x_4 = arma::ones(2,1);
+    arma::vec x_4 = arma::ones(2,1);
 
-    // bool success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr);
+    bool success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr);
 
-    // if (success_4) {
-    //     std::cout << "nm: test_4 completed successfully." << std::endl;
-    // } else {
-    //     std::cout << "nm: test_4 completed unsuccessfully." << std::endl;
-    // }
+    if (success_4) {
+        std::cout << "nm: test_4 completed successfully." << std::endl;
+    } else {
+        std::cout << "nm: test_4 completed unsuccessfully." << std::endl;
+    }
 
-    // arma::cout << "nm: solution to test_4:\n" << x_4 << arma::endl;
+    arma::cout << "nm: solution to test_4:\n" << x_4 << arma::endl; // should fail
+
+    //
+    // test 5
+    arma::vec x_5 = arma::ones(2,1);
+
+    bool success_5 = optim::nm(x_5,unconstr_test_fn_5,nullptr);
+
+    if (success_5) {
+        std::cout << "nm: test_5 completed successfully." << std::endl;
+    } else {
+        std::cout << "nm: test_5 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "nm: solution to test_5:\n" << x_5 << arma::endl;
+
+    //
+    // test 6
+    unconstr_test_fn_6_data test_6_data;
+    test_6_data.A = 10;
+
+    arma::vec x_6 = arma::ones(2,1) + 1.0;
+
+    bool success_6 = optim::nm(x_6,unconstr_test_fn_6,&test_6_data);
+
+    if (success_6) {
+        std::cout << "nm: test_6 completed successfully." << std::endl;
+    } else {
+        std::cout << "nm: test_6 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "nm: solution to test_6:\n" << x_6 << arma::endl; // should fail
+
+    //
+    // test 7
+    arma::vec x_7 = arma::ones(2,1);
+
+    bool success_7 = optim::nm(x_7,unconstr_test_fn_7,nullptr);
+
+    if (success_7) {
+        std::cout << "nm: test_7 completed successfully." << std::endl;
+    } else {
+        std::cout << "nm: test_7 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "nm: solution to test_7:\n" << x_7 << arma::endl; // should fail
+
+    //
+    // test 8
+    arma::vec x_8 = arma::zeros(2,1);
+
+    bool success_8 = optim::nm(x_8,unconstr_test_fn_8,nullptr);
+
+    if (success_8) {
+        std::cout << "nm: test_8 completed successfully." << std::endl;
+    } else {
+        std::cout << "nm: test_8 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "nm: solution to test_8:\n" << x_8 << arma::endl; // should fail
+
+    //
+    // test 9
+    arma::vec x_9 = arma::zeros(2,1);
+
+    bool success_9 = optim::nm(x_9,unconstr_test_fn_9,nullptr);
+
+    if (success_9) {
+        std::cout << "nm: test_9 completed successfully." << std::endl;
+    } else {
+        std::cout << "nm: test_9 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "nm: solution to test_9:\n" << x_9 << arma::endl; // should fail
 
     //
     // for coverage

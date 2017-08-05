@@ -23,36 +23,69 @@
  * 12/19/2016
  *
  * This version:
- * 07/31/2017
+ * 08/04/2017
  */
 
 #include "optim.hpp"
 
 bool
-optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params)
+optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params_inp)
 {
     bool success = false;
 
     const double BIG_POS_VAL = OPTIM_BIG_POS_NUM;
-
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
-
-    const int n_gen = (opt_params) ? opt_params->de_n_gen : OPTIM_DEFAULT_DE_NGEN;
-    const int check_freq = (opt_params) ? opt_params->de_check_freq : OPTIM_DEFAULT_DE_CHECK_FREQ;
-    double par_F  = (opt_params) ? opt_params->de_par_F  : OPTIM_DEFAULT_DE_PAR_F; // tuning parameters
-    const double par_CR = (opt_params) ? opt_params->de_par_CR : OPTIM_DEFAULT_DE_PAR_CR;
-    const bool rand_F = (opt_params) ? opt_params->de_rand_F : OPTIM_DEFAULT_DE_RAND_F;
-    //
     const int n_vals = init_out_vals.n_elem;
-    const int N = n_vals*10;
-    //
-    double prop_objfn_val = 0.0;
-    arma::vec X_prop = init_out_vals, past_objfn_vals(N);
-    arma::mat X(N,n_vals), X_next(N,n_vals);
 
-    for (int i=0; i < N; i++) {
-        X_next.row(i) = init_out_vals.t() + arma::randu(1,n_vals) - 0.5; // initial values + U[-0.5,0.5]
+    //
+    // DE settings
+
+    optim_opt_settings opt_params;
+
+    if (opt_params_inp) {
+        opt_params = *opt_params_inp;
+    }
+
+    const int conv_failure_switch = opt_params.conv_failure_switch;
+    const double err_tol = opt_params.err_tol;
+
+    int n_pop = (opt_params.de_n_pop > 0) ? opt_params.de_n_pop : 200;
+    // const int check_freq = opt_params.de_check_freq;
+
+    const double par_initial_F = opt_params.de_par_F;
+    const double par_initial_CR = opt_params.de_par_CR;
+
+    const arma::vec par_initial_lb = ((int) opt_params.de_lb.n_elem == n_vals) ? opt_params.de_lb : arma::zeros(n_vals,1) - 0.5;
+    const arma::vec par_initial_ub = ((int) opt_params.de_ub.n_elem == n_vals) ? opt_params.de_ub : arma::zeros(n_vals,1) + 0.5;
+
+    const double F_l = (opt_params.de_par_F_l >= 0) ? opt_params.de_par_F_l : 0.1;
+    const double F_u = (opt_params.de_par_F_u >= 0) ? opt_params.de_par_F_u : 0.9;
+    const double tau_F  = (opt_params.de_par_tau_F >= 0) ? opt_params.de_par_tau_F : 0.1;
+    const double tau_CR = (opt_params.de_par_tau_CR >= 0) ? opt_params.de_par_tau_CR : 0.1;
+
+    arma::vec F_vec(n_pop), CR_vec(n_pop);
+    F_vec.fill(par_initial_F);
+    CR_vec.fill(par_initial_CR);
+
+    const int max_fn_eval = (opt_params.de_max_fn_eval > 0) ? opt_params.de_max_fn_eval : 100000;
+    const int pmax = (opt_params.de_pmax > 0) ? opt_params.de_pmax : 4;
+    const int n_pop_best = (opt_params.de_n_pop_best >= 0) ? opt_params.de_n_pop_best : 6;
+
+    int n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
+
+    const double d_eps = 0.5;
+
+    //
+    // setup
+
+    double prop_objfn_val = 0.0;
+    arma::vec X_prop = init_out_vals, past_objfn_vals(n_pop);
+    arma::mat X(n_pop,n_vals), X_next(n_pop,n_vals);
+
+#ifdef OPTIM_OMP
+    #pragma omp parallel for firstprivate(prop_objfn_val) 
+#endif
+    for (int i=0; i < n_pop; i++) {
+        X_next.row(i) = init_out_vals.t() + par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
 
         prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
 
@@ -63,33 +96,91 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         past_objfn_vals(i) = prop_objfn_val;
     }
 
-    double best_objfn_val = past_objfn_vals.min();
+    double best_objfn_val_running = past_objfn_vals.min();
+    // double best_objfn_val_check   = best_objfn_val_running;
+
+    double best_val_main = best_objfn_val_running;
+    double best_val_best = best_objfn_val_running;
+
+    arma::vec best_sol_running = X_next.row( past_objfn_vals.index_min() ).t();
+    arma::vec best_vec_main = best_sol_running;
+    arma::vec best_vec_best = best_sol_running;
+
+    arma::vec xchg_vec;
     //
+    int n_reset = 1;
     int iter = 0;
     double err = 2*err_tol;
 
-    while (err > err_tol && iter < n_gen) {
+    while (err > err_tol && iter < n_gen + 1) {
         iter++;
+
         //
+        // population reduction
+
+        if (iter == n_gen && n_reset < 4) {
+            int n_pop_temp = n_pop/2;
+
+            arma::vec objfn_vals_reset(n_pop_temp);
+            arma::mat X_reset(n_pop_temp,n_vals);
+
+#ifdef OPTIM_OMP
+            #pragma omp parallel for
+#endif
+            for (int j=0; j < n_pop_temp; j++) {
+                if (past_objfn_vals(j) < past_objfn_vals(j + n_pop_temp)) {
+                    X_reset.row(j) = X_next.row(j);
+                    objfn_vals_reset(j) = past_objfn_vals(j);
+                } else {
+                    X_reset.row(j) = X_next.row(j + n_pop_temp);
+                    objfn_vals_reset(j) = past_objfn_vals(j + n_pop_temp);
+                }
+            }
+
+            past_objfn_vals = objfn_vals_reset;
+            X_next = X_reset;
+
+            n_pop /= 2;
+            n_gen *= 2;
+
+            iter = 1;
+            n_reset++;
+        }
+
         X = X_next;
+
+        //
+        // first population
 
 #ifdef OPTIM_OMP
         #pragma omp parallel for firstprivate(prop_objfn_val,X_prop) 
 #endif
-        for (int i=0; i < N; i++) {
+        for (int i=0; i < n_pop - n_pop_best; i++) {
+
+            arma::vec rand_pars = arma::randu(4);
+
+            if (rand_pars(0) < tau_F) {
+                F_vec(i) = F_l + F_u*rand_pars(1);
+            }
+
+            if (rand_pars(2) < tau_CR) {
+                CR_vec(i) = rand_pars(3);
+            }
+
+            //
 
             int c_1, c_2, c_3;
 
             do { // 'r_2' in paper's notation
-                c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
+                c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_1==i);
 
             do { // 'r_3' in paper's notation
-                c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
+                c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_2==i || c_2==c_1);
 
             do { // 'r_1' in paper's notation
-                c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, N-1)));
+                c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_3==i || c_3==c_1 || c_3==c_2);
 
             //
@@ -99,8 +190,14 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             arma::vec rand_unif = arma::randu(n_vals);
 
             for (int k=0; k < n_vals; k++) {
-                if ( (rand_unif(k) < par_CR) || k == j ) {
-                    X_prop(k) = X(c_3,k) + par_F*(X(c_1,k) - X(c_2,k));
+                if ( rand_unif(k) < CR_vec(i) || k == j ) {
+                    double r_s = arma::as_scalar(arma::randu(1));
+
+                    if ( r_s < 0.75 || n_pop >= 100 ) {
+                        X_prop(k) = X(c_3,k) + F_vec(i)*(X(c_1,k) - X(c_2,k));
+                    } else {
+                        X_prop(k) = best_vec_main(k) + F_vec(i)*(X(c_1,k) - X(c_2,k));
+                    }
                 } else {
                     X_prop(k) = X(i,k);
                 }
@@ -113,23 +210,117 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             if (prop_objfn_val <= past_objfn_vals(i)) {
                 X_next.row(i) = X_prop.t();
                 past_objfn_vals(i) = prop_objfn_val;
+            } else {
+                X_next.row(i) = X.row(i);
             }
         }
-        //
-        if (rand_F) {
-            par_F = 0.5*arma::as_scalar(arma::randu()) + 0.5;
+
+        best_val_main = past_objfn_vals.rows(0,n_pop - n_pop_best - 1).min();
+        best_vec_main = X_next.rows(0,n_pop - n_pop_best - 1).row( past_objfn_vals.rows(0,n_pop - n_pop_best - 1).index_min() ).t();
+
+        if (best_val_main < best_val_best) {
+            xchg_vec = best_vec_main;
         }
 
-        if (iter%check_freq == 0) {
-            err = std::abs(past_objfn_vals.min() - best_objfn_val) / (std::abs(best_objfn_val) + 1E-08);
-            best_objfn_val = past_objfn_vals.min();
+        //
+        // second population
+
+        for (int i = n_pop - n_pop_best; i < n_pop; i++) {
+
+            arma::vec rand_pars = arma::randu(4);
+
+            if (rand_pars(0) < tau_F) {
+                F_vec(i) = F_l + F_u*rand_pars(1);
+            }
+
+            if (rand_pars(2) < tau_CR) {
+                CR_vec(i) = rand_pars(3);
+            }
+
+            //
+
+            int c_1, c_2, c_3;
+
+            do { // 'r_2' in paper's notation
+                c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+            } while(c_1==i);
+
+            do { // 'r_3' in paper's notation
+                c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+            } while(c_2==i || c_2==c_1);
+
+            do { // 'r_1' in paper's notation
+                c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+            } while(c_3==i || c_3==c_1 || c_3==c_2);
+
+            //
+
+            int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+
+            arma::vec rand_unif = arma::randu(n_vals);
+
+            for (int k=0; k < n_vals; k++) {
+                if ( rand_unif(k) < CR_vec(i) || k == j ) {
+                    X_prop(k) = best_vec_best(k) + F_vec(i)*(X(c_1,k) - X(c_2,k));
+                } else {
+                    X_prop(k) = X(i,k);
+                }
+            }
+
+            //
+
+            prop_objfn_val = opt_objfn(X_prop,nullptr,opt_data);
+            
+            if (prop_objfn_val <= past_objfn_vals(i)) {
+                X_next.row(i) = X_prop.t();
+                past_objfn_vals(i) = prop_objfn_val;
+            } else {
+                X_next.row(i) = X.row(i);
+            }
         }
+
+        best_val_best = past_objfn_vals.rows(n_pop - n_pop_best, n_pop - 1).min();
+        best_vec_best = X_next.rows(n_pop - n_pop_best, n_pop - 1).row( past_objfn_vals.rows(n_pop - n_pop_best, n_pop - 1).index_min() ).t();
+
+        if (best_val_best < best_val_main) {
+            double the_sum = 0;
+
+            for (int j=0; j < n_vals; j++) {
+                double min_val = X.col(j).min();
+
+                the_sum += (best_vec_best(j) - min_val) / (xchg_vec(j) - min_val);
+            }
+
+            the_sum /= (double) n_vals;
+
+            if (std::abs(the_sum - 1.0) > d_eps) {
+                best_vec_main = best_vec_best;
+            } else {
+                best_vec_best = best_vec_main;
+            }
+        } else {
+            best_vec_best = best_vec_main;
+        }
+
+        //
+        // assign running global minimum
+
+        if (past_objfn_vals.min() < best_objfn_val_running) {
+            best_objfn_val_running = past_objfn_vals.min();
+            best_sol_running = X_next.row( past_objfn_vals.index_min() ).t();
+        }
+
+        // if (iter%check_freq == 0) {
+        //     // err = std::abs(past_objfn_vals.min() - best_objfn_val) / (std::abs(best_objfn_val) + 1E-08);
+        //     err = std::abs(best_objfn_val_running - best_objfn_val_check);
+        //     // best_objfn_val_check = past_objfn_vals.min();
+        //     if (best_objfn_val_running < best_objfn_val_check) {
+        //         best_objfn_val_check = best_objfn_val_running;
+        //     }
+        // }
     }
     //
-    arma::uword min_i = past_objfn_vals.index_min();
-    X_prop = X_next.row(min_i).t();
-
-    error_reporting(init_out_vals,X_prop,opt_objfn,opt_data,success,value_out,err,err_tol,iter,n_gen,conv_failure_switch);
+    error_reporting(init_out_vals,best_sol_running,opt_objfn,opt_data,success,value_out,err,err_tol,iter,n_gen,conv_failure_switch);
     //
     return success;
 }

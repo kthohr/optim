@@ -33,11 +33,22 @@ struct optim_opt_settings {
     double cg_restart_threshold = OPTIM_DEFAULT_CG_RESTART_THRESHOLD;
 
     // DE
-    int de_n_gen = OPTIM_DEFAULT_DE_NGEN;
-    int de_check_freq = OPTIM_DEFAULT_DE_CHECK_FREQ;
+    int de_n_pop = -1;
+    int de_n_pop_best = -1;
+    int de_pmax = -1;
+    int de_max_fn_eval = -1;
+
     double de_par_F = OPTIM_DEFAULT_DE_PAR_F;
     double de_par_CR = OPTIM_DEFAULT_DE_PAR_CR;
-    bool de_rand_F = OPTIM_DEFAULT_DE_RAND_F;
+
+    double de_par_F_l = -1;
+    double de_par_F_u = -1;
+
+    double de_par_tau_F  = -1;
+    double de_par_tau_CR = -1;
+
+    arma::vec de_lb; // this will default to -0.5
+    arma::vec de_ub; // this will default to  0.5
 
     // Nelder-Mead
     double nm_par_alpha = OPTIM_DEFAULT_NM_PAR_ALPHA;

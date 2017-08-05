@@ -30,17 +30,17 @@
 #define _optim_de_HPP
 
 bool de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                double* value_out, optim_opt_settings* opt_params);
+            double* value_out, optim_opt_settings* opt_params_inp);
 
 bool de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 
 bool de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-             optim_opt_settings& opt_params);
+        optim_opt_settings& opt_params);
 
 bool de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-            double& value_out);
+        double& value_out);
 
 bool de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-            double& value_out, optim_opt_settings& opt_params);
+        double& value_out, optim_opt_settings& opt_params);
 
 #endif

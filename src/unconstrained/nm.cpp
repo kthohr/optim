@@ -39,20 +39,37 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const double err_tol = (opt_params) ? opt_params->err_tol  : OPTIM_DEFAULT_ERR_TOL;
 
     // expansion / contraction parameters
-    const double par_alpha = (opt_params) ? opt_params->nm_par_alpha : OPTIM_DEFAULT_NM_PAR_ALPHA;
-    const double par_beta  = (opt_params) ? opt_params->nm_par_beta  : OPTIM_DEFAULT_NM_PAR_BETA;
-    const double par_gamma = (opt_params) ? opt_params->nm_par_gamma : OPTIM_DEFAULT_NM_PAR_GAMMA;
-    const double par_delta = (opt_params) ? opt_params->nm_par_delta : OPTIM_DEFAULT_NM_PAR_DELTA;
+    // const double par_alpha = (opt_params) ? opt_params->nm_par_alpha : OPTIM_DEFAULT_NM_PAR_ALPHA;
+    // const double par_beta  = (opt_params) ? opt_params->nm_par_beta  : OPTIM_DEFAULT_NM_PAR_BETA;
+    // const double par_gamma = (opt_params) ? opt_params->nm_par_gamma : OPTIM_DEFAULT_NM_PAR_GAMMA;
+    // const double par_delta = (opt_params) ? opt_params->nm_par_delta : OPTIM_DEFAULT_NM_PAR_DELTA;
     //
     const int n_vals = init_out_vals.n_elem;
+
+    const double par_alpha = 1.0;
+    const double par_beta  = 0.75 - 1.0 / (2.0*n_vals);
+    const double par_gamma = 1.0 + 2.0 / n_vals;
+    const double par_delta = 1.0 - 1.0 / n_vals;
+
     arma::vec simplex_fn_vals(n_vals+1);
     arma::mat simplex_points(n_vals+1,n_vals);
     
     simplex_fn_vals(0) = opt_objfn(init_out_vals,nullptr,opt_data);
     simplex_points.row(0) = init_out_vals.t();
 
+    // for (int i=1; i < n_vals + 1; i++) {
+    //     simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
+    //     simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
+    // }
+
     for (int i=1; i < n_vals + 1; i++) {
-        simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
+        if (init_out_vals(i-1) != 0.0) {
+            simplex_points.row(i) = init_out_vals.t() + 0.05*init_out_vals(i-1)*arma::trans(unit_vec(i-1,n_vals));
+        } else {
+            simplex_points.row(i) = init_out_vals.t() + 0.00025*arma::trans(unit_vec(i-1,n_vals));
+            // simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
+        }
+
         simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
     }
 
@@ -124,9 +141,10 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                     simplex_points.row(n_vals) = x_oc.t();
                     next_iter = true;
                 }
-            } else {
+            } else { // f_r >= simplex_fn_vals(n_vals)
                 // inside contraction
-                x_ic = centroid - par_beta*(x_r - centroid);
+                // x_ic = centroid - par_beta*(x_r - centroid);
+                x_ic = centroid + par_beta*(simplex_points.row(n_vals).t() - centroid);
 
                 f_ic = opt_objfn(x_ic,nullptr,opt_data);
 
@@ -135,15 +153,14 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                     next_iter = true;
                 }
             }
+        }
 
-            // step 6
-            if (!next_iter) {
-                // neither outside nor inside contraction was acceptable; shrink the simplex toward x(0)
-                for (int i=1; i < n_vals + 1; i++) {
-                    simplex_points.row(i) = simplex_points.row(0) + par_delta*(simplex_points.row(i) - simplex_points.row(0));
-                }
+        // step 6
+        if (!next_iter) {
+            // neither outside nor inside contraction was acceptable; shrink the simplex toward x(0)
+            for (int i=1; i < n_vals + 1; i++) {
+                simplex_points.row(i) = simplex_points.row(0) + par_delta*(simplex_points.row(i) - simplex_points.row(0));
             }
-
         }
 
         // check change in fn_val
@@ -151,7 +168,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         for (int i=0; i < n_vals + 1; i++) {
             simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
         }
-
+    
         err = std::abs(min_val - simplex_fn_vals.max());
         min_val = simplex_fn_vals.min();
         iter++;
