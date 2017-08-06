@@ -35,8 +35,13 @@ struct optim_opt_settings {
     // DE
     int de_n_pop = -1;
     int de_n_pop_best = -1;
+    int de_n_gen = -1;
     int de_pmax = -1;
     int de_max_fn_eval = -1;
+
+    int de_mutation_method = 1; // 1 = rand; 2 = best
+
+    int de_check_freq = -1;
 
     double de_par_F = OPTIM_DEFAULT_DE_PAR_F;
     double de_par_CR = OPTIM_DEFAULT_DE_PAR_CR;
@@ -55,6 +60,13 @@ struct optim_opt_settings {
     double nm_par_beta  = OPTIM_DEFAULT_NM_PAR_BETA;
     double nm_par_gamma = OPTIM_DEFAULT_NM_PAR_GAMMA;
     double nm_par_delta = OPTIM_DEFAULT_NM_PAR_DELTA;
+
+    // PSO
+    int pso_n_pop = -1;
+    int pso_n_gen = -1;
+
+    arma::vec pso_lb; // this will default to -0.5
+    arma::vec pso_ub; // this will default to  0.5
 };
 
 #endif

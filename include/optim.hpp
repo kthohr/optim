@@ -19,7 +19,9 @@
 #ifndef OPTIMLIB_INCLUDES
 #define OPTIMLIB_INCLUDES
 
-
+#ifndef ARMA_DONT_USE_WRAPPER
+    #define ARMA_DONT_USE_WRAPPER
+#endif
 #include "armadillo"
 
 #include "misc/OPTIM_OPTIONS.hpp"
@@ -40,7 +42,11 @@ namespace optim
     #include "unconstrained/bfgs.hpp"
     #include "unconstrained/cg.hpp"
     #include "unconstrained/de.hpp"
+    #include "unconstrained/de_prmm.hpp"
     #include "unconstrained/nm.hpp"
+    #include "unconstrained/pso.hpp"
+    #include "unconstrained/pso_dv.hpp"
+    #include "unconstrained/ipso.hpp"
 
     // constrained optimization
     #include "constrained/sumt.hpp"

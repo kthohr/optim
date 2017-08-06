@@ -129,7 +129,7 @@ int main()
     arma::vec x_9 = arma::zeros(2,1);
     x_9(0) = -11.0;
 
-    bool success_9 = optim::de(x_9,unconstr_test_fn_9,nullptr);
+    bool success_9 = optim::de(x_9,unconstr_test_fn_9,nullptr,opt_settings_9);
 
     if (success_9) {
         std::cout << "de: test_9 completed successfully." << std::endl;
