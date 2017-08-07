@@ -30,26 +30,33 @@
 
 bool
 optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                       double* value_out, opt_settings* settings)
+                       double* value_out, opt_settings* settings_inp)
 {
     bool success = false;
-    
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max   = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol  : OPTIM_DEFAULT_ERR_TOL;
 
-    // expansion / contraction parameters
-    // const double par_alpha = (settings) ? settings->nm_par_alpha : OPTIM_DEFAULT_NM_PAR_ALPHA;
-    // const double par_beta  = (settings) ? settings->nm_par_beta  : OPTIM_DEFAULT_NM_PAR_BETA;
-    // const double par_gamma = (settings) ? settings->nm_par_gamma : OPTIM_DEFAULT_NM_PAR_GAMMA;
-    // const double par_delta = (settings) ? settings->nm_par_delta : OPTIM_DEFAULT_NM_PAR_DELTA;
-    //
     const int n_vals = init_out_vals.n_elem;
 
-    const double par_alpha = 1.0;
-    const double par_beta  = 0.75 - 1.0 / (2.0*n_vals);
-    const double par_gamma = 1.0 + 2.0 / n_vals;
-    const double par_delta = 1.0 - 1.0 / n_vals;
+    //
+    // NM settings
+
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+    
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    // expansion / contraction parameters
+    const double par_alpha = settings.nm_par_alpha;
+    const double par_beta  = (settings.nm_adaptive) ? 0.75 - 1.0 / (2.0*n_vals) : settings.nm_par_beta;
+    const double par_gamma = (settings.nm_adaptive) ? 1.0 + 2.0 / n_vals        : settings.nm_par_gamma;
+    const double par_delta = (settings.nm_adaptive) ? 1.0 - 1.0 / n_vals        : settings.nm_par_delta;
+    
+    //
+    //
 
     arma::vec simplex_fn_vals(n_vals+1);
     arma::mat simplex_points(n_vals+1,n_vals);

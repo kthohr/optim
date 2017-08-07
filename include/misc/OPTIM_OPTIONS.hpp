@@ -36,16 +36,6 @@
     #define OPTIM_CONV_FAILURE_POLICY 0;
 #endif
 
-// CG
-
-#ifndef OPTIM_DEFAULT_CG_METHOD
-    #define OPTIM_DEFAULT_CG_METHOD 2;
-#endif
-
-#ifndef OPTIM_DEFAULT_CG_RESTART_THRESHOLD
-    #define OPTIM_DEFAULT_CG_RESTART_THRESHOLD 0.1;
-#endif
-
 // DE
 
 #ifndef OPTIM_DEFAULT_DE_NGEN

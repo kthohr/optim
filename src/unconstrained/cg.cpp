@@ -29,27 +29,37 @@
 #include "optim.hpp"
 
 bool
-optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings)
+optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
+    
+    const int n_vals = init_out_vals.n_elem;
 
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    //
+    // NM settings
 
-    const int cg_method = (settings) ? settings->cg_method : OPTIM_DEFAULT_CG_METHOD; // update method
-    const double cg_restart_threshold = (settings) ? settings->cg_restart_threshold : OPTIM_DEFAULT_CG_RESTART_THRESHOLD;
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+    
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    const int cg_method = settings.cg_method; // update method
+    const double cg_restart_threshold = settings.cg_restart_threshold;
 
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
     const double wolfe_cons_2 = 0.10;
-    //
-    int n_vals = init_out_vals.n_elem;
-    arma::vec x = init_out_vals;
 
     //
     // initialization
+
+    arma::vec x = init_out_vals;
     
     double t_init = 1;
 

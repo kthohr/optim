@@ -21,23 +21,24 @@
 
 struct opt_settings {
     // general
-    int conv_failure_switch = OPTIM_CONV_FAILURE_POLICY;
-    int iter_max = OPTIM_DEFAULT_ITER_MAX;
-    double err_tol = OPTIM_DEFAULT_ERR_TOL;
+    int conv_failure_switch = 0;
+    int iter_max = 2000;
+    double err_tol = 1E-08;
 
     // SUMT parameter
-    double sumt_par_eta = OPTIM_DEFAULT_SUMT_PENALTY_GROWTH;
+    double sumt_par_eta = 10.0;
 
     // CG
-    int cg_method = OPTIM_DEFAULT_CG_METHOD;
-    double cg_restart_threshold = OPTIM_DEFAULT_CG_RESTART_THRESHOLD;
+    int cg_method = 2;
+    double cg_restart_threshold = 0.1;
 
     // DE
-    int de_n_pop = -1;
-    int de_n_pop_best = -1;
-    int de_n_gen = -1;
-    int de_pmax = -1;
-    int de_max_fn_eval = -1;
+    int de_n_pop = 200;
+    int de_n_pop_best = 6;
+    int de_n_gen = 1000;
+    
+    int de_pmax = 4;
+    int de_max_fn_eval = 100000;
 
     int de_mutation_method = 1; // 1 = rand; 2 = best
 
@@ -46,20 +47,21 @@ struct opt_settings {
     double de_par_F = OPTIM_DEFAULT_DE_PAR_F;
     double de_par_CR = OPTIM_DEFAULT_DE_PAR_CR;
 
-    double de_par_F_l = -1;
-    double de_par_F_u = -1;
+    double de_par_F_l = 0.1;
+    double de_par_F_u = 1.0;
 
-    double de_par_tau_F  = -1;
-    double de_par_tau_CR = -1;
+    double de_par_tau_F  = 0.1;
+    double de_par_tau_CR = 0.1;
 
     arma::vec de_lb; // this will default to -0.5
     arma::vec de_ub; // this will default to  0.5
 
     // Nelder-Mead
-    double nm_par_alpha = OPTIM_DEFAULT_NM_PAR_ALPHA;
-    double nm_par_beta  = OPTIM_DEFAULT_NM_PAR_BETA;
-    double nm_par_gamma = OPTIM_DEFAULT_NM_PAR_GAMMA;
-    double nm_par_delta = OPTIM_DEFAULT_NM_PAR_DELTA;
+    bool nm_adaptive= true;
+    double nm_par_alpha = 1.0; // reflection parameter
+    double nm_par_beta  = 0.5; // contraction parameter
+    double nm_par_gamma = 2.0; // expansion parameter
+    double nm_par_delta = 0.5; // shrinkage parameter
 
     // PSO
     int pso_n_pop = -1;

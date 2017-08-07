@@ -30,7 +30,7 @@
 #define _optim_nm_HPP
 
 bool nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                     double* value_out, opt_settings* settings);
+                     double* value_out, opt_settings* settings_inp);
 
 bool nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 

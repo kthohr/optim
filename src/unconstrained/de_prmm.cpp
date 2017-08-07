@@ -48,7 +48,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     const int conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
-    int n_pop = (settings.de_n_pop > 0) ? settings.de_n_pop : 200;
+    int n_pop = settings.de_n_pop;
     // const int check_freq = settings.de_check_freq;
 
     const double par_initial_F = settings.de_par_F;
@@ -57,22 +57,22 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     const arma::vec par_initial_lb = ((int) settings.de_lb.n_elem == n_vals) ? settings.de_lb : arma::zeros(n_vals,1) - 0.5;
     const arma::vec par_initial_ub = ((int) settings.de_ub.n_elem == n_vals) ? settings.de_ub : arma::zeros(n_vals,1) + 0.5;
 
-    const double F_l = (settings.de_par_F_l >= 0) ? settings.de_par_F_l : 0.1;
-    const double F_u = (settings.de_par_F_u >= 0) ? settings.de_par_F_u : 1.0;
-    const double tau_F  = (settings.de_par_tau_F >= 0) ? settings.de_par_tau_F : 0.1;
-    const double tau_CR = (settings.de_par_tau_CR >= 0) ? settings.de_par_tau_CR : 0.1;
+    const double F_l = settings.de_par_F_l;
+    const double F_u = settings.de_par_F_u;
+    const double tau_F  = settings.de_par_tau_F;
+    const double tau_CR = settings.de_par_tau_CR;
 
     arma::vec F_vec(n_pop), CR_vec(n_pop);
     F_vec.fill(par_initial_F);
     CR_vec.fill(par_initial_CR);
 
-    const int max_fn_eval = (settings.de_max_fn_eval > 0) ? settings.de_max_fn_eval : 100000;
-    const int pmax = (settings.de_pmax > 0) ? settings.de_pmax : 4;
-    const int n_pop_best = (settings.de_n_pop_best >= 0) ? settings.de_n_pop_best : 6;
-
-    int n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
+    const int max_fn_eval = settings.de_max_fn_eval;
+    const int pmax = settings.de_pmax;
+    const int n_pop_best = settings.de_n_pop_best;
 
     const double d_eps = 0.5;
+
+    int n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
 
     //
     // setup

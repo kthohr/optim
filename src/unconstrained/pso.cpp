@@ -37,7 +37,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const int n_vals = init_out_vals.n_elem;
 
     //
-    //
+    // 
 
     opt_settings settings;
 

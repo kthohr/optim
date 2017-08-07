@@ -48,8 +48,8 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const int conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
-    const int n_pop = (settings.de_n_pop > 0) ? settings.de_n_pop : 100;
-    const int n_gen = (settings.de_n_gen > 0) ? settings.de_n_gen : 1000;
+    const int n_pop = settings.de_n_pop;
+    const int n_gen = settings.de_n_gen;
     const int check_freq = (settings.de_check_freq > 0) ? settings.de_check_freq : n_gen ;
 
     const int mutation_method = settings.de_mutation_method;
