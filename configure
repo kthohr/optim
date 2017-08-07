@@ -2,7 +2,7 @@
 ## OptimLib config script
 
 # inputs
-while getopts :b:c:m:op option; do
+while getopts b:cm:o:p option; do
     case "${option}" in
         b) OPTIM_BUILD=${OPTARG};;
         c) OPTIM_COVERAGE="y";;
