@@ -58,7 +58,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     const arma::vec par_initial_ub = ((int) settings.de_ub.n_elem == n_vals) ? settings.de_ub : arma::zeros(n_vals,1) + 0.5;
 
     const double F_l = (settings.de_par_F_l >= 0) ? settings.de_par_F_l : 0.1;
-    const double F_u = (settings.de_par_F_u >= 0) ? settings.de_par_F_u : 0.9;
+    const double F_u = (settings.de_par_F_u >= 0) ? settings.de_par_F_u : 1.0;
     const double tau_F  = (settings.de_par_tau_F >= 0) ? settings.de_par_tau_F : 0.1;
     const double tau_CR = (settings.de_par_tau_CR >= 0) ? settings.de_par_tau_CR : 0.1;
 
@@ -151,6 +151,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
         //
         // first population: n_pop - n_pop_best
+        
 
 #ifdef OPTIM_OMP
         #pragma omp parallel for firstprivate(prop_objfn_val,X_prop) 
@@ -160,7 +161,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
             arma::vec rand_pars = arma::randu(4);
 
             if (rand_pars(0) < tau_F) {
-                F_vec(i) = F_l + F_u*rand_pars(1);
+                F_vec(i) = F_l + (F_u-F_l)*rand_pars(1);
             }
 
             if (rand_pars(2) < tau_CR) {
@@ -171,15 +172,15 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             int c_1, c_2, c_3;
 
-            do { // 'r_2' in paper's notation
+            do {
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_1==i);
 
-            do { // 'r_3' in paper's notation
+            do {
                 c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_2==i || c_2==c_1);
 
-            do { // 'r_1' in paper's notation
+            do {
                 c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_3==i || c_3==c_1 || c_3==c_2);
 
@@ -230,7 +231,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
             arma::vec rand_pars = arma::randu(4);
 
             if (rand_pars(0) < tau_F) {
-                F_vec(i) = F_l + F_u*rand_pars(1);
+                F_vec(i) = F_l + (F_u-F_l)*rand_pars(1);
             }
 
             if (rand_pars(2) < tau_CR) {
@@ -239,19 +240,15 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            int c_1, c_2, c_3;
+            int c_1, c_2;
 
-            do { // 'r_2' in paper's notation
+            do {
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_1==i);
 
-            do { // 'r_3' in paper's notation
+            do {
                 c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_2==i || c_2==c_1);
-
-            do { // 'r_1' in paper's notation
-                c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
-            } while(c_3==i || c_3==c_1 || c_3==c_2);
 
             //
 
@@ -328,23 +325,23 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 bool
 optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
+    return de_prmm_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
 }
 
 bool
 optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
+    return de_prmm_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
 optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
+    return de_prmm_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
 }
 
 bool
 optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
+    return de_prmm_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }
