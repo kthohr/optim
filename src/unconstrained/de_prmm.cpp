@@ -106,7 +106,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     arma::vec best_vec_main = best_sol_running;
     arma::vec best_vec_best = best_sol_running;
 
-    arma::vec xchg_vec;
+    arma::vec xchg_vec = best_sol_running;
     //
     int n_reset = 1;
     int iter = 0;
