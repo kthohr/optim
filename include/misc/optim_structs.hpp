@@ -19,7 +19,7 @@
 #ifndef optim_structs_HPP
 #define optim_structs_HPP
 
-struct optim_opt_settings {
+struct opt_settings {
     // general
     int conv_failure_switch = OPTIM_CONV_FAILURE_POLICY;
     int iter_max = OPTIM_DEFAULT_ITER_MAX;

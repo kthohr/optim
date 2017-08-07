@@ -70,11 +70,11 @@ int main()
 
     //
     // test 6
-    optim::optim_opt_settings opt_settings_6;
+    optim::opt_settings settings_6;
 
-    opt_settings_6.pso_lb = arma::zeros(2,1) - 2.0;
-    opt_settings_6.pso_ub = arma::zeros(2,1) + 2.0;
-    opt_settings_6.pso_n_pop = 1000;
+    settings_6.pso_lb = arma::zeros(2,1) - 2.0;
+    settings_6.pso_ub = arma::zeros(2,1) + 2.0;
+    settings_6.pso_n_pop = 1000;
 
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
@@ -121,15 +121,15 @@ int main()
 
     //
     // test 9
-    optim::optim_opt_settings opt_settings_9;
+    optim::opt_settings settings_9;
     
-    opt_settings_9.pso_lb = arma::zeros(2,1) - 2.0;
-    opt_settings_9.pso_ub = arma::zeros(2,1) + 2.0;
+    settings_9.pso_lb = arma::zeros(2,1) - 2.0;
+    settings_9.pso_ub = arma::zeros(2,1) + 2.0;
 
     arma::vec x_9 = arma::zeros(2,1);
     x_9(0) = -11.0;
 
-    opt_settings_9.pso_n_gen = 4000;
+    settings_9.pso_n_gen = 4000;
 
     bool success_9 = optim::pso(x_9,unconstr_test_fn_9,nullptr,opt_settings_9);
 
@@ -144,7 +144,7 @@ int main()
     //
     // for coverage
 
-    optim::optim_opt_settings opt_settings;
+    optim::opt_settings settings;
     double val_out;
 
     optim::pso(x_1,unconstr_test_fn_1,nullptr);

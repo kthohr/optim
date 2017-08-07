@@ -30,7 +30,7 @@ int main()
     // coverage tests
 
     arma::vec x_c = arma::ones(2,1);
-    optim::optim_opt_settings opt_settings;
+    optim::opt_settings settings;
     double val_out;
 
     optim::generic_optim(x_c,unconstr_test_fn_1,nullptr);

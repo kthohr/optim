@@ -30,19 +30,19 @@
 
 bool
 optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                       double* value_out, optim_opt_settings* opt_params)
+                       double* value_out, opt_settings* settings)
 {
     bool success = false;
     
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max   = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (opt_params) ? opt_params->err_tol  : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max   = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (settings) ? settings->err_tol  : OPTIM_DEFAULT_ERR_TOL;
 
     // expansion / contraction parameters
-    // const double par_alpha = (opt_params) ? opt_params->nm_par_alpha : OPTIM_DEFAULT_NM_PAR_ALPHA;
-    // const double par_beta  = (opt_params) ? opt_params->nm_par_beta  : OPTIM_DEFAULT_NM_PAR_BETA;
-    // const double par_gamma = (opt_params) ? opt_params->nm_par_gamma : OPTIM_DEFAULT_NM_PAR_GAMMA;
-    // const double par_delta = (opt_params) ? opt_params->nm_par_delta : OPTIM_DEFAULT_NM_PAR_DELTA;
+    // const double par_alpha = (settings) ? settings->nm_par_alpha : OPTIM_DEFAULT_NM_PAR_ALPHA;
+    // const double par_beta  = (settings) ? settings->nm_par_beta  : OPTIM_DEFAULT_NM_PAR_BETA;
+    // const double par_gamma = (settings) ? settings->nm_par_gamma : OPTIM_DEFAULT_NM_PAR_GAMMA;
+    // const double par_delta = (settings) ? settings->nm_par_delta : OPTIM_DEFAULT_NM_PAR_DELTA;
     //
     const int n_vals = init_out_vals.n_elem;
 
@@ -188,9 +188,9 @@ optim::nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 }
 
 bool
-optim::nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return nm_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return nm_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -200,7 +200,7 @@ optim::nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 }
 
 bool
-optim::nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
 {
-    return nm_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return nm_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }

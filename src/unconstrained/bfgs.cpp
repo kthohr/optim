@@ -29,14 +29,14 @@
 #include "optim.hpp"
 
 bool
-optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params)
+optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings)
 {   // notation: 'p' stands for '+1'.
     //
     bool success = false;
     
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
 
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
     const double wolfe_cons_2 = 0.90;
@@ -163,9 +163,9 @@ optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& val
 }
 
 bool
-optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return bfgs_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return bfgs_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -175,7 +175,7 @@ optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& val
 }
 
 bool
-optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
 {
-    return bfgs_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return bfgs_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }

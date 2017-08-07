@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params_inp)
+optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
 {
     bool success = false;
 
@@ -39,36 +39,36 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     //
     // DE settings
 
-    optim_opt_settings opt_params;
+    opt_settings settings;
 
-    if (opt_params_inp) {
-        opt_params = *opt_params_inp;
+    if (settings_inp) {
+        settings = *settings_inp;
     }
 
-    const int conv_failure_switch = opt_params.conv_failure_switch;
-    const double err_tol = opt_params.err_tol;
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const double err_tol = settings.err_tol;
 
-    int n_pop = (opt_params.de_n_pop > 0) ? opt_params.de_n_pop : 200;
-    // const int check_freq = opt_params.de_check_freq;
+    int n_pop = (settings.de_n_pop > 0) ? settings.de_n_pop : 200;
+    // const int check_freq = settings.de_check_freq;
 
-    const double par_initial_F = opt_params.de_par_F;
-    const double par_initial_CR = opt_params.de_par_CR;
+    const double par_initial_F = settings.de_par_F;
+    const double par_initial_CR = settings.de_par_CR;
 
-    const arma::vec par_initial_lb = ((int) opt_params.de_lb.n_elem == n_vals) ? opt_params.de_lb : arma::zeros(n_vals,1) - 0.5;
-    const arma::vec par_initial_ub = ((int) opt_params.de_ub.n_elem == n_vals) ? opt_params.de_ub : arma::zeros(n_vals,1) + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.de_lb.n_elem == n_vals) ? settings.de_lb : arma::zeros(n_vals,1) - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.de_ub.n_elem == n_vals) ? settings.de_ub : arma::zeros(n_vals,1) + 0.5;
 
-    const double F_l = (opt_params.de_par_F_l >= 0) ? opt_params.de_par_F_l : 0.1;
-    const double F_u = (opt_params.de_par_F_u >= 0) ? opt_params.de_par_F_u : 0.9;
-    const double tau_F  = (opt_params.de_par_tau_F >= 0) ? opt_params.de_par_tau_F : 0.1;
-    const double tau_CR = (opt_params.de_par_tau_CR >= 0) ? opt_params.de_par_tau_CR : 0.1;
+    const double F_l = (settings.de_par_F_l >= 0) ? settings.de_par_F_l : 0.1;
+    const double F_u = (settings.de_par_F_u >= 0) ? settings.de_par_F_u : 0.9;
+    const double tau_F  = (settings.de_par_tau_F >= 0) ? settings.de_par_tau_F : 0.1;
+    const double tau_CR = (settings.de_par_tau_CR >= 0) ? settings.de_par_tau_CR : 0.1;
 
     arma::vec F_vec(n_pop), CR_vec(n_pop);
     F_vec.fill(par_initial_F);
     CR_vec.fill(par_initial_CR);
 
-    const int max_fn_eval = (opt_params.de_max_fn_eval > 0) ? opt_params.de_max_fn_eval : 100000;
-    const int pmax = (opt_params.de_pmax > 0) ? opt_params.de_pmax : 4;
-    const int n_pop_best = (opt_params.de_n_pop_best >= 0) ? opt_params.de_n_pop_best : 6;
+    const int max_fn_eval = (settings.de_max_fn_eval > 0) ? settings.de_max_fn_eval : 100000;
+    const int pmax = (settings.de_pmax > 0) ? settings.de_pmax : 4;
+    const int n_pop_best = (settings.de_n_pop_best >= 0) ? settings.de_n_pop_best : 6;
 
     int n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
 
@@ -332,9 +332,9 @@ optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 }
 
 bool
-optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -344,7 +344,7 @@ optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 }
 
 bool
-optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::de_prmm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }

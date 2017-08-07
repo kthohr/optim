@@ -29,15 +29,15 @@
 #include "optim.hpp"
 
 bool
-optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, optim_opt_settings* opt_params)
+optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
     
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
     //
     const int n_vals = init_out_vals.n_elem;
 
@@ -109,9 +109,9 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 }
 
 bool
-optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -121,9 +121,9 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 }
 
 bool
-optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out, optim_opt_settings& opt_params)
+optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out, opt_settings& settings)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }
 
 //
@@ -132,15 +132,15 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 bool
 optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                    std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                   arma::vec* value_out, optim_opt_settings* opt_params)
+                   arma::vec* value_out, opt_settings* settings)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
     
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
     //
     //int n_vals = init_out_vals.n_elem;
 
@@ -219,9 +219,9 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               optim_opt_settings& opt_params)
+               opt_settings& settings)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,&opt_params);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,&settings);
 }
 
 bool
@@ -235,24 +235,24 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               arma::vec& value_out, optim_opt_settings& opt_params)
+               arma::vec& value_out, opt_settings& settings)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,&opt_params);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,&settings);
 }
 
 //
 // derivative-free method of Li and Fukushima (2000)
 
 bool
-optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, optim_opt_settings* opt_params)
+optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
     
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
     
     const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
     //
@@ -349,9 +349,9 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 }
 
 bool
-optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -361,9 +361,9 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 }
 
 bool
-optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out, optim_opt_settings& opt_params)
+optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out, opt_settings& settings)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }
 
 //
@@ -372,15 +372,15 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 bool
 optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                       std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                      arma::vec* value_out, optim_opt_settings* opt_params)
+                      arma::vec* value_out, opt_settings* settings)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
     
-    const int conv_failure_switch = (opt_params) ? opt_params->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (opt_params) ? opt_params->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (opt_params) ? opt_params->err_tol : OPTIM_DEFAULT_ERR_TOL;
+    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
+    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
+    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
     
     const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
     //
@@ -484,9 +484,9 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               optim_opt_settings& opt_params)
+               opt_settings& settings)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,&opt_params);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,&settings);
 }
 
 bool
@@ -500,9 +500,9 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               arma::vec& value_out, optim_opt_settings& opt_params)
+               arma::vec& value_out, opt_settings& settings)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,&opt_params);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,&settings);
 }
 
 //

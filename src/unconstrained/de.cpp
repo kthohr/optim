@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params_inp)
+optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
 {
     bool success = false;
 
@@ -39,26 +39,26 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // DE settings
 
-    optim_opt_settings opt_params;
+    opt_settings settings;
 
-    if (opt_params_inp) {
-        opt_params = *opt_params_inp;
+    if (settings_inp) {
+        settings = *settings_inp;
     }
 
-    const int conv_failure_switch = opt_params.conv_failure_switch;
-    const double err_tol = opt_params.err_tol;
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const double err_tol = settings.err_tol;
 
-    const int n_pop = (opt_params.de_n_pop > 0) ? opt_params.de_n_pop : 100;
-    const int n_gen = (opt_params.de_n_gen > 0) ? opt_params.de_n_gen : 1000;
-    const int check_freq = (opt_params.de_check_freq > 0) ? opt_params.de_check_freq : n_gen ;
+    const int n_pop = (settings.de_n_pop > 0) ? settings.de_n_pop : 100;
+    const int n_gen = (settings.de_n_gen > 0) ? settings.de_n_gen : 1000;
+    const int check_freq = (settings.de_check_freq > 0) ? settings.de_check_freq : n_gen ;
 
-    const int mutation_method = opt_params.de_mutation_method;
+    const int mutation_method = settings.de_mutation_method;
 
-    const double par_F = opt_params.de_par_F;
-    const double par_CR = opt_params.de_par_CR;
+    const double par_F = settings.de_par_F;
+    const double par_CR = settings.de_par_CR;
 
-    const arma::vec par_initial_lb = ((int) opt_params.de_lb.n_elem == n_vals) ? opt_params.de_lb : arma::zeros(n_vals,1) - 0.5;
-    const arma::vec par_initial_ub = ((int) opt_params.de_ub.n_elem == n_vals) ? opt_params.de_ub : arma::zeros(n_vals,1) + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.de_lb.n_elem == n_vals) ? settings.de_lb : arma::zeros(n_vals,1) - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.de_ub.n_elem == n_vals) ? settings.de_ub : arma::zeros(n_vals,1) + 0.5;
 
     //
     // setup
@@ -190,9 +190,9 @@ optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -202,7 +202,7 @@ optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }

@@ -70,11 +70,11 @@ int main()
 
     //
     // test 6
-    optim::optim_opt_settings opt_settings_6;
+    optim::opt_settings settings_6;
 
-    opt_settings_6.de_lb = arma::zeros(2,1) - 2.0;
-    opt_settings_6.de_ub = arma::zeros(2,1) + 2.0;
-    opt_settings_6.de_n_pop = 200;
+    settings_6.de_lb = arma::zeros(2,1) - 2.0;
+    settings_6.de_ub = arma::zeros(2,1) + 2.0;
+    settings_6.de_n_pop = 200;
 
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
@@ -121,10 +121,10 @@ int main()
 
     //
     // test 9
-    optim::optim_opt_settings opt_settings_9;
+    optim::opt_settings settings_9;
     
-    opt_settings_9.de_lb = arma::zeros(2,1) - 2.0;
-    opt_settings_9.de_ub = arma::zeros(2,1) + 2.0;
+    settings_9.de_lb = arma::zeros(2,1) - 2.0;
+    settings_9.de_ub = arma::zeros(2,1) + 2.0;
 
     arma::vec x_9 = arma::zeros(2,1);
     x_9(0) = -11.0;
@@ -142,7 +142,7 @@ int main()
     //
     // for coverage
 
-    optim::optim_opt_settings opt_settings;
+    optim::opt_settings settings;
     double val_out;
 
     optim::de_prmm(x_1,unconstr_test_fn_1,nullptr);

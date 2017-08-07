@@ -144,7 +144,7 @@ int main()
     //
     // for coverage
 
-    optim::optim_opt_settings opt_settings;
+    optim::opt_settings settings;
     double val_out;
 
     optim::nm(x_1,unconstr_test_fn_1,nullptr);

@@ -32,31 +32,31 @@
 // without box constraints
 
 bool generic_optim_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, 
-                       double* value_out, optim_opt_settings* opt_params);
+                       double* value_out, opt_settings* settings);
 
 bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 
 bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                   optim_opt_settings& opt_params);
+                   opt_settings& settings);
 
 bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
                    double& value_out);
 
 bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                   double& value_out, optim_opt_settings& opt_params);
+                   double& value_out, opt_settings& settings);
 
 // with box constraints
 
 bool generic_optim_int(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                        std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                       double* value_out, optim_opt_settings* opt_params);
+                       double* value_out, opt_settings* settings);
 
 bool generic_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 
 bool generic_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                   optim_opt_settings& opt_params);
+                   opt_settings& settings);
 
 bool generic_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
@@ -64,7 +64,7 @@ bool generic_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, cons
 
 bool generic_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                   double& value_out, optim_opt_settings& opt_params);
+                   double& value_out, opt_settings& settings);
 
 // jacobian adjustment for box constraints
 arma::mat jacob_matrix_logit(const arma::vec& trans_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds);

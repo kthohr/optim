@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, optim_opt_settings* opt_params_inp)
+optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
 {
     bool success = false;
 
@@ -39,17 +39,17 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     //
     //
 
-    optim_opt_settings opt_params;
+    opt_settings settings;
 
-    if (opt_params_inp) {
-        opt_params = *opt_params_inp;
+    if (settings_inp) {
+        settings = *settings_inp;
     }
 
-    const int conv_failure_switch = opt_params.conv_failure_switch;
-    const double err_tol = opt_params.err_tol;
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const double err_tol = settings.err_tol;
 
-    const int n_pop = (opt_params.pso_n_pop > 0) ? opt_params.pso_n_pop : 100;
-    const int n_gen = (opt_params.pso_n_gen > 0) ? opt_params.pso_n_gen : 1000;
+    const int n_pop = (settings.pso_n_pop > 0) ? settings.pso_n_pop : 100;
+    const int n_gen = (settings.pso_n_gen > 0) ? settings.pso_n_gen : 1000;
 
     const int stag_limit = 50;
 
@@ -61,8 +61,8 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 
     const double par_CR = 0.7;
 
-    const arma::vec par_initial_lb = ((int) opt_params.pso_lb.n_elem == n_vals) ? opt_params.pso_lb : arma::zeros(n_vals,1) - 0.5;
-    const arma::vec par_initial_ub = ((int) opt_params.pso_ub.n_elem == n_vals) ? opt_params.pso_ub : arma::zeros(n_vals,1) + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.pso_lb.n_elem == n_vals) ? settings.pso_lb : arma::zeros(n_vals,1) - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.pso_ub.n_elem == n_vals) ? settings.pso_ub : arma::zeros(n_vals,1) + 0.5;
 
     arma::vec objfn_vals(n_pop);
     arma::mat P(n_pop,n_vals);
@@ -178,9 +178,9 @@ optim::pso_dv(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 }
 
 bool
-optim::pso_dv(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, optim_opt_settings& opt_params)
+optim::pso_dv(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return pso_dv_int(init_out_vals,opt_objfn,opt_data,nullptr,&opt_params);
+    return pso_dv_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
 }
 
 bool
@@ -190,7 +190,7 @@ optim::pso_dv(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 }
 
 bool
-optim::pso_dv(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, optim_opt_settings& opt_params)
+optim::pso_dv(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
 {
-    return pso_dv_int(init_out_vals,opt_objfn,opt_data,&value_out,&opt_params);
+    return pso_dv_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
 }

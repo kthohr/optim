@@ -30,17 +30,17 @@
 #define _optim_ipso_HPP
 
 bool ipso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-             double* value_out, optim_opt_settings* opt_params_inp);
+             double* value_out, opt_settings* settings_inp);
 
 bool ipso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 
 bool ipso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-         optim_opt_settings& opt_params);
+         opt_settings& settings);
 
 bool ipso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
          double& value_out);
 
 bool ipso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-         double& value_out, optim_opt_settings& opt_params);
+         double& value_out, opt_settings& settings);
 
 #endif
