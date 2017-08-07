@@ -89,9 +89,9 @@ int main()
     double val_out;
 
     optim::bfgs(x_1,unconstr_test_fn_1,nullptr);
-    optim::bfgs(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    optim::bfgs(x_1,unconstr_test_fn_1,nullptr,settings);
     optim::bfgs(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::bfgs(x_1,unconstr_test_fn_1,nullptr,val_out,opt_settings);
+    optim::bfgs(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
 
     return 0;
 }

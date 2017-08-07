@@ -12,15 +12,15 @@ int main()
 {
     //
     // test 1
-    optim::opt_settings settings;
+    optim::opt_settings settings_1;
 
-    settings.iter_max = 2000;
-    settings.conv_failure_switch = 1;
-    settings.cg_method = 5;
+    settings_1.iter_max = 2000;
+    settings_1.conv_failure_switch = 1;
+    settings_1.cg_method = 5;
 
     arma::vec x_1 = arma::ones(2,1);
 
-    bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,settings);
+    bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,settings_1);
 
     if (success_1) {
         std::cout << "cg: test_1 completed successfully." << std::endl;
@@ -99,39 +99,39 @@ int main()
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 1;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
     arma::cout << "cg: solution to test_2 using cg_method = 1\n" << x_1 << arma::endl;
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 2;
 
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
     arma::cout << "cg: solution to test_2 using cg_method = 2\n" << x_1 << arma::endl;
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 3;
 
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
     arma::cout << "cg: solution to test_2 using cg_method = 3\n" << x_1 << arma::endl;
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 4;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
     arma::cout << "cg: solution to test_2 using cg_method = 4\n" << x_1 << arma::endl;
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 5;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
     arma::cout << "cg: solution to test_2 using cg_method = 5\n" << x_1 << arma::endl;
     
     x_1 = arma::zeros(2,1);
     settings.cg_method = 6;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
     arma::cout << "cg: solution to test_2 using cg_method = 6\n" << x_1 << arma::endl;
 
@@ -139,7 +139,7 @@ int main()
 
     optim::cg(x_1,unconstr_test_fn_1,nullptr);
     optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out,opt_settings);
+    optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
 
     return 0;
 }

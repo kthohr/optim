@@ -34,14 +34,14 @@ int main()
     double val_out;
 
     optim::generic_constr_optim(x_c,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
-    optim::generic_constr_optim(x_c,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,opt_settings);
+    optim::generic_constr_optim(x_c,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,settings);
     optim::generic_constr_optim(x_c,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out);
-    optim::generic_constr_optim(x_c,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out,opt_settings);
+    optim::generic_constr_optim(x_c,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out,settings);
 
     optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
-    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,opt_settings);
+    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,settings);
     optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out);
-    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out,opt_settings);
+    optim::generic_constr_optim(x_1,lower_bounds,upper_bounds,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,val_out,settings);
 
     return 0;
 }

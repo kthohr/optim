@@ -148,9 +148,9 @@ int main()
     double val_out;
 
     optim::nm(x_1,unconstr_test_fn_1,nullptr);
-    optim::nm(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    optim::nm(x_1,unconstr_test_fn_1,nullptr,settings);
     optim::nm(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::nm(x_1,unconstr_test_fn_1,nullptr,val_out,opt_settings);
+    optim::nm(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
 
     return 0;
 }

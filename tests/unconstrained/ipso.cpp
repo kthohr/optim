@@ -81,7 +81,7 @@ int main()
 
     arma::vec x_6 = arma::ones(2,1) + 1.0;
 
-    bool success_6 = optim::ipso(x_6,unconstr_test_fn_6,&test_6_data,opt_settings_6);
+    bool success_6 = optim::ipso(x_6,unconstr_test_fn_6,&test_6_data,settings_6);
 
     if (success_6) {
         std::cout << "ipso: test_6 completed successfully." << std::endl;
@@ -131,7 +131,7 @@ int main()
 
     settings_9.pso_n_gen = 4000;
 
-    bool success_9 = optim::ipso(x_9,unconstr_test_fn_9,nullptr,opt_settings_9);
+    bool success_9 = optim::ipso(x_9,unconstr_test_fn_9,nullptr,settings_9);
 
     if (success_9) {
         std::cout << "ipso: test_9 completed successfully." << std::endl;
@@ -148,12 +148,12 @@ int main()
     double val_out;
 
     optim::ipso(x_1,unconstr_test_fn_1,nullptr);
-    optim::ipso(x_1,unconstr_test_fn_1,nullptr,opt_settings);
+    optim::ipso(x_1,unconstr_test_fn_1,nullptr,settings);
     optim::ipso(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::ipso(x_1,unconstr_test_fn_1,nullptr,val_out,opt_settings);
+    optim::ipso(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
 
     x_7 = arma::ones(2,1) + 1.0;
-    optim::ipso(x_7,unconstr_test_fn_7,nullptr,opt_settings);
+    optim::ipso(x_7,unconstr_test_fn_7,nullptr,settings);
 
     arma::cout << "ipso: solution to test_7:\n" << x_7 << arma::endl;
 

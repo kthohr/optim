@@ -34,14 +34,14 @@ int main()
     double val_out;
 
     optim::generic_optim(x_c,unconstr_test_fn_1,nullptr);
-    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,opt_settings);
+    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,settings);
     optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,val_out);
-    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,val_out,opt_settings);
+    optim::generic_optim(x_c,unconstr_test_fn_1,nullptr,val_out,settings);
 
     optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr);
-    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,opt_settings);
+    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,settings);
     optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,val_out);
-    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,val_out,opt_settings);
+    optim::generic_optim(x_1,lower_bounds,upper_bounds,unconstr_test_fn_5,nullptr,val_out,settings);
 
     return 0;
 }
