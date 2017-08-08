@@ -30,9 +30,9 @@
 
 bool optim::generic_constr_optim_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
                                      std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
-                                     double* value_out, opt_settings* settings)
+                                     double* value_out, opt_settings* settings_inp)
 {
-    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,value_out,settings);
+    return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,value_out,settings_inp);
 }
 
 bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
@@ -68,21 +68,31 @@ bool optim::generic_constr_optim(arma::vec& init_out_vals, std::function<double 
 bool optim::generic_constr_optim_int(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
 							         std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
                                      std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data,
-                                     double* value_out, opt_settings* settings)
+                                     double* value_out, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
 
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
-    
-    const double par_eta = (settings) ? settings->sumt_par_eta : OPTIM_DEFAULT_SUMT_PENALTY_GROWTH; // growth of penalty parameter
+    // const int n_vals = init_out_vals.n_elem;
 
-    arma::vec x = init_out_vals;
     //
+    // settings
+
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    const double par_eta = settings.sumt_par_eta; // growth of penalty parameter
+
     // lambda function that combines the objective function with the constraints
+
     std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* sumt_data)> sumt_objfn = [opt_objfn, opt_data, constr_fn, constr_data] (const arma::vec& vals_inp, arma::vec* grad_out, void* sumt_data) -> double {
         sumt_struct *d = reinterpret_cast<sumt_struct*>(sumt_data);
         double c_pen = d->c_pen;
@@ -117,29 +127,38 @@ bool optim::generic_constr_optim_int(arma::vec& init_out_vals, const arma::vec& 
         //
         return ret;
     };
+
     //
     // initialization
+
+    arma::vec x = init_out_vals;
+
     sumt_struct sumt_data;
     sumt_data.c_pen = 1.0;
 
     arma::vec x_p = x;
+
     //
     // begin loop
+
     int iter = 0;
     double err = 2*err_tol;
 
     while (err > err_tol && iter < iter_max) {
         iter++;
         //
-        generic_optim_int(x_p,lower_bounds,upper_bounds,sumt_objfn,&sumt_data,nullptr,settings);
+        generic_optim_int(x_p,lower_bounds,upper_bounds,sumt_objfn,&sumt_data,nullptr,settings_inp);
         err = arma::norm(x_p - x,2);
         //
         sumt_data.c_pen = par_eta*sumt_data.c_pen; // increase penalization parameter value
         x = x_p;
     }
+
     //
+    // end
+
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
-    //
+    
     return success;
 }
 

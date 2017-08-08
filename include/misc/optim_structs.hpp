@@ -44,8 +44,8 @@ struct opt_settings {
 
     int de_check_freq = -1;
 
-    double de_par_F = OPTIM_DEFAULT_DE_PAR_F;
-    double de_par_CR = OPTIM_DEFAULT_DE_PAR_CR;
+    double de_par_F = 0.8;
+    double de_par_CR = 0.9;
 
     double de_par_F_l = 0.1;
     double de_par_F_u = 1.0;

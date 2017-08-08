@@ -29,23 +29,34 @@
 #include "optim.hpp"
 
 bool
-optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings)
+optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
-    
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
-    //
+
     const int n_vals = init_out_vals.n_elem;
+
+    //
+    // Broyden settings
+
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    //
+    // initialization
 
     arma::vec x = init_out_vals;
 
     arma::mat B = arma::eye(n_vals,n_vals); // initial approx. to (inverse) Jacobian
-    //
-    // initialization
+
     arma::vec f_val = opt_objfn(x,opt_data);
 
     double err = arma::accu(arma::abs(f_val));
@@ -132,23 +143,34 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 bool
 optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                    std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                   arma::vec* value_out, opt_settings* settings)
+                   arma::vec* value_out, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
-    
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
+
+    // const int n_vals = init_out_vals.n_elem;
+
     //
-    //int n_vals = init_out_vals.n_elem;
+    // Broyden settings
+
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    //
+    // initialization
 
     arma::vec x = init_out_vals;
 
     arma::mat B = arma::inv(jacob_objfn(x,jacob_data)); // initial approx. to (inverse) Jacobian
-    //
-    // initialization
+
     arma::vec f_val = opt_objfn(x,opt_data);
 
     double err = arma::accu(arma::abs(f_val));
@@ -244,25 +266,36 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 // derivative-free method of Li and Fukushima (2000)
 
 bool
-optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings)
+optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
-    
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
-    
-    const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
-    //
+
     const int n_vals = init_out_vals.n_elem;
+
+    //
+    // Broyden settings
+
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
+
+    //
+    // initialization
 
     arma::vec x = init_out_vals;
 
     arma::mat B = arma::eye(n_vals,n_vals); // initial approx. to Jacobian
-    //
-    // initialization
+
     arma::vec f_val = opt_objfn(x,opt_data);
     double err = arma::accu(arma::abs(f_val));
 
@@ -301,8 +334,10 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     x = x_p;
     f_val = f_val_p;
     Fx = Fx_p;
+
     //
     // begin loop
+
     int iter = 0;
 
     while (err > err_tol && iter < iter_max) {
@@ -336,9 +371,12 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         f_val = f_val_p;
         Fx = Fx_p;
     }
+
     //
+    // end
+
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
-    //
+    
     return success;
 }
 
@@ -372,25 +410,36 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 bool
 optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                       std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                      arma::vec* value_out, opt_settings* settings)
+                      arma::vec* value_out, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
     bool success = false;
-    
-    const int conv_failure_switch = (settings) ? settings->conv_failure_switch : OPTIM_CONV_FAILURE_POLICY;
-    const int iter_max = (settings) ? settings->iter_max : OPTIM_DEFAULT_ITER_MAX;
-    const double err_tol = (settings) ? settings->err_tol : OPTIM_DEFAULT_ERR_TOL;
-    
-    const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
+
+    // const int n_vals = init_out_vals.n_elem;
+
     //
-    //int n_vals = init_out_vals.n_elem;
+    // Broyden settings
+
+    opt_settings settings;
+
+    if (settings_inp) {
+        settings = *settings_inp;
+    }
+
+    const int conv_failure_switch = settings.conv_failure_switch;
+    const int iter_max = settings.iter_max;
+    const double err_tol = settings.err_tol;
+
+    const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
+
+    //
+    // initialization
 
     arma::vec x = init_out_vals;
 
     arma::mat B = jacob_objfn(x,jacob_data); // Jacobian
-    //
-    // initialization
+
     arma::vec f_val = opt_objfn(x,opt_data);
     double err = arma::accu(arma::abs(f_val));
 
@@ -429,8 +478,10 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     x = x_p;
     f_val = f_val_p;
     Fx = Fx_p;
+
     //
     // begin loop
+
     int iter = 0;
 
     while (err > err_tol && iter < iter_max) {
@@ -468,9 +519,12 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         f_val = f_val_p;
         Fx = Fx_p;
     }
+
     //
+    // end
+
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
-    //
+    
     return success;
 }
 
@@ -520,19 +574,24 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
     const double beta = 0.9;
     const double eta_k = df_eta(k);
     double lambda = 1.0;
+
     //
     // check: || F(x_k + lambda*d_k) || <= ||F(x_k)||*(1+eta_k) - sigma_1*||lambda*d_k||^2
+
     double Fx = arma::norm(opt_objfn(x_vals,opt_data),2);
     double Fx_p = arma::norm(opt_objfn(x_vals + lambda*direc,opt_data),2);
     double direc_norm2 = arma::dot(direc,direc);
 
     double term_2 = sigma_1*std::pow(lambda,2)*direc_norm2;
     double term_3 = eta_k*Fx;
-    //
+    
     if (Fx_p <= Fx - term_2 + term_3) {
         return lambda;
     }
+
     //
+    // begin loop
+
     int iter = 0;
     
     while (1) {
