@@ -38,7 +38,7 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const int n_vals = init_out_vals.n_elem;
 
     //
-    // NM settings
+    // CG settings
 
     opt_settings settings;
 

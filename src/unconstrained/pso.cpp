@@ -37,7 +37,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const int n_vals = init_out_vals.n_elem;
 
     //
-    // 
+    // PSO settings
 
     opt_settings settings;
 
@@ -48,16 +48,33 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const int conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
-    const int n_pop = (settings.pso_n_pop > 0) ? settings.pso_n_pop : 100;
-    const int n_gen = (settings.pso_n_gen > 0) ? settings.pso_n_gen : 1000;
+    const bool center_particle = settings.pso_center_particle;
 
-    double par_w = 1.0;
-    const double par_damp = 0.99;
-    const double par_c_1 = 1.494;
-    const double par_c_2 = 1.494;
+    const int n_pop = (center_particle) ? settings.pso_n_pop + 1 : settings.pso_n_pop;
+    const int n_gen = settings.pso_n_gen;
+
+    const int inertia_method = settings.pso_inertia_method;
+
+    double par_w = settings.pso_par_initial_w;
+    const double par_w_max = settings.pso_par_w_max;
+    const double par_w_min = settings.pso_par_w_min;
+    const double par_damp = settings.pso_par_w_damp;
+
+    const int velocity_method = settings.pso_velocity_method;
+
+    double par_c_cog = settings.pso_par_c_cog;
+    double par_c_soc = settings.pso_par_c_soc;
+
+    const double par_initial_c_cog = settings.pso_par_initial_c_cog;
+    const double par_final_c_cog = settings.pso_par_final_c_cog;
+    const double par_initial_c_soc = settings.pso_par_initial_c_soc;
+    const double par_final_c_soc = settings.pso_par_final_c_soc;
 
     const arma::vec par_initial_lb = ((int) settings.pso_lb.n_elem == n_vals) ? settings.pso_lb : arma::zeros(n_vals,1) - 0.5;
     const arma::vec par_initial_ub = ((int) settings.pso_ub.n_elem == n_vals) ? settings.pso_ub : arma::zeros(n_vals,1) + 0.5;
+
+    //
+    //
 
     arma::vec objfn_vals(n_pop);
     arma::mat P(n_pop,n_vals);
@@ -66,7 +83,11 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     #pragma omp parallel for
 #endif
     for (int i=0; i < n_pop; i++) {
-        P.row(i) = init_out_vals.t() + par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
+        if (center_particle && i == n_pop - 1) {
+            P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / (double) (n_pop-1); // center vector
+        } else {
+            P.row(i) = init_out_vals.t() + par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
+        }
 
         double prop_objfn_val = opt_objfn(P.row(i).t(),nullptr,opt_data);
 
@@ -94,15 +115,35 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
     while (err > err_tol && iter < n_gen) {
         iter++;
+        
+        //
+        // parameter updating
 
+        if (inertia_method == 1) {
+            par_w = par_w_min + (par_w_max - par_w_min) * (iter + 1) / n_gen;
+        } else {
+            par_w *= par_damp;
+        }
+
+        if (velocity_method == 2) {
+            par_c_cog = par_initial_c_cog - (par_initial_c_cog - par_final_c_cog) * (iter + 1) / n_gen;
+            par_c_soc = par_initial_c_soc - (par_initial_c_soc - par_final_c_soc) * (iter + 1) / n_gen;
+        }
+
+        //
+        // population loop
 
 #ifdef OPTIM_OMP
         #pragma omp parallel for 
 #endif
         for (int i=0; i < n_pop; i++) {
-            V.row(i) = par_w*V.row(i) + par_c_1*arma::randu(1,n_vals)%(best_vecs.row(i) - P.row(i)) + par_c_2*arma::randu(1,n_vals)%(global_best_vec - P.row(i));
 
-            P.row(i) += V.row(i);
+            if ( !(center_particle && i == n_pop - 1) ) {
+                V.row(i) = par_w*V.row(i) + par_c_cog*arma::randu(1,n_vals)%(best_vecs.row(i) - P.row(i)) + par_c_soc*arma::randu(1,n_vals)%(global_best_vec - P.row(i));
+                P.row(i) += V.row(i);
+            } else {
+                P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / (double) (n_pop-1); // center vector
+            }
             
             //
 
@@ -118,9 +159,6 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
             global_best_val = best_vals.min();
             global_best_vec = best_vecs.row( best_vals.index_min() );
         }
-
-        par_w *= par_damp;
-        // par_w = std::min(0.4,par_w*par_damp);
     }
     //
     error_reporting(init_out_vals,global_best_vec.t(),opt_objfn,opt_data,success,value_out,err,err_tol,iter,n_gen,conv_failure_switch);

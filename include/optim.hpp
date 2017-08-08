@@ -46,7 +46,6 @@ namespace optim
     #include "unconstrained/nm.hpp"
     #include "unconstrained/pso.hpp"
     #include "unconstrained/pso_dv.hpp"
-    #include "unconstrained/ipso.hpp"
 
     // constrained optimization
     #include "constrained/sumt.hpp"

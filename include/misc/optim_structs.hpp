@@ -58,14 +58,35 @@ struct opt_settings {
 
     // Nelder-Mead
     bool nm_adaptive= true;
+
     double nm_par_alpha = 1.0; // reflection parameter
     double nm_par_beta  = 0.5; // contraction parameter
     double nm_par_gamma = 2.0; // expansion parameter
     double nm_par_delta = 0.5; // shrinkage parameter
 
     // PSO
-    int pso_n_pop = -1;
-    int pso_n_gen = -1;
+    bool pso_center_particle = true;
+
+    int pso_n_pop = 100;
+    int pso_n_gen = 1000;
+
+    int pso_inertia_method = 1; // 1 for linear decreasing between w_min and w_max; 2 for dampening
+
+    double pso_par_initial_w = 1.0;
+    double pso_par_w_damp = 0.99;
+
+    double pso_par_w_min = 0.10;
+    double pso_par_w_max = 0.99;
+
+    int pso_velocity_method = 1; // 1 for fixed; 2 for linear
+
+    double pso_par_c_cog = 2.0;
+    double pso_par_c_soc = 2.0;
+
+    double pso_par_initial_c_cog = 2.5;
+    double pso_par_final_c_cog   = 0.5;
+    double pso_par_initial_c_soc = 0.5;
+    double pso_par_final_c_soc   = 2.5;
 
     arma::vec pso_lb; // this will default to -0.5
     arma::vec pso_ub; // this will default to  0.5
