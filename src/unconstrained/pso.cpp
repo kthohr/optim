@@ -73,8 +73,16 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const arma::vec par_initial_lb = ((int) settings.pso_lb.n_elem == n_vals) ? settings.pso_lb : arma::zeros(n_vals,1) - 0.5;
     const arma::vec par_initial_ub = ((int) settings.pso_ub.n_elem == n_vals) ? settings.pso_ub : arma::zeros(n_vals,1) + 0.5;
 
+    const bool par_bounds = settings.pso_par_bounds;
+
+    arma::rowvec par_lb = par_initial_lb.t();
+    arma::rowvec par_ub = par_initial_ub.t();
+
+    arma::rowvec V_max = 0.5*(par_ub - par_lb);
+    arma::rowvec V_min = - V_max;
+
     //
-    //
+    // initialize
 
     arma::vec objfn_vals(n_pop);
     arma::mat P(n_pop,n_vals);
@@ -91,7 +99,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
         double prop_objfn_val = opt_objfn(P.row(i).t(),nullptr,opt_data);
 
-        if (std::isnan(prop_objfn_val)) {
+        if (!std::isfinite(prop_objfn_val)) {
             prop_objfn_val = BIG_POS_VAL;
         }
         
@@ -140,14 +148,36 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
             if ( !(center_particle && i == n_pop - 1) ) {
                 V.row(i) = par_w*V.row(i) + par_c_cog*arma::randu(1,n_vals)%(best_vecs.row(i) - P.row(i)) + par_c_soc*arma::randu(1,n_vals)%(global_best_vec - P.row(i));
+
+                if (par_bounds) {
+                    V.row(i) = arma::min(V.row(i),V_max);
+                    V.row(i) = arma::max(V.row(i),V_min);
+                }
+
                 P.row(i) += V.row(i);
+
+                if (par_bounds) {
+                    P.row(i) = arma::min(P.row(i),par_lb);
+                    P.row(i) = arma::max(P.row(i),par_ub);
+                }
             } else {
                 P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / (double) (n_pop-1); // center vector
+
+                if (par_bounds) {
+                    P.row(i) = arma::min(P.row(i),par_lb);
+                    P.row(i) = arma::max(P.row(i),par_ub);
+                }
             }
             
             //
 
-            objfn_vals(i) = opt_objfn(P.row(i).t(),nullptr,opt_data);
+            double prop_objfn_val = opt_objfn(P.row(i).t(),nullptr,opt_data);
+
+            if (!std::isfinite(prop_objfn_val)) {
+                prop_objfn_val = BIG_POS_VAL;
+            }
+        
+            objfn_vals(i) = prop_objfn_val;
                 
             if (objfn_vals(i) < best_vals(i)) {
                 best_vals(i) = objfn_vals(i);

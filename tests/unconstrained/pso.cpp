@@ -142,6 +142,31 @@ int main()
     arma::cout << "pso: solution to test_9:\n" << x_9 << arma::endl;
 
     //
+    // test 10
+    optim::opt_settings settings_10;
+
+    settings_10.pso_center_particle = false;
+    settings_10.pso_par_bounds = true;
+
+    arma::vec x_10 = arma::zeros(2,1);
+
+    settings_10.pso_lb = arma::zeros(2,1) - 10.0;
+    settings_10.pso_ub = arma::zeros(2,1) + 10.0;
+
+    settings_10.pso_n_pop = 5000;
+    settings_10.pso_n_gen = 4000;
+
+    bool success_10 = optim::pso(x_10,unconstr_test_fn_10,nullptr,settings_10);
+
+    if (success_10) {
+        std::cout << "pso: test_10 completed successfully." << std::endl;
+    } else {
+        std::cout << "pso: test_10 completed unsuccessfully." << std::endl;
+    }
+
+    arma::cout << "pso: solution to test_10:\n" << x_10 << arma::endl;
+
+    //
     // for coverage
 
     optim::opt_settings settings;

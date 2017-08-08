@@ -16,25 +16,33 @@
   ##
   ################################################################################*/
 
-#ifndef OPTIMLIB_TEST_INCLUDES
-#define OPTIMLIB_TEST_INCLUDES
+//
+// this example is from
+// https://en.wikipedia.org/wiki/Test_functions_for_optimization
+//
+// Table function:
+//
+// f(x,y) = -abs( sin(x)cos(y)exp( abs(1 - sqrt(x^2 + y^2)/pi) ) )
+// -10 <= x,y <= 10
+//
+// there are four solutions: (8.05502,9.66459), (-8.05502,9.66459), (8.05502,-9.66459), (-8.05502,-9.66459)
+//
 
-#include "unconstr_test_fn_1.hpp"
-#include "unconstr_test_fn_2.hpp"
-#include "unconstr_test_fn_3.hpp"
-#include "unconstr_test_fn_4.hpp"
-#include "unconstr_test_fn_5.hpp"
-#include "unconstr_test_fn_6.hpp"
-#include "unconstr_test_fn_7.hpp"
-#include "unconstr_test_fn_8.hpp"
-#include "unconstr_test_fn_9.hpp"
-#include "unconstr_test_fn_10.hpp"
+#ifndef _optim_test_fn_10_HPP
+#define _optim_test_fn_10_HPP
 
-#include "constr_test_fn_1.hpp"
-#include "constr_test_fn_2.hpp"
-#include "constr_test_fn_3.hpp"
+double unconstr_test_fn_10(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
 
-#include "zeros_test_fn_1.hpp"
-#include "zeros_test_fn_2.hpp"
+double 
+unconstr_test_fn_10(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+{
+    const double x = vals_inp(0);
+    const double y = vals_inp(1);
+    const double pi = arma::datum::pi;
+
+    double obj_val = - std::abs( std::sin(x)*std::cos(y)*std::exp( std::abs(1.0 - std::sqrt(x*x + y*y)/pi) ) );
+    //
+    return obj_val;
+}
 
 #endif

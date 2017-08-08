@@ -37,8 +37,8 @@ double unconstr_test_fn_9(const arma::vec& vals_inp, arma::vec* grad_out, void* 
 double 
 unconstr_test_fn_9(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
-    double x = vals_inp(0);
-    double y = vals_inp(1);
+    const double x = vals_inp(0);
+    const double y = vals_inp(1);
 
     double obj_val = 100*std::sqrt(std::abs(y - 0.01*x*x)) + 0.01*std::abs(x + 10);
     //

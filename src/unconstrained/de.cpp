@@ -75,7 +75,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
 
-        if (std::isnan(prop_objfn_val)) {
+        if (!std::isfinite(prop_objfn_val)) {
             prop_objfn_val = BIG_POS_VAL;
         }
         
@@ -145,7 +145,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             prop_objfn_val = opt_objfn(X_prop,nullptr,opt_data);
 
-            if (std::isnan(prop_objfn_val)) {
+            if (!std::isfinite(prop_objfn_val)) {
                 prop_objfn_val = BIG_POS_VAL;
             }
             

@@ -90,6 +90,8 @@ struct opt_settings {
 
     arma::vec pso_lb; // this will default to -0.5
     arma::vec pso_ub; // this will default to  0.5
+
+    bool pso_par_bounds = false;
 };
 
 #endif
