@@ -32,7 +32,7 @@
 // without box constraints
 
 bool generic_optim_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, 
-                       double* value_out, opt_settings* settings);
+                       double* value_out, opt_settings* settings_inp);
 
 bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 
@@ -49,7 +49,7 @@ bool generic_optim(arma::vec& init_out_vals, std::function<double (const arma::v
 
 bool generic_optim_int(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                        std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                       double* value_out, opt_settings* settings);
+                       double* value_out, opt_settings* settings_inp);
 
 bool generic_optim(arma::vec& init_out_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds, 
                    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);

@@ -32,7 +32,7 @@
 // without jacobian
 
 bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                 arma::vec* value_out, opt_settings* settings);
+                 arma::vec* value_out, opt_settings* settings_inp);
 
 bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
 
@@ -49,7 +49,7 @@ bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec&
 
 bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                  std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                 arma::vec* value_out, opt_settings* settings);
+                 arma::vec* value_out, opt_settings* settings_inp);
 
 bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
              std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data);
@@ -69,7 +69,7 @@ bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec&
 // derivative-free method
 
 bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                    arma::vec* value_out, opt_settings* settings);
+                    arma::vec* value_out, opt_settings* settings_inp);
 
 bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
 
@@ -86,7 +86,7 @@ bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::v
 
 bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                     std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                    arma::vec* value_out, opt_settings* settings);
+                    arma::vec* value_out, opt_settings* settings_inp);
 
 bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                 std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data);
