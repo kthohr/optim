@@ -329,7 +329,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     arma::vec s = x_p - x;
     arma::vec y = f_val_p - f_val;
 
-    B += (y - B*s) * s.t() / arma::dot(s,s); // step 5
+    // B += (y - B*s) * s.t() / arma::dot(s,s); // step 5
+    B += (s - B*y) * y.t() / arma::dot(y,y);
     //
     x = x_p;
     f_val = f_val_p;
@@ -343,7 +344,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     while (err > err_tol && iter < iter_max) {
         iter++;
 
-        d = arma::solve(B,-f_val);
+        // d = arma::solve(B,-f_val);
+        d = - B*f_val;
         f_val_p = opt_objfn(x + d,opt_data);
 
         err = arma::accu(arma::abs(f_val));
@@ -365,7 +367,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         arma::vec s = x_p - x;
         arma::vec y = f_val_p - f_val;
 
-        B += (y - B*s) * s.t() / arma::dot(s,s);
+        // B += (y - B*s) * s.t() / arma::dot(s,s);
+        B += (s - B*y) * y.t() / arma::dot(y,y); // update B
         //
         x = x_p;
         f_val = f_val_p;
@@ -473,7 +476,10 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     arma::vec s = x_p - x;
     arma::vec y = f_val_p - f_val;
 
-    B += (y - B*s) * s.t() / arma::dot(s,s); // step 5
+    B = arma::inv(B); // switch to B^{-1}
+
+    // B += (y - B*s) * s.t() / arma::dot(s,s); // step 5
+    B += (s - B*y) * y.t() / arma::dot(y,y); // update B
     //
     x = x_p;
     f_val = f_val_p;
@@ -487,7 +493,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     while (err > err_tol && iter < iter_max) {
         iter++;
 
-        d = arma::solve(B,-f_val);
+        // d = arma::solve(B,-f_val);
+        d = - B*f_val;
         f_val_p = opt_objfn(x + d,opt_data);
 
         err = arma::accu(arma::abs(f_val));
@@ -510,9 +517,11 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         arma::vec y = f_val_p - f_val;
 
         if (iter % 5 == 0) {
-            B = jacob_objfn(x_p,jacob_data);
+            // B = jacob_objfn(x_p,jacob_data);
+            B = arma::inv(jacob_objfn(x_p,jacob_data));
         } else {
-            B += (y - B*s) * s.t() / arma::dot(s,s);
+            // B += (y - B*s) * s.t() / arma::dot(s,s);
+            B += (s - B*y) * y.t() / arma::dot(y,y); // update B
         }
         //
         x = x_p;
