@@ -33,7 +33,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 {
     bool success = false;
 
-    const double BIG_POS_VAL = OPTIM_BIG_POS_NUM;
+    const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
     const int n_vals = init_out_vals.n_elem;
 
     //

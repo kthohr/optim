@@ -20,6 +20,6 @@
 
 // basic settings
 
-#ifndef OPTIM_BIG_POS_NUM
-    #define OPTIM_BIG_POS_NUM 1E09;
+#ifndef OPTIM_BIG_POS_VAL
+    #define OPTIM_BIG_POS_VAL 1E09;
 #endif

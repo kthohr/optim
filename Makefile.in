@@ -76,7 +76,7 @@ $(OPTIM_SRC_DIR)/zeros/%.o: $(OPTIM_SRC_DIR)/zeros/%.cpp
 
 # shared library
 $(OPTIM_DIR)/$(SHLIB): $(OBJECTS_OPTIM)
-	$(CXX) $(SHLIB_FLAGS) -o $@ $^ $(LP_LIBS) $(NLOPT_LIBS) $(LIBS)
+	$(CXX) $(SHLIB_FLAGS) -o $@ $^ $(LIBS)
 
 # cleanup and install
 .PHONY: clean
