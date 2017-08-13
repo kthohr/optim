@@ -19,12 +19,16 @@
 #ifndef OPTIMLIB_INCLUDES
 #define OPTIMLIB_INCLUDES
 
-#ifndef ARMA_DONT_USE_WRAPPER
-    #define ARMA_DONT_USE_WRAPPER
+#ifdef USE_RCPP_ARMADILLO
+    #include <RcppArmadillo.h>
+#else
+    #ifndef ARMA_DONT_USE_WRAPPER
+        #define ARMA_DONT_USE_WRAPPER
+    #endif
+    #include "armadillo"
 #endif
-#include "armadillo"
 
-#include "misc/OPTIM_OPTIONS.hpp"
+#include "misc/optim_options.hpp"
 
 namespace optim
 {
