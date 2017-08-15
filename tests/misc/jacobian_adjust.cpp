@@ -51,7 +51,7 @@ int main()
 
     arma::vec vals_trans = optim::transform(initial_vals,bounds_type,lb,ub);
 
-    double lj_val = optim::jacobian_adjust(vals_trans,bounds_type,lb,ub);
+    arma::mat j_mat = optim::jacobian_adjust(vals_trans,bounds_type,lb,ub);
 
     arma::vec vals_inv_trans = optim::inv_transform(vals_trans,bounds_type,lb,ub);
 
