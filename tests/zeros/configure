@@ -30,14 +30,16 @@ WDIR=${PWD}
 
 if [ -z ${ARMA_INCLUDE_PATH+x} ]; then 
     echo "Optim: ARMA_INCLUDE_PATH not set"
-    if [ -f /usr/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/usr/include"
+    if [ -f ${WDIR}/../../include/armadillo ]; then 
+        ARMA_INCLUDE_PATH="./../../include"
+    elif [ -f /usr/include/armadillo ]; then
+        ARMA_INCLUDE_PATH="/usr/include"
     elif [ -f /usr/local/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/usr/local/include"
+        ARMA_INCLUDE_PATH="/usr/local/include"
     elif [ -f /opt/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/opt/include"
+        ARMA_INCLUDE_PATH="/opt/include"
     elif [ -f /opt/local/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/opt/local/include"
+        ARMA_INCLUDE_PATH="/opt/local/include"
     else 
         echo "Optim tests: cannot find the armadillo library."
         echo ""

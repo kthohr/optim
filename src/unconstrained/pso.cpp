@@ -23,13 +23,13 @@
  * 08/04/2016
  *
  * This version:
- * 08/05/2017
+ * 08/14/2017
  */
 
 #include "optim.hpp"
 
 bool
-optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
+optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
 {
     bool success = false;
 
@@ -70,16 +70,29 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const double par_initial_c_soc = settings.pso_par_initial_c_soc;
     const double par_final_c_soc = settings.pso_par_final_c_soc;
 
-    const arma::vec par_initial_lb = ((int) settings.pso_lb.n_elem == n_vals) ? settings.pso_lb : arma::zeros(n_vals,1) - 0.5;
-    const arma::vec par_initial_ub = ((int) settings.pso_ub.n_elem == n_vals) ? settings.pso_ub : arma::zeros(n_vals,1) + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.pso_init_lb.n_elem == n_vals) ? settings.pso_init_lb : arma::zeros(n_vals,1) - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.pso_init_ub.n_elem == n_vals) ? settings.pso_init_ub : arma::zeros(n_vals,1) + 0.5;
 
-    const bool par_bounds = settings.pso_par_bounds;
+    const bool vals_bound = settings.vals_bound;
+    
+    const arma::vec lower_bounds = settings.lower_bounds;
+    const arma::vec upper_bounds = settings.upper_bounds;
 
-    arma::rowvec par_lb = par_initial_lb.t();
-    arma::rowvec par_ub = par_initial_ub.t();
+    const arma::uvec bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
-    arma::rowvec V_max = 0.5*(par_ub - par_lb);
-    arma::rowvec V_min = - V_max;
+    // lambda function for box constraints
+
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
+        //
+
+        if (vals_bound) {
+            arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+            
+            return opt_objfn(vals_inv_trans,nullptr,opt_data);
+        } else {
+            return opt_objfn(vals_inp,nullptr,opt_data);
+        }
+    };
 
     //
     // initialize
@@ -104,6 +117,10 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
         }
         
         objfn_vals(i) = prop_objfn_val;
+
+        if (vals_bound) {
+            P.row(i) = arma::trans( transform(P.row(i).t(), bounds_type, lower_bounds, upper_bounds) );
+        }
     }
 
     arma::vec best_vals = objfn_vals;
@@ -149,29 +166,14 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
             if ( !(center_particle && i == n_pop - 1) ) {
                 V.row(i) = par_w*V.row(i) + par_c_cog*arma::randu(1,n_vals)%(best_vecs.row(i) - P.row(i)) + par_c_soc*arma::randu(1,n_vals)%(global_best_vec - P.row(i));
 
-                if (par_bounds) {
-                    V.row(i) = arma::min(V.row(i),V_max);
-                    V.row(i) = arma::max(V.row(i),V_min);
-                }
-
                 P.row(i) += V.row(i);
-
-                if (par_bounds) {
-                    P.row(i) = arma::min(P.row(i),par_lb);
-                    P.row(i) = arma::max(P.row(i),par_ub);
-                }
             } else {
                 P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / (double) (n_pop-1); // center vector
-
-                if (par_bounds) {
-                    P.row(i) = arma::min(P.row(i),par_lb);
-                    P.row(i) = arma::max(P.row(i),par_ub);
-                }
             }
             
             //
 
-            double prop_objfn_val = opt_objfn(P.row(i).t(),nullptr,opt_data);
+            double prop_objfn_val = box_objfn(P.row(i).t(),nullptr,opt_data);
 
             if (!std::isfinite(prop_objfn_val)) {
                 prop_objfn_val = BIG_POS_VAL;
@@ -191,31 +193,23 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
         }
     }
     //
-    error_reporting(init_out_vals,global_best_vec.t(),opt_objfn,opt_data,success,value_out,err,err_tol,iter,n_gen,conv_failure_switch);
+    if (vals_bound) {
+	    global_best_vec = arma::trans( inv_transform(global_best_vec.t(), bounds_type, lower_bounds, upper_bounds) );
+    }
+
+    error_reporting(init_out_vals,global_best_vec.t(),opt_objfn,opt_data,success,err,err_tol,iter,n_gen,conv_failure_switch,settings_inp);
     //
-    return success;
+    return true;
 }
 
 bool
 optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return pso_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
+    return pso_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 bool
 optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return pso_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
-}
-
-bool
-optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
-{
-    return pso_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
-}
-
-bool
-optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
-{
-    return pso_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
+    return pso_int(init_out_vals,opt_objfn,opt_data,&settings);
 }

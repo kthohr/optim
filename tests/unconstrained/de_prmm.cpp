@@ -72,8 +72,8 @@ int main()
     // test 6
     optim::opt_settings settings_6;
 
-    settings_6.de_lb = arma::zeros(2,1) - 2.0;
-    settings_6.de_ub = arma::zeros(2,1) + 2.0;
+    settings_6.de_init_lb = arma::zeros(2,1) - 2.0;
+    settings_6.de_init_ub = arma::zeros(2,1) + 2.0;
     settings_6.de_n_pop = 200;
 
     unconstr_test_fn_6_data test_6_data;
@@ -123,8 +123,8 @@ int main()
     // test 9
     optim::opt_settings settings_9;
     
-    settings_9.de_lb = arma::zeros(2,1) - 2.0;
-    settings_9.de_ub = arma::zeros(2,1) + 2.0;
+    settings_9.de_init_lb = arma::zeros(2,1) - 2.0;
+    settings_9.de_init_ub = arma::zeros(2,1) + 2.0;
 
     arma::vec x_9 = arma::zeros(2,1);
     x_9(0) = -11.0;
@@ -143,17 +143,28 @@ int main()
     // for coverage
 
     optim::opt_settings settings;
-    double val_out;
 
     optim::de_prmm(x_1,unconstr_test_fn_1,nullptr);
     optim::de_prmm(x_1,unconstr_test_fn_1,nullptr,settings);
-    optim::de_prmm(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::de_prmm(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
 
     x_7 = arma::ones(2,1) + 1.0;
     optim::de_prmm(x_7,unconstr_test_fn_7,nullptr,settings);
 
     arma::cout << "de_prmm: solution to test_7:\n" << x_7 << arma::endl;
+
+    //
+
+    optim::opt_settings settings_2;
+
+    settings_2.vals_bound = true;
+    settings_2.lower_bounds = arma::zeros(2,1) - 4.5;
+    settings_2.upper_bounds = arma::zeros(2,1) + 4.5;
+
+    x_4 = arma::ones(2,1);
+    
+    success_4 = optim::de_prmm(x_4,unconstr_test_fn_4,nullptr,settings_2);
+
+    arma::cout << "de_prmm: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
 
     return 0;
 }

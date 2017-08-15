@@ -16,6 +16,8 @@
   ##
   ################################################################################*/
 
+#include "determine_bounds_type.hpp"
 #include "error_reporting.hpp"
-#include "logit_transform.hpp"
+#include "jacobian_adjust.hpp"
+#include "transform_vals.hpp"
 #include "unit_vec.hpp"

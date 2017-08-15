@@ -135,11 +135,19 @@ int main()
 
     arma::cout << "cg: solution to test_2 using cg_method = 6\n" << x_1 << arma::endl;
 
-    double val_out;
+    //
 
-    optim::cg(x_1,unconstr_test_fn_1,nullptr);
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::cg(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
+    optim::opt_settings settings_2;
+
+    settings_2.vals_bound = true;
+    settings_2.lower_bounds = arma::zeros(2,1) - 4.5;
+    settings_2.upper_bounds = arma::zeros(2,1) + 4.5;
+
+    x_4 = arma::ones(2,1);
+    
+    success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr,settings_2);
+
+    arma::cout << "cg: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
 
     return 0;
 }

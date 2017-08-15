@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings_inp)
+optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
@@ -108,7 +108,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         f_val = f_val_p;
     }
     //
-    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
+    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     //
     return success;
 }
@@ -116,25 +116,13 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
-}
-
-bool
-optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out)
-{
-    return broyden_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
-}
-
-bool
-optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out, opt_settings& settings)
-{
-    return broyden_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,&settings);
 }
 
 //
@@ -142,8 +130,7 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 
 bool
 optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                   std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                   arma::vec* value_out, opt_settings* settings_inp)
+                   std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
@@ -226,7 +213,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         f_val = f_val_p;
     }
     //
-    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
+    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     //
     return success;
 }
@@ -235,7 +222,7 @@ bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,nullptr);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr);
 }
 
 bool
@@ -243,30 +230,14 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
                opt_settings& settings)
 {
-    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,&settings);
-}
-
-bool
-optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-               std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               arma::vec& value_out)
-{
-    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,nullptr);
-}
-
-bool
-optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-               std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               arma::vec& value_out, opt_settings& settings)
-{
-    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,&settings);
+    return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&settings);
 }
 
 //
 // derivative-free method of Li and Fukushima (2000)
 
 bool
-optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec* value_out, opt_settings* settings_inp)
+optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
@@ -378,7 +349,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // end
 
-    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
+    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     
     return success;
 }
@@ -386,25 +357,13 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
-}
-
-bool
-optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out)
-{
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
-}
-
-bool
-optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, arma::vec& value_out, opt_settings& settings)
-{
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,&settings);
 }
 
 //
@@ -412,8 +371,7 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 
 bool
 optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                      std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-                      arma::vec* value_out, opt_settings* settings_inp)
+                      std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
@@ -532,7 +490,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // end
 
-    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
+    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     
     return success;
 }
@@ -541,31 +499,14 @@ bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,nullptr);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr);
 }
 
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-               std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               opt_settings& settings)
+               std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, opt_settings& settings)
 {
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr,&settings);
-}
-
-bool
-optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-               std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               arma::vec& value_out)
-{
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,nullptr);
-}
-
-bool
-optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-               std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
-               arma::vec& value_out, opt_settings& settings)
-{
-    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&value_out,&settings);
+    return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&settings);
 }
 
 //

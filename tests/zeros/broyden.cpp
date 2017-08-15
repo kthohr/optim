@@ -50,13 +50,10 @@ int main()
     //
     // coverage tests
 
-    arma::vec val_out;
     optim::opt_settings settings;
 
     optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
     optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,settings);
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,val_out);
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,val_out,settings);
 
     //
     // test 1
@@ -93,8 +90,6 @@ int main()
 
     optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
     optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,settings);
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out);
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out,settings);
 
     //
     // test 1
@@ -131,8 +126,6 @@ int main()
 
     optim::broyden(x_1,zeros_test_objfn_1,nullptr);
     optim::broyden(x_1,zeros_test_objfn_1,nullptr,settings);
-    optim::broyden(x_1,zeros_test_objfn_1,nullptr,val_out);
-    optim::broyden(x_1,zeros_test_objfn_1,nullptr,val_out,settings);
 
     //
     // test 1
@@ -169,8 +162,6 @@ int main()
 
     optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
     optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,settings);
-    optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out);
-    optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,val_out,settings);
 
 
     return 0;

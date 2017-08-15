@@ -72,8 +72,8 @@ int main()
     // test 6
     optim::opt_settings settings_6;
 
-    settings_6.pso_lb = arma::zeros(2,1) - 2.0;
-    settings_6.pso_ub = arma::zeros(2,1) + 2.0;
+    settings_6.pso_init_lb = arma::zeros(2,1) - 2.0;
+    settings_6.pso_init_ub = arma::zeros(2,1) + 2.0;
     settings_6.pso_n_pop = 1000;
 
     unconstr_test_fn_6_data test_6_data;
@@ -123,8 +123,8 @@ int main()
     // test 9
     optim::opt_settings settings_9;
     
-    settings_9.pso_lb = arma::zeros(2,1) - 2.0;
-    settings_9.pso_ub = arma::zeros(2,1) + 2.0;
+    settings_9.pso_init_lb = arma::zeros(2,1) - 2.0;
+    settings_9.pso_init_ub = arma::zeros(2,1) + 2.0;
 
     arma::vec x_9 = arma::zeros(2,1);
     x_9(0) = -11.0;
@@ -146,12 +146,15 @@ int main()
     optim::opt_settings settings_10;
 
     settings_10.pso_center_particle = false;
-    settings_10.pso_par_bounds = true;
+
+    settings_10.vals_bound = true;
+    settings_10.lower_bounds = arma::zeros(2,1) - 10.0;
+    settings_10.upper_bounds = arma::zeros(2,1) + 10.0;
 
     arma::vec x_10 = arma::zeros(2,1);
 
-    settings_10.pso_lb = arma::zeros(2,1) - 10.0;
-    settings_10.pso_ub = arma::zeros(2,1) + 10.0;
+    settings_10.pso_init_lb = arma::zeros(2,1) - 9.9;
+    settings_10.pso_init_ub = arma::zeros(2,1) + 9.9;
 
     settings_10.pso_n_pop = 5000;
     settings_10.pso_n_gen = 4000;
@@ -170,17 +173,28 @@ int main()
     // for coverage
 
     optim::opt_settings settings;
-    double val_out;
 
     optim::pso(x_1,unconstr_test_fn_1,nullptr);
     optim::pso(x_1,unconstr_test_fn_1,nullptr,settings);
-    optim::pso(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::pso(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
 
     x_7 = arma::ones(2,1) + 1.0;
     optim::pso(x_7,unconstr_test_fn_7,nullptr,settings);
 
     arma::cout << "pso: solution to test_7:\n" << x_7 << arma::endl;
+
+    //
+
+    optim::opt_settings settings_2;
+
+    settings_2.vals_bound = true;
+    settings_2.lower_bounds = arma::zeros(2,1) - 4.5;
+    settings_2.upper_bounds = arma::zeros(2,1) + 4.5;
+
+    x_4 = arma::ones(2,1);
+    
+    success_4 = optim::pso(x_4,unconstr_test_fn_4,nullptr,settings_2);
+
+    arma::cout << "pso: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
 
     return 0;
 }

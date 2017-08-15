@@ -47,15 +47,15 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     echo ""
     echo "Optim: ARMA_INCLUDE_PATH not set"
     if [ -f ${WDIR}/include/armadillo ]; then 
-        ARMA_INCLUDE_PATH="-I./include"
+        ARMA_INCLUDE_PATH="./include"
     elif [ -f /usr/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/usr/include"
+        ARMA_INCLUDE_PATH="/usr/include"
     elif [ -f /usr/local/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/usr/local/include"
+        ARMA_INCLUDE_PATH="/usr/local/include"
     elif [ -f /opt/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/opt/include"
+        ARMA_INCLUDE_PATH="/opt/include"
     elif [ -f /opt/local/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="-I/opt/local/include"
+        ARMA_INCLUDE_PATH="/opt/local/include"
     else 
         echo "Optim: cannot find armadillo files. Cloning from GitHub"
         echo ""
@@ -64,7 +64,7 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
         git clone -b unstable --single-branch https://github.com/conradsnicta/armadillo-code ${WDIR}/arma_tmp
         mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
         rm -rf ${WDIR}/arma_tmp
-        ARMA_INCLUDE_PATH="-I./include"
+        ARMA_INCLUDE_PATH="./include"
 
         echo ""
     fi

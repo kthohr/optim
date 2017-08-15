@@ -29,7 +29,7 @@
 #include "optim.hpp"
 
 bool
-optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
+optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
 {
     bool success = false;
 
@@ -57,29 +57,53 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const double par_F = settings.de_par_F;
     const double par_CR = settings.de_par_CR;
 
-    const arma::vec par_initial_lb = ((int) settings.de_lb.n_elem == n_vals) ? settings.de_lb : arma::zeros(n_vals,1) - 0.5;
-    const arma::vec par_initial_ub = ((int) settings.de_ub.n_elem == n_vals) ? settings.de_ub : arma::zeros(n_vals,1) + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.de_init_lb.n_elem == n_vals) ? settings.de_init_lb : arma::zeros(n_vals,1) - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.de_init_ub.n_elem == n_vals) ? settings.de_init_ub : arma::zeros(n_vals,1) + 0.5;
+
+    const bool vals_bound = settings.vals_bound;
+    
+    const arma::vec lower_bounds = settings.lower_bounds;
+    const arma::vec upper_bounds = settings.upper_bounds;
+
+    const arma::uvec bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+
+    // lambda function for box constraints
+
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
+        //
+
+        if (vals_bound) {
+            arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+            
+            return opt_objfn(vals_inv_trans,nullptr,opt_data);
+        } else {
+            return opt_objfn(vals_inp,nullptr,opt_data);
+        }
+    };
 
     //
     // setup
 
-    double prop_objfn_val = 0.0;
-    arma::vec X_prop = init_out_vals, objfn_vals(n_pop);
+    arma::vec objfn_vals(n_pop);
     arma::mat X(n_pop,n_vals), X_next(n_pop,n_vals);
 
 #ifdef OPTIM_OMP
-    #pragma omp parallel for firstprivate(prop_objfn_val) 
+    #pragma omp parallel for
 #endif
     for (int i=0; i < n_pop; i++) {
         X_next.row(i) = init_out_vals.t() + par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
 
-        prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
+        double prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
 
         if (!std::isfinite(prop_objfn_val)) {
             prop_objfn_val = BIG_POS_VAL;
         }
         
         objfn_vals(i) = prop_objfn_val;
+
+        if (vals_bound) {
+            X_next.row(i) = arma::trans( transform(X_next.row(i).t(), bounds_type, lower_bounds, upper_bounds) );
+        }
     }
 
     double best_val = objfn_vals.min();
@@ -104,7 +128,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         // loop over population
 
 #ifdef OPTIM_OMP
-        #pragma omp parallel for firstprivate(prop_objfn_val,X_prop) 
+        #pragma omp parallel for
 #endif
         for (int i=0; i < n_pop; i++) {
 
@@ -127,6 +151,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
             arma::vec rand_unif = arma::randu(n_vals);
+            arma::rowvec X_prop(n_vals);
 
             for (int k=0; k < n_vals; k++) {
                 if ( rand_unif(k) < par_CR || k == j ) {
@@ -143,14 +168,14 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             //
 
-            prop_objfn_val = opt_objfn(X_prop,nullptr,opt_data);
+            double prop_objfn_val = box_objfn(X_prop.t(),nullptr,opt_data);
 
             if (!std::isfinite(prop_objfn_val)) {
                 prop_objfn_val = BIG_POS_VAL;
             }
             
             if (prop_objfn_val <= objfn_vals(i)) {
-                X_next.row(i) = X_prop.t();
+                X_next.row(i) = X_prop;
                 objfn_vals(i) = prop_objfn_val;
             } else {
                 X_next.row(i) = X.row(i);
@@ -178,31 +203,23 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         }
     }
     //
-    error_reporting(init_out_vals,best_sol_running.t(),opt_objfn,opt_data,success,value_out,err,err_tol,iter,n_gen,conv_failure_switch);
+    if (vals_bound) {
+	    best_sol_running = arma::trans( inv_transform(best_sol_running.t(), bounds_type, lower_bounds, upper_bounds) );
+    }
+
+    error_reporting(init_out_vals,best_sol_running.t(),opt_objfn,opt_data,success,err,err_tol,iter,n_gen,conv_failure_switch,settings_inp);
     //
-    return success;
+    return true;
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
+    return de_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 bool
 optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
-}
-
-bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
-{
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
-}
-
-bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
-{
-    return de_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
+    return de_int(init_out_vals,opt_objfn,opt_data,&settings);
 }

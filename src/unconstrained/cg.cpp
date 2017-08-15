@@ -23,13 +23,13 @@
  * 12/23/2016
  *
  * This version:
- * 07/19/2017
+ * 08/14/2017
  */
 
 #include "optim.hpp"
 
 bool
-optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double* value_out, opt_settings* settings_inp)
+optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
     //
@@ -56,15 +56,64 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
     const double wolfe_cons_2 = 0.10;
 
+    const bool vals_bound = settings.vals_bound;
+    
+    const arma::vec lower_bounds = settings.lower_bounds;
+    const arma::vec upper_bounds = settings.upper_bounds;
+
+    const arma::uvec bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+
+    // lambda function for box constraints
+
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
+        //
+
+        if (vals_bound) {
+
+            arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+            
+            double ret;
+            
+            if (grad_out) {
+                arma::vec grad_obj = *grad_out;
+
+                ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
+
+                arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
+
+                // *grad_out = jacob_matrix.t() * grad_obj; // correct gradient for transformation
+                *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
+            } else {
+                ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
+            }
+
+            return ret;
+        } else {
+            double ret = opt_objfn(vals_inp,grad_out,opt_data);
+
+            return ret;
+        }
+    };
+
     //
     // initialization
 
     arma::vec x = init_out_vals;
+
+    if (!x.is_finite()) {
+        printf("bfgs error: non-finite initial value(s).\n");
+        
+        return false;
+    }
+
+    if (vals_bound) { // should we transform the parameters?
+	    x = transform(x, bounds_type, lower_bounds, upper_bounds);
+    }
     
     double t_init = 1;
 
     arma::vec grad(n_vals); // gradient
-    opt_objfn(x,&grad,opt_data);
+    box_objfn(x,&grad,opt_data);
 
     double err = arma::accu(arma::abs(grad));
     if (err <= err_tol) {
@@ -74,7 +123,7 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     arma::vec d = - grad, d_p;
     arma::vec x_p = x, grad_p = grad;
 
-    double t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, opt_objfn, opt_data);
+    double t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
     err = arma::accu(arma::abs(grad_p)); // check updated values
     if (err <= err_tol) {
@@ -97,7 +146,7 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         grad = grad_p;
 
-        t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, opt_objfn, opt_data);
+        t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
         //
         err = arma::accu(arma::abs(grad_p));
         // err = std::max( arma::norm(grad_p, 2), arma::norm(x_p - x, 2) );
@@ -106,7 +155,11 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         x = x_p;
     }
     //
-    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,value_out,err,err_tol,iter,iter_max,conv_failure_switch);
+    if (vals_bound) {
+	    x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
+    }
+
+    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     //
     return success;
 }
@@ -114,25 +167,13 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
-    return cg_int(init_out_vals,opt_objfn,opt_data,nullptr,nullptr);
+    return cg_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
 {
-    return cg_int(init_out_vals,opt_objfn,opt_data,nullptr,&settings);
-}
-
-bool
-optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out)
-{
-    return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,nullptr);
-}
-
-bool
-optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, double& value_out, opt_settings& settings)
-{
-    return cg_int(init_out_vals,opt_objfn,opt_data,&value_out,&settings);
+    return cg_int(init_out_vals,opt_objfn,opt_data,&settings);
 }
 
 //

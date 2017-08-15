@@ -23,20 +23,20 @@
  * 06/11/2016
  *
  * This version:
- * 07/19/2017
+ * 08/14/2017
  */
 
 #ifndef _optim_error_reporting_HPP
 #define _optim_error_reporting_HPP
 
 void error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                     bool& success, double* value_out, const double err, const double err_tol, const int iter, const int iter_max, const int conv_failure_switch);
+                     bool& success, const double err, const double err_tol, const int iter, const int iter_max, const int conv_failure_switch, opt_settings* settings_inp);
 
 void error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                     bool& success, double* value_out, const int conv_failure_switch);
+                     bool& success, const int conv_failure_switch, opt_settings* settings_inp);
 
 void error_reporting(arma::vec& out_vals, const arma::vec& x_p, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                     bool& success, arma::vec* value_out, const double err, const double err_tol, const int iter, const int iter_max, const int conv_failure_switch);
+                     bool& success, const double err, const double err_tol, const int iter, const int iter_max, const int conv_failure_switch, opt_settings* settings_inp);
 
 #include "error_reporting.ipp"
 

@@ -86,12 +86,19 @@ int main()
     // for coverage
 
     optim::opt_settings settings;
-    double val_out;
 
     optim::bfgs(x_1,unconstr_test_fn_1,nullptr);
     optim::bfgs(x_1,unconstr_test_fn_1,nullptr,settings);
-    optim::bfgs(x_1,unconstr_test_fn_1,nullptr,val_out);
-    optim::bfgs(x_1,unconstr_test_fn_1,nullptr,val_out,settings);
+
+    settings.vals_bound = true;
+    settings.lower_bounds = arma::zeros(2,1) - 4.5;
+    settings.upper_bounds = arma::zeros(2,1) + 4.5;
+
+    x_4 = arma::ones(2,1);
+    
+    success_4 = optim::bfgs(x_4,unconstr_test_fn_4,nullptr,settings);
+
+    arma::cout << "bfgs: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
 
     return 0;
 }
