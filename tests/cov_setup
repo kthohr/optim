@@ -10,11 +10,6 @@ cd constrained
 make
 ./cov_check
 
-cd ../generic
-./configure -b dev -c
-make
-./cov_check
-
 cd ../misc
 ./configure -b dev -c
 make
