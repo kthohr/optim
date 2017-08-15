@@ -25,7 +25,6 @@ int main()
     arma::vec x_p = arma::ones(2,1);
 
     bool success = false;
-    double value_out = 1.0;
 
     double err_1 = 0.5;
     double err_2 = 1.5;
@@ -42,56 +41,55 @@ int main()
 
     int conv_failure_switch = 0;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
 
     conv_failure_switch = 1;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
 
     conv_failure_switch = 2;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
 
     conv_failure_switch = 3; // error
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
 
     //
     // error_reporting_2
 
     conv_failure_switch = 0;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,conv_failure_switch,settings);
 
     conv_failure_switch = 2;
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,conv_failure_switch,settings);
 
     conv_failure_switch = 3; // error
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,&value_out,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_1,success,conv_failure_switch,settings);
 
     //
     // error_reporting_3
 
     conv_failure_switch = 0;
-    arma::vec val_vec_out;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
 
     conv_failure_switch = 1;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
 
     conv_failure_switch = 2;
 
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_2,err_tol,iter_2,iter_max,conv_failure_switch,settings);
 
     conv_failure_switch = 3; // error
-    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,&val_vec_out,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
+    optim::error_reporting(out_vals,x_p,optim_simple_fn_2,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,settings);
 
     // done
 
