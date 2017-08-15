@@ -16,6 +16,16 @@
   ##
   ################################################################################*/
 
+/*
+ * Optimization control parameters
+ *
+ * Keith O'Hara
+ * 08/04/2016
+ *
+ * This version:
+ * 08/14/2017
+ */
+
 #ifndef optim_structs_HPP
 #define optim_structs_HPP
 

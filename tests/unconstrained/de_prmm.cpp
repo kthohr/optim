@@ -123,8 +123,23 @@ int main()
     // test 9
     optim::opt_settings settings_9;
     
-    settings_9.de_init_lb = arma::zeros(2,1) - 2.0;
-    settings_9.de_init_ub = arma::zeros(2,1) + 2.0;
+    settings_9.de_init_lb = arma::zeros(2,1);
+    settings_9.de_init_lb(0) = -13;
+    settings_9.de_init_lb(1) = -2;
+
+    settings_9.de_init_ub = arma::zeros(2,1);
+    settings_9.de_init_ub(0) = -9;
+    settings_9.de_init_ub(1) = 2;
+
+    settings_9.vals_bound = true;
+
+    settings_9.lower_bounds = arma::zeros(2,1);
+    settings_9.lower_bounds(0) = -15.0;
+    settings_9.lower_bounds(1) = -3.0;
+
+    settings_9.upper_bounds = arma::zeros(2,1);
+    settings_9.upper_bounds(0) = 15.0;
+    settings_9.upper_bounds(1) = 3.0;
 
     arma::vec x_9 = arma::zeros(2,1);
     x_9(0) = -11.0;
