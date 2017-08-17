@@ -75,8 +75,8 @@ struct opt_settings {
     double de_par_tau_F  = 0.1;
     double de_par_tau_CR = 0.1;
 
-    arma::vec de_init_lb; // this will default to -0.5
-    arma::vec de_init_ub; // this will default to  0.5
+    arma::vec de_initial_lb; // this will default to -0.5
+    arma::vec de_initial_ub; // this will default to  0.5
 
     // Nelder-Mead
     bool nm_adaptive= true;
@@ -110,8 +110,8 @@ struct opt_settings {
     double pso_par_initial_c_soc = 0.5;
     double pso_par_final_c_soc   = 2.5;
 
-    arma::vec pso_init_lb; // this will default to -0.5
-    arma::vec pso_init_ub; // this will default to  0.5
+    arma::vec pso_initial_lb; // this will default to -0.5
+    arma::vec pso_initial_ub; // this will default to  0.5
 };
 
 #endif

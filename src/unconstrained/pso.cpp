@@ -70,8 +70,8 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const double par_initial_c_soc = settings.pso_par_initial_c_soc;
     const double par_final_c_soc = settings.pso_par_final_c_soc;
 
-    const arma::vec par_initial_lb = ((int) settings.pso_init_lb.n_elem == n_vals) ? settings.pso_init_lb : init_out_vals - 0.5;
-    const arma::vec par_initial_ub = ((int) settings.pso_init_ub.n_elem == n_vals) ? settings.pso_init_ub : init_out_vals + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.pso_initial_lb.n_elem == n_vals) ? settings.pso_initial_lb : init_out_vals - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.pso_initial_ub.n_elem == n_vals) ? settings.pso_initial_ub : init_out_vals + 0.5;
 
     const bool vals_bound = settings.vals_bound;
     

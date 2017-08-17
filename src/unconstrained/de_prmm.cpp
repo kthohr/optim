@@ -54,8 +54,8 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     const double par_initial_F = settings.de_par_F;
     const double par_initial_CR = settings.de_par_CR;
 
-    const arma::vec par_initial_lb = ((int) settings.de_init_lb.n_elem == n_vals) ? settings.de_init_lb : init_out_vals - 0.5;
-    const arma::vec par_initial_ub = ((int) settings.de_init_ub.n_elem == n_vals) ? settings.de_init_ub : init_out_vals + 0.5;
+    const arma::vec par_initial_lb = ((int) settings.de_initial_lb.n_elem == n_vals) ? settings.de_initial_lb : init_out_vals - 0.5;
+    const arma::vec par_initial_ub = ((int) settings.de_initial_ub.n_elem == n_vals) ? settings.de_initial_ub : init_out_vals + 0.5;
 
     const double F_l = settings.de_par_F_l;
     const double F_u = settings.de_par_F_u;

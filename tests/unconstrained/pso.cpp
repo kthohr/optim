@@ -72,8 +72,8 @@ int main()
     // test 6
     optim::opt_settings settings_6;
 
-    settings_6.pso_init_lb = arma::zeros(2,1) - 2.0;
-    settings_6.pso_init_ub = arma::zeros(2,1) + 2.0;
+    settings_6.pso_initial_lb = arma::zeros(2,1) - 2.0;
+    settings_6.pso_initial_ub = arma::zeros(2,1) + 2.0;
     settings_6.pso_n_pop = 1000;
 
     unconstr_test_fn_6_data test_6_data;
@@ -123,13 +123,13 @@ int main()
     // test 9
     optim::opt_settings settings_9;
     
-    settings_9.pso_init_lb = arma::zeros(2,1);
-    settings_9.pso_init_lb(0) = -13;
-    settings_9.pso_init_lb(1) = -2;
+    settings_9.pso_initial_lb = arma::zeros(2,1);
+    settings_9.pso_initial_lb(0) = -13;
+    settings_9.pso_initial_lb(1) = -2;
 
-    settings_9.pso_init_ub = arma::zeros(2,1);
-    settings_9.pso_init_ub(0) = -9;
-    settings_9.pso_init_ub(1) = 2;
+    settings_9.pso_initial_ub = arma::zeros(2,1);
+    settings_9.pso_initial_ub(0) = -9;
+    settings_9.pso_initial_ub(1) = 2;
 
     settings_9.vals_bound = true;
 
@@ -168,8 +168,8 @@ int main()
 
     arma::vec x_10 = arma::zeros(2,1);
 
-    settings_10.pso_init_lb = arma::zeros(2,1) - 9.9;
-    settings_10.pso_init_ub = arma::zeros(2,1) + 9.9;
+    settings_10.pso_initial_lb = arma::zeros(2,1) - 9.9;
+    settings_10.pso_initial_ub = arma::zeros(2,1) + 9.9;
 
     settings_10.pso_n_pop = 5000;
     settings_10.pso_n_gen = 4000;

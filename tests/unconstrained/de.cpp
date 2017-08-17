@@ -72,8 +72,8 @@ int main()
     // test 6
     optim::opt_settings settings_6;
 
-    settings_6.de_init_lb = arma::zeros(2,1) - 2.0;
-    settings_6.de_init_ub = arma::zeros(2,1) + 2.0;
+    settings_6.de_initial_lb = arma::zeros(2,1) - 2.0;
+    settings_6.de_initial_ub = arma::zeros(2,1) + 2.0;
     settings_6.de_n_pop = 200;
 
     unconstr_test_fn_6_data test_6_data;
@@ -81,8 +81,8 @@ int main()
 
     arma::vec x_6 = arma::ones(2,1) + 1.0;
 
-    settings_6.de_init_lb = x_6 - 2.0;
-    settings_6.de_init_ub = x_6 + 2.0;
+    settings_6.de_initial_lb = x_6 - 2.0;
+    settings_6.de_initial_ub = x_6 + 2.0;
 
     bool success_6 = optim::de(x_6,unconstr_test_fn_6,&test_6_data,settings_6);
 
@@ -126,13 +126,13 @@ int main()
     // test 9
     optim::opt_settings settings_9;
     
-    settings_9.de_init_lb = arma::zeros(2,1);
-    settings_9.de_init_lb(0) = -13;
-    settings_9.de_init_lb(1) = -2;
+    settings_9.de_initial_lb = arma::zeros(2,1);
+    settings_9.de_initial_lb(0) = -13;
+    settings_9.de_initial_lb(1) = -2;
 
-    settings_9.de_init_ub = arma::zeros(2,1);
-    settings_9.de_init_ub(0) = -9;
-    settings_9.de_init_ub(1) = 2;
+    settings_9.de_initial_ub = arma::zeros(2,1);
+    settings_9.de_initial_ub(0) = -9;
+    settings_9.de_initial_ub(1) = 2;
 
     settings_9.vals_bound = true;
 

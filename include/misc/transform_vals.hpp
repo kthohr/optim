@@ -74,7 +74,15 @@ inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, co
                 vals_out(i) = upper_bounds(i) - std::exp(-vals_trans_inp(i));
                 break;
             case 4: // upper and lower bounds
-                vals_out(i) = ( lower_bounds(i) + upper_bounds(i)*std::exp(vals_trans_inp(i)) ) / ( 1 + std::exp(vals_trans_inp(i)) );
+                if (!std::isfinite(vals_trans_inp(i))) {
+                    if (vals_trans_inp(i) < 0.0) {
+                        vals_out(i) = lower_bounds(i);
+                    } else {
+                        vals_out(i) = upper_bounds(i);
+                    }
+                } else {
+                    vals_out(i) = ( lower_bounds(i) + upper_bounds(i)*std::exp(vals_trans_inp(i)) ) / ( 1 + std::exp(vals_trans_inp(i)) );
+                }
                 break;
         }
     }
