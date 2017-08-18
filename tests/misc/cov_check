@@ -12,5 +12,5 @@ for t in ./*.test; do
 done
 
 for t in ./*.cpp; do
-   $CXXCOV "$t"
+   $CXXCOV "$t" > /dev/null 2>&1
 done
