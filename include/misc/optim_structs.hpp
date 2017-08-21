@@ -78,6 +78,9 @@ struct opt_settings {
     arma::vec de_initial_lb; // this will default to -0.5
     arma::vec de_initial_ub; // this will default to  0.5
 
+    // L-BFGS
+    int lbfgs_par_M = 10;
+
     // Nelder-Mead
     bool nm_adaptive= true;
 

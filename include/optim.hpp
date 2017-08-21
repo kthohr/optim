@@ -43,6 +43,7 @@ namespace optim
 
     // unconstrained optimization
     #include "unconstrained/bfgs.hpp"
+    #include "unconstrained/lbfgs.hpp" 
     #include "unconstrained/cg.hpp"
     #include "unconstrained/de.hpp"
     #include "unconstrained/de_prmm.hpp"
