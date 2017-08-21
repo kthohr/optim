@@ -207,6 +207,7 @@ optim::lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& va
     return lbfgs_int(init_out_vals,opt_objfn,opt_data,&settings);
 }
 
+// algorithm 7.4 of Nocedal and Wright (2006)
 arma::vec
 optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, const int M)
 {
