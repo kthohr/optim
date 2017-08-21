@@ -181,7 +181,7 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
         r = p/q;
 
         step_c = st_best + r*(step - st_best);
-        step_q = st_best + ((d_best / ((f_best - f_step)/(step - st_best) + d_best)) / 2)*(step - st_best);
+        step_q = st_best + ((d_best / ((f_best - f_step)/(step - st_best) + d_best)) / 2.0)*(step - st_best);
 
         if (std::abs(step_c - st_best) < std::abs(step_q - st_best)) {
             step_f = step_c;
