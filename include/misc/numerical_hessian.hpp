@@ -17,7 +17,7 @@
   ################################################################################*/
 
 /*
- * Numerical Hessian
+ * Numerical Hessian, using Abramowitz and Stegun (1972, p. 884)
  *
  * Keith O'Hara
  * 01/01/2012
@@ -42,7 +42,7 @@ numerical_hessian(const arma::vec& vals_inp, const double* step_size_inp, std::f
     const double f_orig = -30.0*objfn(x_orig, nullptr, objfn_data);
     //
     for (int i=0; i < n_vals; i++) {
-        for (int j=0; j < n_vals; j++) {
+        for (int j=i; j < n_vals; j++) {
             x_term_1 = x_orig;
             x_term_2 = x_orig;
             x_term_3 = x_orig;
@@ -87,6 +87,7 @@ numerical_hessian(const arma::vec& vals_inp, const double* step_size_inp, std::f
                 double denom_term = 4.0 * step_vec(i) * step_vec(j);
                 
                 hessian_mat(i,j) = (term_1 + term_2 + term_3 + term_4) / denom_term;
+                hessian_mat(j,i) = hessian_mat(i,j);
             }
         }
     }
