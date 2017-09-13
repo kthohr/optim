@@ -91,7 +91,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     arma::vec objfn_vals(n_pop);
     arma::mat P(n_pop,n_vals);
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
     for (int i=0; i < n_pop; i++) {
@@ -133,7 +133,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         arma::rowvec P_max = arma::max(P);
         arma::rowvec P_min = arma::min(P);
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
         #pragma omp parallel for 
 #endif
         for (int i=0; i < n_pop; i++) {

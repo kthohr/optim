@@ -100,7 +100,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     arma::vec objfn_vals(n_pop);
     arma::mat P(n_pop,n_vals);
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
     for (int i=0; i < n_pop; i++) {
@@ -158,7 +158,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
         //
         // population loop
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
         #pragma omp parallel for 
 #endif
         for (int i=0; i < n_pop; i++) {

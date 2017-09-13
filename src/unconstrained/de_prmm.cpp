@@ -101,7 +101,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     arma::vec objfn_vals(n_pop);
     arma::mat X(n_pop,n_vals), X_next(n_pop,n_vals);
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
     for (int i=0; i < n_pop; i++) {
@@ -148,7 +148,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
             arma::vec objfn_vals_reset(n_pop_temp);
             arma::mat X_reset(n_pop_temp,n_vals);
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
             #pragma omp parallel for
 #endif
             for (int j=0; j < n_pop_temp; j++) {
@@ -177,7 +177,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
         // first population: n_pop - n_pop_best
         
 
-#ifdef OPTIM_OMP
+#ifdef OPTIM_USE_OMP
         #pragma omp parallel for
 #endif
         for (int i=0; i < n_pop - n_pop_best; i++) {

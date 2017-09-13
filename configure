@@ -84,7 +84,7 @@ else
 
     if [[ "${OPTIM_PARALLEL}" == "y" ]]; then
         echo "Optim: using OpenMP"
-        OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -fopenmp -DOPTIM_OMP"
+        OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -fopenmp -DOPTIM_USE_OMP"
     fi
 fi
 
