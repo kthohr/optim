@@ -194,7 +194,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     }
     //
     if (vals_bound) {
-	    global_best_vec = arma::trans( inv_transform(global_best_vec.t(), bounds_type, lower_bounds, upper_bounds) );
+        global_best_vec = arma::trans( inv_transform(global_best_vec.t(), bounds_type, lower_bounds, upper_bounds) );
     }
 
     error_reporting(init_out_vals,global_best_vec.t(),opt_objfn,opt_data,success,err,err_tol,iter,n_gen,conv_failure_switch,settings_inp);

@@ -103,7 +103,7 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     }
 
     if (vals_bound) { // should we transform the parameters?
-	    x = transform(x, bounds_type, lower_bounds, upper_bounds);
+        x = transform(x, bounds_type, lower_bounds, upper_bounds);
     }
 
     arma::mat W = arma::eye(n_vals,n_vals); // initial approx. to (inverse) Hessian 
@@ -205,7 +205,7 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     }
     //
     if (vals_bound) {
-	    x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
+        x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);

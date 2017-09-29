@@ -208,7 +208,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     arma::vec prop_out = simplex_points.row(index_min(simplex_fn_vals)).t();
     
     if (vals_bound) {
-	    prop_out = inv_transform(prop_out, bounds_type, lower_bounds, upper_bounds);
+        prop_out = inv_transform(prop_out, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals,prop_out,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
