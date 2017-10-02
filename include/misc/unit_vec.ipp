@@ -18,9 +18,6 @@
 
 /*
  * unit vector
- *
- * Keith O'Hara
- * 11/28/2014
  */
 
 inline

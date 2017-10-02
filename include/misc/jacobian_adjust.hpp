@@ -18,12 +18,6 @@
  
 /*
  * Jacobian adjustment
- *
- * Keith O'Hara
- * 05/01/2012
- *
- * This version:
- * 08/13/2017
  */
 
 inline

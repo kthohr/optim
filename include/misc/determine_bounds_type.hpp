@@ -18,12 +18,6 @@
  
 /*
  * Determine the upper-lower bounds combo type
- *
- * Keith O'Hara
- * 05/01/2012
- *
- * This version:
- * 08/12/2017
  */
 
 // note: std::isfinite is not true for: NaN, - Inf, or + Inf

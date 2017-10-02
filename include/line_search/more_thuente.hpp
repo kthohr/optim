@@ -20,12 +20,6 @@
  * Moré and Thuente line search
  *
  * Based on MINPACK fortran code and Dianne P. O'Leary's Matlab translation of MINPACK
- *
- * Keith O'Hara
- * 01/03/2017
- *
- * This version:
- * 07/19/2017
  */
 
 #ifndef _optim_more_thuente_HPP

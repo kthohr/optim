@@ -18,18 +18,12 @@
 
 /*
  * Optimization control parameters
- *
- * Keith O'Hara
- * 08/04/2016
- *
- * This version:
- * 08/14/2017
  */
 
 #ifndef optim_structs_HPP
 #define optim_structs_HPP
 
-struct opt_settings {
+struct algo_settings {
     // general
     int conv_failure_switch = 0;
     int iter_max = 2000;

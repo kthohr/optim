@@ -52,7 +52,7 @@ int main()
     //
     // coverage tests
 
-    optim::opt_settings settings;
+    optim::algo_settings settings;
 
     optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
     optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr,settings);

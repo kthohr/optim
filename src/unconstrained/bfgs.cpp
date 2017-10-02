@@ -18,18 +18,12 @@
 
 /*
  * BFGS method for quasi-Newton-based non-linear optimization
- *
- * Keith O'Hara
- * 12/23/2016
- *
- * This version:
- * 08/14/2017
  */
 
 #include "optim.hpp"
 
 bool
-optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
+optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
 {   // notation: 'p' stands for '+1'.
     //
     bool success = false;
@@ -39,7 +33,7 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     //
     // BFGS settings
 
-    opt_settings settings;
+    algo_settings settings;
 
     if (settings_inp) {
         settings = *settings_inp;
@@ -220,7 +214,7 @@ optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& val
 }
 
 bool
-optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
+optim::bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings& settings)
 {
     return bfgs_int(init_out_vals,opt_objfn,opt_data,&settings);
 }

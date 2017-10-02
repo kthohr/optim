@@ -18,12 +18,6 @@
 
 /*
  * Numerical Hessian, using Abramowitz and Stegun (1972, p. 884)
- *
- * Keith O'Hara
- * 01/01/2012
- *
- * This version:
- * 08/26/2017
  */
 
 inline

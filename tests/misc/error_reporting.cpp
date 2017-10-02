@@ -34,7 +34,7 @@ int main()
     int iter_2 = 3;
     int iter_max = 2;
 
-    optim::opt_settings settings;
+    optim::algo_settings settings;
 
     //
     // error_reporting_1

@@ -12,7 +12,7 @@ int main()
 {
     //
     // test 1
-    optim::opt_settings settings_1;
+    optim::algo_settings settings_1;
 
     settings_1.iter_max = 2000;
     settings_1.conv_failure_switch = 1;
@@ -76,7 +76,7 @@ int main()
 
     //
     // test 5
-    optim::opt_settings settings_5;
+    optim::algo_settings settings_5;
     settings_5.iter_max = 10000;
     settings_5.cg_method = 5;
 
@@ -95,7 +95,7 @@ int main()
     //
     // for coverage
 
-    optim::opt_settings settings;
+    optim::algo_settings settings;
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 1;
@@ -137,7 +137,7 @@ int main()
 
     //
 
-    optim::opt_settings settings_2;
+    optim::algo_settings settings_2;
 
     settings_2.vals_bound = true;
     settings_2.lower_bounds = arma::zeros(2,1) - 4.5;

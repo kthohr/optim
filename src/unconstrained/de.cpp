@@ -18,18 +18,12 @@
 
 /*
  * Differential Evolution (DE) optimization
- *
- * Keith O'Hara
- * 12/19/2016
- *
- * This version:
- * 08/14/2017
  */
 
 #include "optim.hpp"
 
 bool
-optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings* settings_inp)
+optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
 {
     bool success = false;
 
@@ -39,7 +33,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // DE settings
 
-    opt_settings settings;
+    algo_settings settings;
 
     if (settings_inp) {
         settings = *settings_inp;
@@ -219,7 +213,7 @@ optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 }
 
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, opt_settings& settings)
+optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings& settings)
 {
     return de_int(init_out_vals,opt_objfn,opt_data,&settings);
 }
