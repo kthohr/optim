@@ -120,7 +120,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         // step 2
 
-        centroid = arma::trans(arma::sum(simplex_points.rows(0,n_vals-1),0)) / (double) n_vals;
+        centroid = arma::trans(arma::sum(simplex_points.rows(0,n_vals-1),0)) / static_cast<double>(n_vals);
 
         x_r = centroid + par_alpha*(centroid - simplex_points.row(n_vals).t());
 

@@ -64,8 +64,8 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     const double par_initial_c_soc = settings.pso_par_initial_c_soc;
     const double par_final_c_soc = settings.pso_par_final_c_soc;
 
-    const arma::vec par_initial_lb = ((int) settings.pso_initial_lb.n_elem == n_vals) ? settings.pso_initial_lb : init_out_vals - 0.5;
-    const arma::vec par_initial_ub = ((int) settings.pso_initial_ub.n_elem == n_vals) ? settings.pso_initial_ub : init_out_vals + 0.5;
+    const arma::vec par_initial_lb = (static_cast<int>(settings.pso_initial_lb.n_elem) == n_vals) ? settings.pso_initial_lb : init_out_vals - 0.5;
+    const arma::vec par_initial_ub = (static_cast<int>(settings.pso_initial_ub.n_elem) == n_vals) ? settings.pso_initial_ub : init_out_vals + 0.5;
 
     const bool vals_bound = settings.vals_bound;
     
@@ -99,7 +99,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 #endif
     for (int i=0; i < n_pop; i++) {
         if (center_particle && i == n_pop - 1) {
-            P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / (double) (n_pop-1); // center vector
+            P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / static_cast<double>(n_pop-1); // center vector
         } else {
             P.row(i) = par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
         }
@@ -162,7 +162,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
                 P.row(i) += V.row(i);
             } else {
-                P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / (double) (n_pop-1); // center vector
+                P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / static_cast<double>(n_pop-1); // center vector
             }
             
             //
