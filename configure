@@ -107,7 +107,7 @@ OPTIM_WARN_FLAGS="-Wall"
 
 # shared library name and install path
 
-OPTIM_SHLIB_NAME="libmcmc.so"
+OPTIM_SHLIB_NAME="liboptim.so"
 
 if [[ !("${OPTIM_BUILD}" == "dev") ]]; then
     if [ -z ${OPTIM_INSTALL_PATH+x} ]; then

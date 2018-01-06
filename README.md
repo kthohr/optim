@@ -13,7 +13,7 @@ OptimLib is a lightweight C++ library for numerical optimization of nonlinear fu
 
 The library is actively maintained, and is still being extended.
 
-A list of features includes:
+Algorithms:
 
 * BFGS and L-BFGS
 * Nonlinear Conjugate Gradient
@@ -63,11 +63,11 @@ There are several configure options available:
 
 ## Example
 
-Suppose we wished to find the global minimum of the well-known Ackley function:
+Suppose we wanted to find the global minimum of the [Ackley function](https://en.wikipedia.org/wiki/Ackley_function):
 
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
 
-This contains many local minima and is a standard test function for numerical optimization libraries.
+This well-known test function that contains many local minima. Newton-type methods (such as BFGS), which are sensitive to initial values, will generally perform rather poorly on problems like these, so we will use a global method instead. 
 
 Code:
 
@@ -80,7 +80,7 @@ double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
     const double y = vals_inp(1);
     const double pi = arma::datum::pi;
  
-    double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + std::exp(1) + 20;
+    double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + 22.718282L;
 
     //
 
