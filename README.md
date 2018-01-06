@@ -67,7 +67,7 @@ Suppose we wanted to find the global minimum of the [Ackley function](https://en
 
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
 
-This well-known test function that contains many local minima. Newton-type methods (such as BFGS), which are sensitive to initial values, will generally perform rather poorly on problems like these, so we will use a global method instead. 
+This is a well-known test function that contains many local minima. Newton-type methods (such as BFGS), which are sensitive to initial values, will generally perform rather poorly on problems like this so we will employ a global search method instead. 
 
 Code:
 
