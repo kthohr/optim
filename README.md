@@ -126,8 +126,9 @@ de: solution to Ackley test:
   -2.4793e-16
   -2.0461e-16
 ```
+On a standard laptop OptimLib will compute the solution to machine precision in a fraction of a second.
 
-See http://www.kthohr.com/optimlib.html for details and more examples.
+See http://www.kthohr.com/optimlib.html for details of each algorithm, and more examples.
 
 ## Author
 
