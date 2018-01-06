@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2011-2017 Keith O'Hara
+  ##   Copyright (C) 2016-2018 Keith O'Hara
   ##
   ##   This file is part of the Optim C++ library.
   ##
@@ -18,12 +18,6 @@
  
 /*
  * unit test
- *
- * Keith O'Hara
- * 08/12/2017
- *
- * This version:
- * 08/12/2017
  */
 
 #include "optim.hpp"
