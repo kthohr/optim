@@ -63,7 +63,50 @@ There are several configure options available:
 
 ## Example
 
+Suppose we wished to find the global minimum of the well-known Ackley function:
+
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
+
+This contains many local minima and is a standard test function for numerical optimization libraries.
+
+Code:
+
+``` cpp
+#include "optim.hpp"
+ 
+double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+{
+    const double x = vals_inp(0);
+    const double y = vals_inp(1);
+    const double pi = arma::datum::pi;
+ 
+    double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + std::exp(1) + 20;
+
+    //
+
+    return obj_val;
+}
+ 
+int main()
+{
+    //
+    // Ackley function
+ 
+    arma::vec x = arma::ones(2,1) + 1.0; // initial values: (2,2)
+ 
+    bool success = optim::de(x,ackley_fn,nullptr);
+ 
+    if (success) {
+        std::cout << "de: Ackley test completed successfully." << std::endl;
+    } else {
+        std::cout << "de: Ackley test completed unsuccessfully." << std::endl;
+    }
+ 
+    arma::cout << "de: solution to Ackley test:\n" << x << arma::endl;
+ 
+    return 0;
+}
+```
 
 See http://www.kthohr.com/optimlib.html for details and more examples.
 
