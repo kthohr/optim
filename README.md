@@ -73,7 +73,10 @@ Code:
 
 ``` cpp
 #include "optim.hpp"
- 
+
+//
+// Ackley function
+
 double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
@@ -89,23 +92,39 @@ double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
  
 int main()
 {
+    // initial values:
+    arma::vec x = arma::ones(2,1) + 1.0; // (2,2)
+
     //
-    // Ackley function
- 
-    arma::vec x = arma::ones(2,1) + 1.0; // initial values: (2,2)
+
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
  
     bool success = optim::de(x,ackley_fn,nullptr);
+
+    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
  
     if (success) {
-        std::cout << "de: Ackley test completed successfully." << std::endl;
+        std::cout << "de: Ackley test completed successfully.\n"
+                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
     } else {
         std::cout << "de: Ackley test completed unsuccessfully." << std::endl;
     }
  
-    arma::cout << "de: solution to Ackley test:\n" << x << arma::endl;
+    arma::cout << "\nde: solution to Ackley test:\n" << x << arma::endl;
  
     return 0;
 }
+```
+
+Output:
+```
+de: Ackley test completed successfully.
+elapsed time: 0.034576s
+
+de: solution to Ackley test:
+  -2.4793e-16
+  -2.0461e-16
 ```
 
 See http://www.kthohr.com/optimlib.html for details and more examples.
