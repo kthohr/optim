@@ -5,8 +5,8 @@
 OptimLib is a lightweight C++ library for numerical optimization of nonlinear functions.
 
 * Parallelized C++11 library of local and global optimization methods, as well as root finding techniques.
-* Numerous derivative-free algorithms including including advanced and hybrid metaheuristics.
-* Constrained optimization: simple box constraints or complicated nonlinear constraints.
+* Numerous derivative-free algorithms including including advanced hybrid metaheuristics.
+* Constrained optimization: from simple box constraints to complicated nonlinear constraints.
 * Built on the Armadillo C++ linear algebra library for fast and efficient matrix-based computation.
 
 ## Status
@@ -23,14 +23,14 @@ Algorithms:
 
 ## Syntax
 
-OptimLib functions are generally defined loosely as
+OptimLib functions are generally defined as
 ```
 algorithm(<initial and end values>, <objective function>, <data for objective function>)
 ```
 where the inputs, in order, are:
-* initial values define the starting point for the algorithm, and will also contain the solution vector;
-* the objective function to be minimized; and
-* additional parameters passed to the objective function.
+* a vector of initial values that define the starting point for the algorithm, and will contain the solution vector at completion;
+* the objective function to be minimized (or zeroed-out); and
+* any additional parameters passed to the objective function.
 
 For example, the BFGS algorithm is called using:
 ``` cpp
