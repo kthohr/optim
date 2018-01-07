@@ -3,10 +3,6 @@ if [ -z ${CXXCOV+x} ]; then
     CXXCOV=gcov
 fi
 
-if [[ !(-z ${KEITH_DEV_SETTINGS+x}) ]]; then
-    CXXCOV=gcov-mp-7
-fi
-
 for t in ./*.test; do
    "$t"
 done

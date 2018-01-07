@@ -20,12 +20,6 @@ if [ -z ${FC+x} ]; then
     FC=gfortran
 fi
 
-if [[ !(-z ${KEITH_DEV_SETTINGS+x}) ]]; then
-    CC=gcc-mp-7
-    CXX=g++-mp-7
-    FC=gfortran-mp-7
-fi
-
 WDIR=${PWD}
 
 if [ -z ${ARMA_INCLUDE_PATH+x} ]; then 

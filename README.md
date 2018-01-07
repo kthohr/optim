@@ -54,11 +54,11 @@ make install
 The last line will install OptimLib into /usr/local
 
 There are several configure options available:
-* ```-b``` dev a 'development' build with install names set to the build directory (as opposed to an install path)
-* ```-c``` a coverage build
-* ```-m``` specify the BLAS and Lapack libraries to link against; for example, ```-m "-lopenblas"``` or ```-m "-framework Accelerate"```
-* ```-o``` enable aggressive compiler optimization features: ```-o fast``` or ```-o native```
-* ```-p``` enable parallelization features (using OpenMP)
+* `-b` dev a 'development' build with install names set to the build directory (as opposed to an install path)
+* `-c` a coverage build
+* `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
+* `-o` compiler optimization options; defaults to `-O3 -flto -march=native -DARMA_NO_DEBUG`
+* `-p` enable parallelization features (using OpenMP)
 
 
 ## Example
@@ -120,11 +120,11 @@ int main()
 Output:
 ```
 de: Ackley test completed successfully.
-elapsed time: 0.034576s
+elapsed time: 0.028167s
 
 de: solution to Ackley test:
-  -2.4793e-16
-  -2.0461e-16
+  -1.2702e-17
+  -3.8432e-16
 ```
 On a standard laptop OptimLib will compute the solution to within machine precision in a fraction of a second.
 

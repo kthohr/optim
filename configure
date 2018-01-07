@@ -22,18 +22,11 @@ if [ -z ${FC+x} ]; then
     FC=gfortran
 fi
 
-if [[ !(-z ${KEITH_DEV_SETTINGS+x}) ]]; then
-    CC=gcc-mp-7
-    CXX=g++-mp-7
-    FC=gfortran-mp-7
-fi
-
 # compiler checks
 
 IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
-APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
-
-IS_FAST_OPT=0
+GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
+# APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
 
 # announcements
 
@@ -51,7 +44,6 @@ WDIR=${PWD}
 
 # look for Armadillo
 if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
-    echo ""
     if [ -f ${WDIR}/include/armadillo ]; then 
         ARMA_INCLUDE_PATH="./include"
     elif [ -f /usr/include/armadillo ]; then
@@ -62,7 +54,8 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
         ARMA_INCLUDE_PATH="/opt/include"
     elif [ -f /opt/local/include/armadillo ]; then
         ARMA_INCLUDE_PATH="/opt/local/include"
-    else 
+    else
+        echo ""
         echo "Optim: cannot find armadillo files. Cloning from GitHub"
         echo ""
 
@@ -76,31 +69,27 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     fi
 fi
 
-echo "Optim: ARMA_INCLUDE_PATH set to ${ARMA_INCLUDE_PATH}"
+echo "Optim: ARMA_INCLUDE_PATH set to: ${ARMA_INCLUDE_PATH}"
 
 # set build and optimization flags
 
 if [[ "${OPTIM_COVERAGE}" == "y" ]]; then 
     OPTIM_OPT_FLAGS="-g -O0 -Wall --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
 else
-    if [[ "${OPTIM_OPT}" == "fast" ]]; then
-        echo "Optim: experimental optimization; use of NaN or +/-Inf not recognized"
-
-        IS_FAST_OPT=1
-
-        OPTIM_OPT_FLAGS="-Ofast -march=native -DARMA_NO_DEBUG"
-    elif [[ "${OPTIM_OPT}" == "native" ]]; then
-        IS_FAST_OPT=1
-
-        OPTIM_OPT_FLAGS="-O3 -march=native -DARMA_NO_DEBUG"
+    if [[ "${OPTIM_OPT}" == "" ]]; then
+        # OPTIM_OPT_FLAGS="-Ofast -march=native -DARMA_NO_DEBUG"
+        # echo "Optim: experimental optimization; use of NaN or +/-Inf not recognized"
+        OPTIM_OPT_FLAGS="-O3 -flto -march=native -DARMA_NO_DEBUG"
     else
-        OPTIM_OPT_FLAGS="-O3"
+        OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
 
     if [[ "${OPTIM_PARALLEL}" == "y" ]]; then
         echo "Optim: using OpenMP"
         OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -fopenmp -DOPTIM_USE_OMP"
     fi
+
+    echo "Optim: optimization flags set to: ${OPTIM_OPT_FLAGS}"
 fi
 
 OPTIM_WARN_FLAGS="-Wall"
@@ -114,7 +103,7 @@ if [[ !("${OPTIM_BUILD}" == "dev") ]]; then
         OPTIM_INSTALL_PATH="/usr/local"
     fi
     echo ""
-    echo "Optim: install path set to ${OPTIM_INSTALL_PATH}"
+    echo "Optim: install path set to: ${OPTIM_INSTALL_PATH}"
 fi
 
 if [[ $OSTYPE == darwin* ]] ; then
@@ -151,11 +140,13 @@ else
     OPTIM_SHLIB_FLAGS="${OPTIM_OPT_FLAGS} ${OPTIM_SHLIB_FLAGS}"
 fi
 
-if [ "$IS_FAST_OPT" -eq "1" ] && [ "$IS_DARWIN" -eq "1" ] && [ "$APPLE_COMPILER" -eq "0" ]; then
+if [ "$IS_DARWIN" -eq "1" ] && [ "$GCC_COMPILER" -eq "1" ]; then
     echo ""
     echo "Optim: To enable AVX features, your compiler will use the Apple LLVM assembler"
     OPTIM_OPT_FLAGS="-Wa,-q ${OPTIM_OPT_FLAGS}"
 fi
+
+echo ""
 
 sed -e "s|@CC@|${CC}|" \
     -e "s|@CXX@|${CXX}|" \
