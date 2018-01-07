@@ -4,6 +4,8 @@
 
 OptimLib is a lightweight C++ library designed for numerical optimization of nonlinear functions.
 
+Features:
+
 * Parallelized C++11 library of local and global optimization methods, as well as root finding techniques.
 * Numerous derivative-free algorithms including advanced metaheuristics.
 * Constrained optimization: from simple box constraints to complicated nonlinear constraints.
@@ -128,7 +130,7 @@ de: solution to Ackley test:
 ```
 On a standard laptop OptimLib will compute the solution to within machine precision in a fraction of a second.
 
-See http://www.kthohr.com/optimlib.html for details of each algorithm, and more examples.
+See http://www.kthohr.com/optimlib.html for a detailed description of each algorithm, and more examples.
 
 ## Author
 
