@@ -63,11 +63,11 @@ There are several configure options available:
 
 ## Example
 
-Suppose we wanted to find the global minimum of the [Ackley function](https://en.wikipedia.org/wiki/Ackley_function):
+Objective: Find the global minimum of the [Ackley function](https://en.wikipedia.org/wiki/Ackley_function):
 
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
 
-This is a well-known test function that contains many local minima. As such, Newton-type methods (like BFGS), which are sensitive to the choice of initial values, will perform rather poorly. A global search method will be used instead. 
+This is a well-known test function that contains many local minima. Newton-type methods (like BFGS), which are sensitive to the choice of initial values, will perform rather poorly. As such, we will use a global search method instead. 
 
 Code:
 
