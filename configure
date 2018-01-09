@@ -2,10 +2,10 @@
 ## OptimLib config script
 
 # inputs
-while getopts b:cm:o:p option; do
+while getopts cdm:o:p option; do
     case "${option}" in
-        b) OPTIM_BUILD=${OPTARG};;
         c) OPTIM_COVERAGE="y";;
+        d) OPTIM_BUILD="dev";;
         m) OPTIM_MATRIX_OPS=${OPTARG};;
         o) OPTIM_OPT=${OPTARG};;
         p) OPTIM_PARALLEL="y";;

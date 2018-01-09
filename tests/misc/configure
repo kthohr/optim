@@ -1,12 +1,12 @@
 #!/bin/bash
 ## Optim tests config script
 
-while getopts b:c option
+while getopts cd option
 do
     case "${option}"
     in
-    b) OPTIM_BUILD=${OPTARG};;
     c) OPTIM_COVERAGE="y";;
+    d) OPTIM_BUILD="dev";;
     esac
 done
 

@@ -56,8 +56,8 @@ make install
 The last line will install OptimLib into /usr/local
 
 There are several configure options available:
-* `-b` dev a 'development' build with install names set to the build directory (as opposed to an install path)
 * `-c` a coverage build
+* `-d` a 'development' build with install names set to the build directory (as opposed to an install path)
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -flto -march=native -DARMA_NO_DEBUG`
 * `-p` enable parallelization features (using OpenMP)
