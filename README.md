@@ -18,6 +18,7 @@ Algorithms:
 * BFGS and L-BFGS
 * Nonlinear Conjugate Gradient
 * Broyden's Method
+* Nelder-Mead
 * Differential Evolution (DE)
 * Particle Swarm Optimization (PSO)
 
