@@ -81,7 +81,7 @@ install:
       fi
 
 script:
-  - ./configure -b dev -c
+  - ./configure -c -d
   - make
   - cd ./tests
   - ./cov_setup
