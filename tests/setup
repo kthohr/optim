@@ -1,0 +1,11 @@
+#!/bin/bash
+
+declare -a DIRS=("constrained" "misc" "unconstrained" "zeros")
+
+for i in "${DIRS[@]}"; do
+    rm -f ./"$i"/configure
+    rm -f ./"$i"/Makefile.in
+
+    cp test_setup/configure.in ./"$i"/configure
+    cp test_setup/Makefile.in ./"$i"/Makefile.in
+done

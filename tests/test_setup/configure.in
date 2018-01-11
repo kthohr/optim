@@ -1,0 +1,118 @@
+#!/bin/bash
+## Optim tests config script
+
+while getopts cdgm:o: option
+do
+    case "${option}"
+    in
+    c) OPTIM_COVERAGE="y";;
+    d) OPTIM_BUILD="dev";;
+    g) OPTIM_DEBUG="y";;
+    m) OPTIM_MATRIX_OPS=${OPTARG};;
+    o) OPTIM_OPT=${OPTARG};;
+    esac
+done
+
+# Compiler checks
+if [ -z ${CC+x} ]; then 
+    CC=gcc
+fi
+if [ -z ${CXX+x} ]; then 
+    CXX=g++
+fi
+if [ -z ${FC+x} ]; then 
+    FC=gfortran
+fi
+
+echo ""
+
+# get working directory
+WDIR=${PWD}
+
+# look for Armadillo
+if [ -z ${ARMA_INCLUDE_PATH+x} ]; then 
+    
+    declare -a ARMA_DIRS=("${WDIR}/../../include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
+    ARMA_INCLUDE_PATH=
+
+    for i in "${ARMA_DIRS[@]}"; do
+        if [ -f "$i"/armadillo ]; then 
+            ARMA_INCLUDE_PATH="$i"
+            break
+        fi
+    done
+
+    if [[ $ARMA_INCLUDE_PATH == "" ]]; then
+        echo "Optim tests: cannot find the armadillo library."
+        echo ""
+        exit 1
+    fi
+fi
+
+echo "Optim tests: ARMA_INCLUDE_PATH set to ${ARMA_INCLUDE_PATH}"
+
+# coverage build is used for codecov
+
+if [[ "${OPTIM_COVERAGE}" == "y" ]]; then 
+    echo "Optim tests: coverage build"
+    OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
+elif [[ "${OPTIM_DEBUG}" == "y" ]]; then
+    OPTIM_OPT_FLAGS="-g -O0"
+else
+    if [[ "${OPTIM_OPT}" == "" ]]; then
+        # OPTIM_OPT_FLAGS="-Ofast -march=native -DARMA_NO_DEBUG"
+        # echo "Optim: experimental optimization; use of NaN or +/-Inf not recognized"
+        OPTIM_OPT_FLAGS="-O3 -march=native -DARMA_NO_DEBUG"
+    else
+        OPTIM_OPT_FLAGS="${OPTIM_OPT}"
+    fi
+fi
+
+echo "Optim: optimization flags set to: ${OPTIM_OPT_FLAGS}"
+
+OPTIM_WARN_FLAGS="-Wall"
+
+# shared library name
+
+OPTIM_SHLIB_NAME="optim"
+
+# dev build
+
+if [[ "${OPTIM_BUILD}" == "dev" ]]; then
+    cd ../..
+    OPTIM_INCLUDE_PATH=${PWD}/include
+    OPTIM_INSTALL_PATH=${PWD}
+    cd ${WDIR}
+else
+    if [ -z ${OPTIM_INSTALL_PATH+x} ]; then
+        OPTIM_INSTALL_PATH="/usr/local"
+    fi
+fi
+
+# BLAS and LAPACK settings
+
+if [[ !(-z ${OPTIM_MATRIX_OPS+x}) ]]; then
+    OPTIM_BLAS_LAPACK="${OPTIM_MATRIX_OPS}"
+else
+    if [[ $OSTYPE == darwin* ]] ; then
+        OPTIM_BLAS_LAPACK="-framework Accelerate"
+    else
+        OPTIM_BLAS_LAPACK="-lblas -llapack"
+    fi
+fi
+
+# end
+
+echo ""
+
+sed -e "s|@CC@|${CC}|" \
+    -e "s|@CXX@|${CXX}|" \
+    -e "s|@FC@|${FC}|" \
+    -e "s|@ARMA_INCLUDE_PATH@|${ARMA_INCLUDE_PATH}|" \
+    -e "s|@OPTIM_BLAS_LAPACK@|${OPTIM_BLAS_LAPACK}|" \
+    -e "s|@OPTIM_WARN_FLAGS@|${OPTIM_WARN_FLAGS}|" \
+    -e "s|@OPTIM_OPT_FLAGS@|${OPTIM_OPT_FLAGS}|" \
+    -e "s|@OPTIM_SHLIB_NAME@|${OPTIM_SHLIB_NAME}|" \
+    -e "s|@OPTIM_INCLUDE_PATH@|${OPTIM_INCLUDE_PATH}|" \
+    -e "s|@OPTIM_INSTALL_PATH@|${OPTIM_INSTALL_PATH}|" \
+    Makefile.in > Makefile

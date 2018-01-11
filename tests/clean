@@ -1,0 +1,10 @@
+#!/bin/bash
+
+rm -rf ./*/*.gcov ./*/*.gcno ./*/*.gcda ./*/*.dSYM ./*/*.test
+
+declare -a DIRS=("constrained" "misc" "unconstrained" "zeros")
+
+for i in "${DIRS[@]}"; do
+    rm -f ./"$i"/configure
+    rm -f ./"$i"/Makefile.in
+done
