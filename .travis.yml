@@ -84,7 +84,7 @@ script:
   - ./configure -c -d
   - make
   - cd ./tests
-  - ./setup && ./run_cov
+  - sh ./test_setup/setup && sh ./test_setup/run_cov
   - cd ..
 
 after_success:
