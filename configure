@@ -51,17 +51,18 @@ WDIR=${PWD}
 
 # look for Armadillo
 if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
-    if [ -f ${WDIR}/include/armadillo ]; then 
-        ARMA_INCLUDE_PATH="./include"
-    elif [ -f /usr/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="/usr/include"
-    elif [ -f /usr/local/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="/usr/local/include"
-    elif [ -f /opt/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="/opt/include"
-    elif [ -f /opt/local/include/armadillo ]; then
-        ARMA_INCLUDE_PATH="/opt/local/include"
-    else
+    
+    declare -a ARMA_DIRS=("${WDIR}/../../include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
+    ARMA_INCLUDE_PATH=
+
+    for i in "${ARMA_DIRS[@]}"; do
+        if [ -f "$i"/armadillo ]; then 
+            ARMA_INCLUDE_PATH="$i"
+            break
+        fi
+    done
+
+    if [[ $ARMA_INCLUDE_PATH == "" ]]; then
         echo ""
         echo "Optim: cannot find armadillo files. Cloning from GitHub"
         echo ""
