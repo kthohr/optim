@@ -11,9 +11,17 @@ Makefile
 *.test
 *.vscode
 
-include/armadillo*
-
 *.gcda
 *.gcno
 *.gcov
 *.dSYM
+
+include/armadillo*
+tests/constrained/configure
+tests/constrained/Makefile*
+tests/misc/configure
+tests/misc/Makefile*
+tests/unconstrained/configure
+tests/unconstrained/Makefile*
+tests/zeros/configure
+tests/zeros/Makefile*

@@ -24,8 +24,9 @@
 
 bool
 optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
-{   // notation: 'p' stands for '+1'.
-    //
+{
+    // notation: 'p' stands for '+1'.
+
     bool success = false;
 
     const int n_vals = init_out_vals.n_elem;
@@ -179,13 +180,17 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
         s_mat.col(0) = s;
         y_mat.col(0) = y;
     }
+
     //
+
     if (vals_bound) {
         x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
+
     //
+    
     return success;
 }
 

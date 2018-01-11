@@ -24,8 +24,9 @@
 
 bool
 optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
-{   // notation: 'p' stands for '+1'.
-    //
+{
+    // notation: 'p' stands for '+1'.
+
     bool success = false;
 
     const int n_vals = init_out_vals.n_elem;
@@ -55,13 +56,11 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-        //
-
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) 
+    -> double
+    {
         if (vals_bound) {
-
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
-            
             double ret;
             
             if (grad_out) {
@@ -193,7 +192,9 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
         
             W = W_term_1*W*W_term_1.t() + s*s.t() / W_denom_term;
         }
+
         //
+
         x = x_p;
         grad = grad_p;
     }

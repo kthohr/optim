@@ -26,7 +26,7 @@ bool
 optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
-    //
+
     bool success = false;
 
     const int n_vals = init_out_vals.n_elem;
@@ -57,7 +57,9 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     if (err <= err_tol) {
         return true;
     }
+
     //
+
     arma::vec d = - B*f_val;
 
     arma::vec x_p = x + d;
@@ -68,20 +70,26 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         init_out_vals = x_p;
         return true;
     }
+
     //
+
     arma::vec s = x_p - x;
     arma::vec y = f_val_p - f_val;
 
     B += (s - B*y) * y.t() / arma::dot(y,y); // update B
 
     f_val = f_val_p;
+
     //
     // begin loop
+
     int iter = 0;
 
     while (err > err_tol && iter < iter_max) {
         iter++;
+
         //
+
         d = - B*f_val;
 
         x_p = x + d;
@@ -92,18 +100,24 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         if (err <= err_tol) {
             break;
         }
+
         //
+
         s = x_p - x;
         y = f_val_p - f_val;
         
         B += (s - B*y) * y.t() / arma::dot(y,y); // update B
+
         //
+
         x = x_p;
         f_val = f_val_p;
     }
+
     //
+
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
-    //
+
     return success;
 }
 
@@ -127,10 +141,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
                    std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
-    //
+    
     bool success = false;
-
-    // const int n_vals = init_out_vals.n_elem;
 
     //
     // Broyden settings
@@ -158,7 +170,9 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     if (err <= err_tol) {
         return true;
     }
+
     //
+
     arma::vec d = - B*f_val;
 
     arma::vec x_p = x + d;
@@ -169,20 +183,27 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         init_out_vals = x_p;
         return true;
     }
+
     //
+
     arma::vec s = x_p - x;
     arma::vec y = f_val_p - f_val;
 
     B += (s - B*y) * y.t() / arma::dot(y,y); // update B
 
     f_val = f_val_p;
+
     //
     // begin loop
+
     int iter = 0;
 
     while (err > err_tol && iter < iter_max) {
+
         iter++;
+
         //
+
         d = - B*f_val;
 
         x_p = x + d;
@@ -193,7 +214,9 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         if (err <= err_tol) {
             break;
         }
+
         //
+
         s = x_p - x;
         y = f_val_p - f_val;
         
@@ -202,13 +225,17 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         } else {
             B += (s - B*y) * y.t() / arma::dot(y,y); // update B
         }
+
         //
+
         x = x_p;
         f_val = f_val_p;
     }
+
     //
+
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
-    //
+
     return success;
 }
 
@@ -234,7 +261,7 @@ bool
 optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
-    //
+    
     bool success = false;
 
     const int n_vals = init_out_vals.n_elem;
@@ -269,7 +296,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     }
 
     double Fx = arma::norm(f_val,2);
+
     //
+
     arma::vec d = -f_val; // step 1
 
     arma::vec f_val_p = opt_objfn(x + d,opt_data);
@@ -279,7 +308,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         init_out_vals = x + d;
         return true;
     }
+
     //
+
     double lambda;
     double Fx_p = arma::norm(f_val_p,2);
 
@@ -288,7 +319,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     } else {
         lambda = df_proc_1(x,d,sigma_1,0,opt_objfn,opt_data); // step 3
     }
+
     //
+
     arma::vec x_p = x + lambda*d; // step 4
 
     arma::vec s = x_p - x;
@@ -296,7 +329,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
 
     // B += (y - B*s) * s.t() / arma::dot(s,s); // step 5
     B += (s - B*y) * y.t() / arma::dot(y,y);
+
     //
+
     x = x_p;
     f_val = f_val_p;
     Fx = Fx_p;
@@ -318,7 +353,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         if (err <= err_tol) {
             break;
         }
+
         //
+
         Fx_p = arma::norm(f_val_p,2);
 
         if (Fx_p <= rho*Fx - sigma_2*arma::dot(d,d)) {
@@ -326,7 +363,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         } else {
             lambda = df_proc_1(x,d,sigma_1,iter,opt_objfn,opt_data);
         }
+
         //
+
         x_p = x + lambda*d;
 
         arma::vec s = x_p - x;
@@ -334,14 +373,15 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
 
         // B += (y - B*s) * s.t() / arma::dot(s,s);
         B += (s - B*y) * y.t() / arma::dot(y,y); // update B
+
         //
+
         x = x_p;
         f_val = f_val_p;
         Fx = Fx_p;
     }
 
     //
-    // end
 
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     
@@ -368,10 +408,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
                       std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings* settings_inp)
 {
     // notation: 'p' stands for '+1'.
-    //
+    
     bool success = false;
-
-    // const int n_vals = init_out_vals.n_elem;
 
     //
     // Broyden settings
@@ -403,7 +441,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     }
 
     double Fx = arma::norm(f_val,2);
+
     //
+
     arma::vec d = arma::solve(B,-f_val); // step 1
 
     arma::vec f_val_p = opt_objfn(x + d,opt_data);
@@ -413,7 +453,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         init_out_vals = x + d;
         return true;
     }
+
     //
+
     double lambda;
     double Fx_p = arma::norm(f_val_p,2);
 
@@ -422,7 +464,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     } else {
         lambda = df_proc_1(x,d,sigma_1,0,opt_objfn,opt_data); // step 3
     }
+
     //
+
     arma::vec x_p = x + lambda*d; // step 4
 
     arma::vec s = x_p - x;
@@ -432,7 +476,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
 
     // B += (y - B*s) * s.t() / arma::dot(s,s); // step 5
     B += (s - B*y) * y.t() / arma::dot(y,y); // update B
+
     //
+
     x = x_p;
     f_val = f_val_p;
     Fx = Fx_p;
@@ -454,7 +500,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         if (err <= err_tol) {
             break;
         }
+
         //
+
         Fx_p = arma::norm(f_val_p,2);
 
         if (Fx_p <= rho*Fx - sigma_2*arma::dot(d,d)) {
@@ -462,7 +510,9 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         } else {
             lambda = df_proc_1(x,d,sigma_1,iter,opt_objfn,opt_data);
         }
+
         //
+
         x_p = x + lambda*d;
 
         arma::vec s = x_p - x;
@@ -475,14 +525,15 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
             // B += (y - B*s) * s.t() / arma::dot(s,s);
             B += (s - B*y) * y.t() / arma::dot(y,y); // update B
         }
+
         //
+
         x = x_p;
         f_val = f_val_p;
         Fx = Fx_p;
     }
 
     //
-    // end
 
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
     
@@ -541,7 +592,9 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
     while (1) {
         iter++;
         lambda *= beta; // lambda_i = beta^i;
+
         //
+
         Fx_p = arma::norm(opt_objfn(x_vals + lambda*direc,opt_data),2);
         term_2 = sigma_1*std::pow(lambda,2)*direc_norm2;
 
@@ -549,7 +602,9 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
             break;
         }
     }
+
     //
+
     return lambda;
 }
 

@@ -99,7 +99,10 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     }
 
     double min_val = simplex_fn_vals.min();
+
     //
+    // begin loop
+
     int iter = 0;
     double err = 2*err_tol;
     arma::uvec sort_vec;
@@ -181,6 +184,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         }
 
         // step 6
+
         if (!next_iter) {
             // neither outside nor inside contraction was acceptable; shrink the simplex toward x(0)
             for (int i=1; i < n_vals + 1; i++) {
@@ -198,7 +202,9 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         min_val = simplex_fn_vals.min();
         iter++;
     }
+
     //
+
     arma::vec prop_out = simplex_points.row(index_min(simplex_fn_vals)).t();
     
     if (vals_bound) {
@@ -206,7 +212,9 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     }
 
     error_reporting(init_out_vals,prop_out,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
+
     //
+    
     return success;
 }
 

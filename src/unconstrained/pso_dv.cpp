@@ -31,7 +31,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     const int n_vals = init_out_vals.n_elem;
 
     //
-    //
+    // PSO settings
 
     algo_settings settings;
 
@@ -116,7 +116,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     arma::vec stag_vec = arma::zeros(n_pop,1);
 
     //
-    //
+    // begin loop
 
     int iter = 0;
     double err = 2.0*err_tol;
@@ -186,13 +186,17 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         par_w *= par_damp;
         // par_w = std::min(0.4,par_w*par_damp);
     }
+
     //
+
     if (vals_bound) {
         global_best_vec = arma::trans( inv_transform(global_best_vec.t(), bounds_type, lower_bounds, upper_bounds) );
     }
 
     error_reporting(init_out_vals,global_best_vec.t(),opt_objfn,opt_data,success,err,err_tol,iter,n_gen,conv_failure_switch,settings_inp);
+
     //
+    
     return true;
 }
 

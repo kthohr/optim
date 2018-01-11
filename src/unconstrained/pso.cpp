@@ -76,7 +76,9 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) 
+    -> double 
+    {
         //
 
         if (vals_bound) {
@@ -186,13 +188,17 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
             global_best_vec = best_vecs.row( best_vals.index_min() );
         }
     }
+
     //
+
     if (vals_bound) {
         global_best_vec = arma::trans( inv_transform(global_best_vec.t(), bounds_type, lower_bounds, upper_bounds) );
     }
 
     error_reporting(init_out_vals,global_best_vec.t(),opt_objfn,opt_data,success,err,err_tol,iter,n_gen,conv_failure_switch,settings_inp);
+
     //
+
     return true;
 }
 
