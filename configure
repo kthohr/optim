@@ -52,7 +52,7 @@ WDIR=${PWD}
 # look for Armadillo
 if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     
-    declare -a ARMA_DIRS=("${WDIR}/../../include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
+    declare -a ARMA_DIRS=("${WDIR}/include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
     ARMA_INCLUDE_PATH=
 
     for i in "${ARMA_DIRS[@]}"; do
