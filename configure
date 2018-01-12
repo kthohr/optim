@@ -87,7 +87,7 @@ else
     if [[ "${OPTIM_OPT}" == "" ]]; then
         # OPTIM_OPT_FLAGS="-Ofast -march=native -DARMA_NO_DEBUG"
         # echo "Optim: experimental optimization; use of NaN or +/-Inf not recognized"
-        OPTIM_OPT_FLAGS="-O3 -flto -march=native -DARMA_NO_DEBUG"
+        OPTIM_OPT_FLAGS="-O3 -ffp-contract=fast -flto -march=native -DARMA_NO_DEBUG"
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
