@@ -1,10 +1,10 @@
 # OptimLib &nbsp; [![Build Status](https://travis-ci.org/kthohr/optim.svg?branch=master)](https://travis-ci.org/kthohr/optim) [![Coverage Status](https://codecov.io/github/kthohr/optim/coverage.svg?branch=master)](https://codecov.io/github/kthohr/optim?branch=master)
 
-OptimLib is a lightweight C++ library designed for numerical optimization of nonlinear functions.
+OptimLib is a lightweight C++ library of numerical optimization methods for nonlinear functions.
 
 Features:
 
-* Parallelized C++11 library of local and global optimization methods, as well as root finding techniques.
+* Parallelized C++11 library of local and global optimization algorithms, as well as root finding techniques.
 * Numerous derivative-free algorithms including advanced metaheuristics.
 * Constrained optimization: from simple box constraints to complicated nonlinear constraints.
 * Built on the Armadillo C++ linear algebra library for fast and efficient matrix-based computation.
