@@ -16,38 +16,16 @@
   ##
   ################################################################################*/
 
-#ifndef OPTIMLIB_INCLUDES
-#define OPTIMLIB_INCLUDES
+/*
+ * Newton's method for non-linear optimization
+ */
 
-#include "misc/optim_options.hpp"
+#ifndef _optim_newton_HPP
+#define _optim_newton_HPP
 
-namespace optim
-{
-    // structs
-    #include "misc/optim_structs.hpp"
+bool newton_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp);
 
-    // misc files
-    #include "misc/misc.hpp"
-
-    // line search
-    #include "line_search/more_thuente.hpp"
-
-    // unconstrained optimization
-    #include "unconstrained/bfgs.hpp"
-    #include "unconstrained/lbfgs.hpp"
-    #include "unconstrained/newton.hpp"
-    #include "unconstrained/cg.hpp"
-    #include "unconstrained/de.hpp"
-    #include "unconstrained/de_prmm.hpp"
-    #include "unconstrained/nm.hpp"
-    #include "unconstrained/pso.hpp"
-    #include "unconstrained/pso_dv.hpp"
-
-    // constrained optimization
-    #include "constrained/sumt.hpp"
-
-    // solving systems of nonlinear equations
-    #include "zeros/broyden.hpp"
-}
+bool newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data);
+bool newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings& settings);
 
 #endif

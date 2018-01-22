@@ -32,7 +32,7 @@ LIBS= @OPTIM_BLAS_LAPACK@
 SOURCES_OPTIM_LS= $(OPTIM_SRC_DIR)/line_search/more_thuente.cpp
 OBJECTS_OPTIM_LS= $(SOURCES_OPTIM_LS:.cpp=.o)
 
-SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/lbfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/de_prmm.cpp $(OPTIM_SRC_DIR)/unconstrained/nm.cpp $(OPTIM_SRC_DIR)/unconstrained/pso.cpp $(OPTIM_SRC_DIR)/unconstrained/pso_dv.cpp
+SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/lbfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/newton.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/de_prmm.cpp $(OPTIM_SRC_DIR)/unconstrained/nm.cpp $(OPTIM_SRC_DIR)/unconstrained/pso.cpp $(OPTIM_SRC_DIR)/unconstrained/pso_dv.cpp
 OBJECTS_OPTIM_UNCONSTR= $(SOURCES_OPTIM_UNCONSTR:.cpp=.o)
 
 SOURCES_OPTIM_CONSTR= $(OPTIM_SRC_DIR)/constrained/sumt.cpp

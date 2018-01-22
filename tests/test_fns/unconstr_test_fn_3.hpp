@@ -31,16 +31,42 @@
 #define _optim_test_fn_3_HPP
 
 double unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
+double unconstr_test_fn_3_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data);
 
 double
 unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
-    double obj_val = arma::dot(vals_inp,vals_inp);
+    const double obj_val = arma::dot(vals_inp,vals_inp);
+
     //
+
     if (grad_out) {
         *grad_out = 2.0*vals_inp;
     }
+
     //
+
+    return obj_val;
+}
+
+double
+unconstr_test_fn_3_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
+{
+    const int n_vals = vals_inp.n_elem;
+    const double obj_val = arma::dot(vals_inp,vals_inp);
+
+    //
+
+    if (grad_out) {
+        *grad_out = 2.0*vals_inp;
+    }
+
+    if (hess_out) {
+        *hess_out = 2.0*arma::eye(n_vals,n_vals);
+    }
+
+    //
+
     return obj_val;
 }
 

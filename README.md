@@ -15,7 +15,7 @@ The library is actively maintained, and is still being extended.
 
 Algorithms:
 
-* BFGS and L-BFGS
+* Newton's method, BFGS, and L-BFGS
 * Nonlinear Conjugate Gradient
 * Broyden's Method
 * Nelder-Mead
