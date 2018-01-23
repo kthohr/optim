@@ -63,9 +63,10 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-        //
-
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
+    -> double
+    {
         if (vals_bound) {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
@@ -142,20 +143,23 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             //
 
-            int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+            const int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
             arma::vec rand_unif = arma::randu(n_vals);
             arma::rowvec X_prop(n_vals);
 
-            for (int k=0; k < n_vals; k++) {
-                if ( rand_unif(k) < par_CR || k == j ) {
-
+            for (int k=0; k < n_vals; k++)
+            {
+                if ( rand_unif(k) < par_CR || k == j )
+                {
                     if ( mutation_method == 1 ) {
                         X_prop(k) = X(c_3,k) + par_F*(X(c_1,k) - X(c_2,k));
                     } else {
                         X_prop(k) = best_vec(k) + par_F*(X(c_1,k) - X(c_2,k));
                     }
-                } else {
+                } 
+                else 
+                {
                     X_prop(k) = X(i,k);
                 }
             }
@@ -168,10 +172,13 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 prop_objfn_val = BIG_POS_VAL;
             }
             
-            if (prop_objfn_val <= objfn_vals(i)) {
+            if (prop_objfn_val <= objfn_vals(i))
+            {
                 X_next.row(i) = X_prop;
                 objfn_vals(i) = prop_objfn_val;
-            } else {
+            }
+            else
+            {
                 X_next.row(i) = X.row(i);
             }
         }
@@ -182,13 +189,14 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         //
         // assign running global minimum
 
-        if (best_val < best_objfn_val_running) {
+        if (best_val < best_objfn_val_running)
+        {
             best_objfn_val_running = objfn_vals.min();
             best_sol_running = X_next.row( objfn_vals.index_min() );
         }
 
-        if (iter%check_freq == 0) {
-            
+        if (iter%check_freq == 0) 
+        {   
             err = std::abs(best_objfn_val_running - best_objfn_val_check);
             
             if (best_objfn_val_running < best_objfn_val_check) {

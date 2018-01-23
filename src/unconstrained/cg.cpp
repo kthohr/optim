@@ -59,7 +59,8 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) 
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
         if (vals_bound) {
@@ -95,31 +96,33 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     arma::vec x = init_out_vals;
 
     if (!x.is_finite()) {
-        printf("bfgs error: non-finite initial value(s).\n");
-        
+        printf("cg error: non-finite initial value(s).\n");
         return false;
     }
 
     if (vals_bound) { // should we transform the parameters?
         x = transform(x, bounds_type, lower_bounds, upper_bounds);
     }
-    
-    double t_init = 1;
 
     arma::vec grad(n_vals); // gradient
     box_objfn(x,&grad,opt_data);
 
-    double err = arma::accu(arma::abs(grad));
+    // double err = arma::accu(arma::abs(grad));
+    double err = arma::norm(grad, 2);
     if (err <= err_tol) {
         return true;
     }
+
     //
+
+    double t_init = 1.0; // initial value for line search
+
     arma::vec d = - grad, d_p;
     arma::vec x_p = x, grad_p = grad;
 
     double t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
-    err = arma::accu(arma::abs(grad_p)); // check updated values
+    err = arma::norm(grad_p, 2);
     if (err <= err_tol) {
         init_out_vals = x_p;
         return true;
@@ -132,29 +135,35 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     while (err > err_tol && iter < iter_max) {
         iter++;
+
         //
+
         double beta = cg_update(grad,grad_p,d,iter,cg_method,cg_restart_threshold);
         d_p = - grad_p + beta*d;
-        //
+
         t_init = t * (arma::dot(grad,d) / arma::dot(grad_p,d_p));
 
         grad = grad_p;
 
         t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
-        //
-        err = arma::accu(arma::abs(grad_p));
-        // err = std::max( arma::norm(grad_p, 2), arma::norm(x_p - x, 2) );
 
+        //
+
+        err = arma::norm(grad_p, 2);
         d = d_p;
         x = x_p;
     }
+
     //
+
     if (vals_bound) {
         x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
+
     //
+
     return success;
 }
 
@@ -178,19 +187,26 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
     // threshold test
     double ratio_value = std::abs( arma::dot(grad_p,grad) ) / arma::dot(grad_p,grad_p);
 
-    if ( ratio_value > cg_restart_threshold ) {
+    if ( ratio_value > cg_restart_threshold )
+    {
         return 0.0;
-    } else {
+    }
+    else
+    {
         double beta = 1.0;
 
-        if (cg_method==1) { // Fletcher-Reeves (FR)
+        if (cg_method==1) 
+        {   // Fletcher-Reeves (FR)
             beta = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
-        } else if (cg_method==2) { // Polak-Ribiere (PR) + 
-            beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
-
-            // beta = std::max(beta,0.0); 
-        } else if (cg_method==3) { // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
-            if (iter > 1) {
+        }
+        else if (cg_method==2) 
+        {   // Polak-Ribiere (PR) + 
+            beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad); // max(.,0.0) moved to end
+        }
+        else if (cg_method==3) 
+        {   // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
+            if (iter > 1) 
+            {
                 const double beta_FR = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
                 const double beta_PR = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
                 
@@ -201,16 +217,22 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
                 } else { // beta_PR > beta_FR
                     beta = beta_FR;
                 }
-            } else { // default to PR+
-                beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
-
-                // beta = std::max(beta,0.0);
+            } 
+            else 
+            {   // default to PR+
+                beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad); // max(.,0.0) moved to end
             }
-        } else if (cg_method==4) { // Hestenes-Stiefel
+        }
+        else if (cg_method==4)
+        {   // Hestenes-Stiefel
             beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad_p - grad,direc);
-        } else if (cg_method==5) { // Dai-Yuan
+        }
+        else if (cg_method==5)
+        { // Dai-Yuan
             beta = arma::dot(grad_p,grad_p) / arma::dot(grad_p - grad,direc);
-        } else if (cg_method==6) { // Hager-Zhang
+        }
+        else if (cg_method==6)
+        { // Hager-Zhang
             arma::vec y = grad_p - grad;
 
             arma::vec term_1 = y - 2*direc*(arma::dot(y,y) / arma::dot(y,direc));
@@ -218,9 +240,9 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
 
             beta = arma::dot(term_1,term_2);
         }
-        //
-        beta = std::max(beta,0.0); 
 
-        return beta;
+        //
+
+        return std::max(beta,0.0);
     }
 }

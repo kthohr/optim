@@ -32,7 +32,7 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     const int n_vals = init_out_vals.n_elem;
 
     //
-    // BFGS settings
+    // L-BFGS settings
 
     algo_settings settings;
 
@@ -47,7 +47,7 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
     const double wolfe_cons_2 = 0.90;
 
-    const int par_M = settings.lbfgs_par_M;
+    const int par_M = settings.lbfgs_par_M; // how many previous iterations to use when updating the Hessian
 
     const bool vals_bound = settings.vals_bound;
     
@@ -58,9 +58,10 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-        //
-
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
+    -> double 
+    {
         if (vals_bound) {
 
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
@@ -74,7 +75,6 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
                 arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
 
-                // *grad_out = jacob_matrix.t() * grad_obj; // correct gradient for transformation
                 *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
             } else {
                 ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
@@ -82,9 +82,7 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
             return ret;
         } else {
-            double ret = opt_objfn(vals_inp,grad_out,opt_data);
-
-            return ret;
+            return opt_objfn(vals_inp,grad_out,opt_data);
         }
     };
 
@@ -95,7 +93,6 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
     if (!x.is_finite()) {
         printf("lbfgs error: non-finite initial value(s).\n");
-        
         return false;
     }
 
@@ -103,11 +100,9 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
         x = transform(x, bounds_type, lower_bounds, upper_bounds);
     }
 
-
     arma::vec grad(n_vals); // gradient vector
     box_objfn(x,&grad,opt_data);
 
-    // double err = arma::accu(arma::abs(grad));
     double err = arma::norm(grad, 2);
     if (err <= err_tol) {
         return true;
@@ -116,7 +111,6 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     //
     // if ||gradient(initial values)|| > tolerance, then continue
 
-    // double t_line = 1.0;    // initial line search value
     arma::vec d = - grad; // direction
 
     arma::vec x_p = x, grad_p = grad;
@@ -130,7 +124,6 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     }
 
     //
-    // if ||gradient(x_p)|| > tolerance, then continue
 
     arma::vec s = x_p - x;
     arma::vec y = grad_p - grad;
@@ -148,22 +141,23 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
+    while (err > err_tol && iter < iter_max) 
+    {
         iter++;
-        //
-        int par_M_act = std::min(iter,par_M);
 
-        d = - lbfgs_recur(grad,s_mat,y_mat,par_M_act);
+        //
+
+        d = - lbfgs_recur(grad,s_mat,y_mat,std::min(iter,par_M));
 
         line_search_mt(1.0, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
         
-        // err = arma::accu(arma::abs(grad_p));
         err = arma::norm(grad_p, 2);
         if (err <= err_tol) {
             break;
         }
 
         // if ||gradient(x_p)|| > tolerance, then continue
+
         s = x_p - x;
         y = grad_p - grad;
 
@@ -212,9 +206,12 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 {
     arma::vec alpha_vec(M);
 
+    // forwards
+
     double rho = 1.0;
 
-    for (int i=0; i < M; i++) {
+    for (int i=0; i < M; i++) 
+    {
         rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
         alpha_vec(i) = rho*arma::dot(s_mat.col(i),q);
 
@@ -223,9 +220,12 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 
     arma::vec r = q * ( arma::dot(s_mat.col(0),y_mat.col(0)) / arma::dot(y_mat.col(0),y_mat.col(0)) );
 
+    // backwards
+
     double beta = 1.0;
 
-    for (int i = M - 1; i >= 0; i--) {
+    for (int i = M - 1; i >= 0; i--) 
+    {
         rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
         beta = rho*arma::dot(y_mat.col(i),r);
 

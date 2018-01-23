@@ -67,9 +67,10 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-        //
-
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
+    -> double 
+    {
         if (vals_bound) {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
@@ -88,7 +89,8 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (int i=0; i < n_pop; i++) {
+    for (int i=0; i < n_pop; i++) 
+    {
         P.row(i) = par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
 
         double prop_objfn_val = opt_objfn(P.row(i).t(),nullptr,opt_data);
@@ -178,7 +180,8 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
             // }
         }
 
-        if (objfn_vals.min() < global_best_val) {
+        if (objfn_vals.min() < global_best_val) 
+        {
             global_best_val = objfn_vals.min();
             global_best_vec = P.row( objfn_vals.index_min() );
         }

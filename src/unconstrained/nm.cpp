@@ -57,9 +57,10 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-        //
-
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
+    -> double 
+    {
         if (vals_bound) {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
@@ -83,7 +84,8 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //     simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
     // }
 
-    for (int i=1; i < n_vals + 1; i++) {
+    for (int i=1; i < n_vals + 1; i++) 
+    {
         if (init_out_vals(i-1) != 0.0) {
             simplex_points.row(i) = init_out_vals.t() + 0.05*init_out_vals(i-1)*arma::trans(unit_vec(i-1,n_vals));
         } else {
@@ -129,16 +131,16 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         f_r = box_objfn(x_r,nullptr,opt_data);
 
-        if (f_r >= simplex_fn_vals(0) && f_r < simplex_fn_vals(n_vals-1)) {
-            // reflected point is neither best nor worst in the new simplex
+        if (f_r >= simplex_fn_vals(0) && f_r < simplex_fn_vals(n_vals-1)) 
+        {   // reflected point is neither best nor worst in the new simplex
             simplex_points.row(n_vals) = x_r.t();
             next_iter = true;
         }
 
         // step 3
 
-        if (!next_iter && f_r < simplex_fn_vals(0)) {
-            // reflected point is better than the current best; try to go farther along this direction
+        if (!next_iter && f_r < simplex_fn_vals(0)) 
+        {   // reflected point is better than the current best; try to go farther along this direction
             x_e = centroid + par_gamma*(x_r - centroid);
 
             f_e = box_objfn(x_e,nullptr,opt_data);
@@ -154,10 +156,10 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         // steps 4, 5, 6
 
-        if (!next_iter && f_r >= simplex_fn_vals(n_vals-1)) {
-            // reflected point is still worse than x_n; contract
+        if (!next_iter && f_r >= simplex_fn_vals(n_vals-1)) 
+        {   // reflected point is still worse than x_n; contract
 
-            // step 4, 5
+            // steps 4 and 5
 
             if (f_r < simplex_fn_vals(n_vals)) {
                 // outside contraction
@@ -185,8 +187,8 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         // step 6
 
-        if (!next_iter) {
-            // neither outside nor inside contraction was acceptable; shrink the simplex toward x(0)
+        if (!next_iter) 
+        {   // neither outside nor inside contraction was acceptable; shrink the simplex toward x(0)
             for (int i=1; i < n_vals + 1; i++) {
                 simplex_points.row(i) = simplex_points.row(0) + par_delta*(simplex_points.row(i) - simplex_points.row(0));
             }

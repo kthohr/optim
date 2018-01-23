@@ -36,7 +36,8 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 
     algo_settings settings;
 
-    if (settings_inp) {
+    if (settings_inp)
+    {
         settings = *settings_inp;
     }
     
@@ -68,9 +69,9 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     //
     // if ||gradient(initial values)|| > tolerance, then continue
 
-    arma::vec d = - arma::solve(H,grad); // direction
+    arma::vec d = - arma::solve(H,grad); // Newton direction
 
-    arma::vec x_p = x + d;
+    arma::vec x_p = x + d; // no line search used here
 
     opt_objfn(x_p,&grad,&H,opt_data);
 

@@ -76,11 +76,10 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) 
+    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
-        //
-
         if (vals_bound) {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
@@ -99,7 +98,8 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (int i=0; i < n_pop; i++) {
+    for (int i=0; i < n_pop; i++) 
+    {
         if (center_particle && i == n_pop - 1) {
             P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / static_cast<double>(n_pop-1); // center vector
         } else {
@@ -129,7 +129,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     arma::rowvec global_best_vec = P.row( objfn_vals.index_min() );
 
     //
-    //
+    // begin loop
 
     int iter = 0;
     double err = 2.0*err_tol;
