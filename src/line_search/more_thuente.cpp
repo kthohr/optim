@@ -48,7 +48,9 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     }
 
     double dgrad = dgrad_init;
+
     //
+
     bool bracket = false, stage_1 = true;
     int iter = 0;
 
@@ -59,7 +61,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     double st_other = 0.0, f_other = f_init, dgrad_other = dgrad_init;
 
     double st_min, st_max;
-    double armijo_check, f_mod, f_best_mod, f_other_mod, dgrad_mod, dgrad_best_mod, dgrad_other_mod;
+    double armijo_check_val, f_mod, f_best_mod, f_other_mod, dgrad_mod, dgrad_best_mod, dgrad_other_mod;
 
     while (1) {
         iter++;
@@ -83,15 +85,17 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
         f_step = opt_objfn(x,&grad,opt_data);
 
         dgrad = arma::dot(grad,direc);
-        armijo_check = f_init + step*dgrad_test;
-        //
+        armijo_check_val = f_init + step*dgrad_test;
+
+        // check stop conditions
+
         if ((bracket && (step <= st_min || step >= st_max)) || infoc == 0) {
             info = 6;
         }
-        if (step == step_max && f_step <= armijo_check && dgrad <= dgrad_test) {
+        if (step == step_max && f_step <= armijo_check_val && dgrad <= dgrad_test) {
             info = 5;
         }
-        if (step == step_min && (f_step > armijo_check || dgrad >= dgrad_test)) {
+        if (step == step_min && (f_step > armijo_check_val || dgrad >= dgrad_test)) {
             info = 4;
         }
         if (iter >= iter_max) {
@@ -100,19 +104,24 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
         if (bracket && st_max-st_min <= xtol*st_max) {
             info = 2;
         }
-        if (f_step <= armijo_check && std::abs(dgrad) <= wolfe_cons_2*(-dgrad_init)) { // strong Wolfe conditions
+
+        if (f_step <= armijo_check_val && std::abs(dgrad) <= wolfe_cons_2*(-dgrad_init))
+        {   // strong Wolfe conditions
             info = 1;
         }
 
         if (info != 0) {
             return step;
         }
+
         //
-        if (stage_1 && f_step <= armijo_check && dgrad >= std::min(wolfe_cons_1,wolfe_cons_2)*dgrad_init) {
+
+        if (stage_1 && f_step <= armijo_check_val && dgrad >= std::min(wolfe_cons_1,wolfe_cons_2)*dgrad_init) {
             stage_1 = false;
         }
 
-        if (stage_1 && f_step <= f_best && f_step > armijo_check) {
+        if (stage_1 && f_step <= f_best && f_step > armijo_check_val)
+        {
             f_mod  = f_step - step*dgrad_test;
             f_best_mod = f_best - st_best*dgrad_test;
             f_other_mod = f_other - st_other*dgrad_test;
@@ -128,10 +137,14 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 
             dgrad_best = dgrad_best_mod + dgrad_test;
             dgrad_other = dgrad_other_mod + dgrad_test;
-        } else {
+        }
+        else 
+        {
             infoc = mt_step(st_best,f_best,dgrad_best,st_other,f_other,dgrad_other,step,f_step,dgrad,bracket,st_min,st_max);
         }
+
         //
+
         if (bracket) {
             if (std::abs(st_other - st_best) >= 0.66*width_old) {
                 step = st_best + 0.5*(st_other - st_best);
@@ -146,7 +159,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 }
 
 //
-// update 'interval of uncertainty'
+// update the 'interval of uncertainty'
 
 int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
 {
@@ -156,7 +169,8 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
 
     double theta,s,gamma, p,q,r, step_c,step_q,step_f;
 
-    if (f_step > f_best) {
+    if (f_step > f_best)
+    {
         info = 1;
         bound = true;
 
@@ -182,7 +196,9 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
         }
 
         bracket = true;
-    } else if (sgnd < 0.0) {
+    }
+    else if (sgnd < 0.0)
+    {
         info = 2;
         bound = false;
      
@@ -208,7 +224,9 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
         }
 
         bracket = true;
-    } else if (std::abs(d_step) < std::abs(d_best)) {
+    }
+    else if (std::abs(d_step) < std::abs(d_best))
+    {
         info = 3;
         bound = true;
 
@@ -247,7 +265,9 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
                 step_f = step_q;
             }
         }
-    } else {
+    }
+    else
+    {
         info = 4;
         bound = false;
 
@@ -271,10 +291,12 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
         } else {
             step_f = step_min;
         }
-    } 
+    }
+
     /*
      * Update the interval of uncertainty.
      */
+
     if (f_step > f_best) {
         st_other = step;
         f_other = f_step;
@@ -290,9 +312,11 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
         f_best = f_step;
         d_best = d_step;
     }
+
     /*
      * Compute the new step and safeguard it.
      */
+
     step_f = std::min(step_max,step_f);
     step_f = std::max(step_min,step_f);
     step = step_f;
@@ -304,7 +328,9 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
             step = std::max(st_best + 0.66*(st_other - st_best),step);
         }
     }
+
     //
+
     return info;
 }
 
