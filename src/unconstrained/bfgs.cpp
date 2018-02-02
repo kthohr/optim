@@ -60,11 +60,13 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double
     {
-        if (vals_bound) {
+        if (vals_bound)
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             double ret;
             
-            if (grad_out) {
+            if (grad_out)
+            {
                 arma::vec grad_obj = *grad_out;
 
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
@@ -72,15 +74,17 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
                 arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
 
                 *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
-            } else {
+            }
+            else
+            {
                 ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
             }
 
             return ret;
-        } else {
-            double ret = opt_objfn(vals_inp,grad_out,opt_data);
-
-            return ret;
+        }
+        else
+        {
+            return opt_objfn(vals_inp,grad_out,opt_data);
         }
     };
 
@@ -89,7 +93,8 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 
     arma::vec x = init_out_vals;
 
-    if (!x.is_finite()) {
+    if (!x.is_finite()) 
+    {
         printf("bfgs error: non-finite initial value(s).\n");
         return false;
     }
@@ -119,7 +124,8 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     line_search_mt(1.0, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
     err = arma::norm(grad, 2);  // check updated values
-    if (err <= err_tol) {
+    if (err <= err_tol) 
+    {
         init_out_vals = x_p;
         return true;
     }
@@ -133,11 +139,14 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     double W_denom_term = arma::dot(y,s);
     arma::mat W_term_1;
 
-    if (W_denom_term > 1E-10) { // checking the curvature condition y's > 0
+    if (W_denom_term > 1E-10) 
+    {   // checking the curvature condition y's > 0
         W_term_1 = I_mat - s*y.t() / W_denom_term;
     
         W = W_term_1*W*W_term_1.t() + s*s.t() / W_denom_term; // rank-1 update of inverse Hessian approximation
-    } else {
+    }
+    else
+    {
         W = 0.1*W;
     }
 
@@ -148,7 +157,8 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
+    while (err > err_tol && iter < iter_max)
+    {
         iter++;
 
         //
@@ -168,7 +178,8 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 
         W_denom_term = arma::dot(y,s);
 
-        if (W_denom_term > 1E-10) { // checking the curvature condition y's > 0
+        if (W_denom_term > 1E-10) 
+        {   // checking the curvature condition y's > 0
             W_term_1 = I_mat - s*y.t() / W_denom_term;
         
             W = W_term_1*W*W_term_1.t() + s*s.t() / W_denom_term;

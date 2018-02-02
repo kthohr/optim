@@ -66,10 +66,13 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     while (1) {
         iter++;
 
-        if (bracket) {
+        if (bracket) 
+        {
             st_min = std::min(st_best,st_other);
             st_max = std::max(st_best,st_other);
-        } else {
+        } 
+        else 
+        {
             st_min = st_best;
             st_max = step + extrap_delta*(step - st_best);
         }
@@ -145,7 +148,8 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 
         //
 
-        if (bracket) {
+        if (bracket)
+        {
             if (std::abs(st_other - st_best) >= 0.66*width_old) {
                 step = st_best + 0.5*(st_other - st_best);
             }
@@ -154,7 +158,9 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
             width = std::abs(st_other - st_best);
         }
     }
+
     //
+
     return step;
 }
 
@@ -252,13 +258,16 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
 
         step_q = step + (d_step/(d_step-d_best))*(st_best - step);
 
-        if (bracket) {
+        if (bracket) 
+        {
             if (std::abs(step-step_c) < std::abs(step-step_q)) {
                 step_f = step_c;
             } else {
                 step_f = step_q;
             }
-        } else {
+        } 
+        else
+        {
             if (std::abs(step-step_c) > std::abs(step-step_q)) {
                 step_f = step_c;
             } else {
@@ -271,7 +280,8 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
         info = 4;
         bound = false;
 
-        if (bracket) {
+        if (bracket)
+        {
             theta = 3*(f_step - f_other)/(st_other - step) + d_other + d_step;
             s = mt_sup_norm(theta,d_other,d_step);
 
@@ -286,9 +296,13 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
 
             step_c = step + r*(st_other - step);
             step_f = step_c;
-        } else if (step > st_best) {
+        } 
+        else if (step > st_best)
+        {
             step_f = step_max;
-        } else {
+        }
+        else
+        {
             step_f = step_min;
         }
     }
@@ -297,12 +311,16 @@ int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_o
      * Update the interval of uncertainty.
      */
 
-    if (f_step > f_best) {
+    if (f_step > f_best) 
+    {
         st_other = step;
         f_other = f_step;
         d_other = d_step;
-    } else {
-        if (sgnd < 0.0) {
+    } 
+    else
+    {
+        if (sgnd < 0.0) 
+        {
             st_other = st_best;
             f_other = f_best;
             d_other = d_best;

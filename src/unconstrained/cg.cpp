@@ -95,7 +95,8 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     arma::vec x = init_out_vals;
 
-    if (!x.is_finite()) {
+    if (!x.is_finite())
+    {
         printf("cg error: non-finite initial value(s).\n");
         return false;
     }
@@ -123,7 +124,8 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     double t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
     err = arma::norm(grad_p, 2);
-    if (err <= err_tol) {
+    if (err <= err_tol)
+    {
         init_out_vals = x_p;
         return true;
     }
@@ -133,7 +135,8 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
+    while (err > err_tol && iter < iter_max)
+    {
         iter++;
 
         //
@@ -195,50 +198,70 @@ double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const ar
     {
         double beta = 1.0;
 
-        if (cg_method==1) 
-        {   // Fletcher-Reeves (FR)
-            beta = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
-        }
-        else if (cg_method==2) 
-        {   // Polak-Ribiere (PR) + 
-            beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad); // max(.,0.0) moved to end
-        }
-        else if (cg_method==3) 
-        {   // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
-            if (iter > 1) 
+        switch (cg_method)
+        {
+            case 1: // Fletcher-Reeves (FR)
             {
-                const double beta_FR = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
-                const double beta_PR = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
-                
-                if (beta_PR < - beta_FR) {
-                    beta = -beta_FR;
-                } else if (std::abs(beta_PR) <= beta_FR) {
-                    beta = beta_PR;
-                } else { // beta_PR > beta_FR
-                    beta = beta_FR;
-                }
-            } 
-            else 
-            {   // default to PR+
-                beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad); // max(.,0.0) moved to end
+                beta = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
+                break;
             }
-        }
-        else if (cg_method==4)
-        {   // Hestenes-Stiefel
-            beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad_p - grad,direc);
-        }
-        else if (cg_method==5)
-        { // Dai-Yuan
-            beta = arma::dot(grad_p,grad_p) / arma::dot(grad_p - grad,direc);
-        }
-        else if (cg_method==6)
-        { // Hager-Zhang
-            arma::vec y = grad_p - grad;
 
-            arma::vec term_1 = y - 2*direc*(arma::dot(y,y) / arma::dot(y,direc));
-            arma::vec term_2 = grad_p / arma::dot(y,direc);
+            case 2: // Polak-Ribiere (PR) + 
+            {
+                beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad); // max(.,0.0) moved to end
+                break;
+            }
 
-            beta = arma::dot(term_1,term_2);
+            case 3: // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
+            {
+                if (iter > 1) 
+                {
+                    const double beta_FR = arma::dot(grad_p,grad_p) / arma::dot(grad,grad);
+                    const double beta_PR = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad);
+                    
+                    if (beta_PR < - beta_FR) {
+                        beta = -beta_FR;
+                    } else if (std::abs(beta_PR) <= beta_FR) {
+                        beta = beta_PR;
+                    } else { // beta_PR > beta_FR
+                        beta = beta_FR;
+                    }
+                } 
+                else 
+                {   // default to PR+
+                    beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad,grad); // max(.,0.0) moved to end
+                }
+                break;
+            }
+
+            case 4: // Hestenes-Stiefel
+            {
+                beta = arma::dot(grad_p,grad_p - grad) / arma::dot(grad_p - grad,direc);
+                break;
+            }
+
+            case 5: // Dai-Yuan
+            {
+                beta = arma::dot(grad_p,grad_p) / arma::dot(grad_p - grad,direc);
+                break;
+            }
+
+            case 6: // Hager-Zhang
+            {
+                arma::vec y = grad_p - grad;
+
+                arma::vec term_1 = y - 2*direc*(arma::dot(y,y) / arma::dot(y,direc));
+                arma::vec term_2 = grad_p / arma::dot(y,direc);
+
+                beta = arma::dot(term_1,term_2);
+                break;
+            }
+            
+            default:
+            {
+                printf("error: unknown value for cg_method");
+                break;
+            }
         }
 
         //

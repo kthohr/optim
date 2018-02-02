@@ -62,13 +62,14 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
-        if (vals_bound) {
-
+        if (vals_bound)
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             double ret;
             
-            if (grad_out) {
+            if (grad_out)
+            {
                 arma::vec grad_obj = *grad_out;
 
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
@@ -76,12 +77,16 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
                 arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
 
                 *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
-            } else {
+            }
+            else
+            {
                 ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
             }
 
             return ret;
-        } else {
+        }
+        else
+        {
             return opt_objfn(vals_inp,grad_out,opt_data);
         }
     };
@@ -91,7 +96,8 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
     arma::vec x = init_out_vals;
 
-    if (!x.is_finite()) {
+    if (!x.is_finite())
+    {
         printf("lbfgs error: non-finite initial value(s).\n");
         return false;
     }
@@ -118,7 +124,8 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     line_search_mt(1.0, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
     err = arma::norm(grad, 2);  // check updated values
-    if (err <= err_tol) {
+    if (err <= err_tol)
+    {
         init_out_vals = x_p;
         return true;
     }
@@ -210,7 +217,7 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 
     double rho = 1.0;
 
-    for (int i=0; i < M; i++) 
+    for (size_t i=0; i < M; i++) 
     {
         rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
         alpha_vec(i) = rho*arma::dot(s_mat.col(i),q);
@@ -224,7 +231,7 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 
     double beta = 1.0;
 
-    for (int i = M - 1; i >= 0; i--) 
+    for (size_t i = M - 1; i >= 0; i--) 
     {
         rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
         beta = rho*arma::dot(y_mat.col(i),r);

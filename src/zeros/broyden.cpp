@@ -66,7 +66,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     arma::vec f_val_p = opt_objfn(x_p,opt_data);
 
     err = arma::accu(arma::abs(f_val_p));
-    if (err <= err_tol) {
+    if (err <= err_tol)
+    {
         init_out_vals = x_p;
         return true;
     }
@@ -85,7 +86,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
+    while (err > err_tol && iter < iter_max)
+    {
         iter++;
 
         //
@@ -179,7 +181,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     arma::vec f_val_p = opt_objfn(x_p,opt_data);
 
     err = arma::accu(arma::abs(f_val_p));
-    if (err <= err_tol) {
+    if (err <= err_tol)
+    {
         init_out_vals = x_p;
         return true;
     }
@@ -198,8 +201,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
-
+    while (err > err_tol && iter < iter_max)
+    {
         iter++;
 
         //
@@ -304,7 +307,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     arma::vec f_val_p = opt_objfn(x + d,opt_data);
     err = arma::accu(arma::abs(f_val_p));
 
-    if (err <= err_tol) {
+    if (err <= err_tol)
+    {
         init_out_vals = x + d;
         return true;
     }
@@ -341,7 +345,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
+    while (err > err_tol && iter < iter_max)
+    {
         iter++;
 
         // d = arma::solve(B,-f_val);
@@ -449,7 +454,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     arma::vec f_val_p = opt_objfn(x + d,opt_data);
     err = arma::accu(arma::abs(f_val_p));
 
-    if (err <= err_tol) {
+    if (err <= err_tol)
+    {
         init_out_vals = x + d;
         return true;
     }
@@ -488,7 +494,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
 
     int iter = 0;
 
-    while (err > err_tol && iter < iter_max) {
+    while (err > err_tol && iter < iter_max)
+    {
         iter++;
 
         // d = arma::solve(B,-f_val);
@@ -589,7 +596,8 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
 
     int iter = 0;
     
-    while (1) {
+    while (1) 
+    {
         iter++;
         lambda *= beta; // lambda_i = beta^i;
 

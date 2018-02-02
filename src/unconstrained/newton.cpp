@@ -61,8 +61,7 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     opt_objfn(x,&grad,&H,opt_data);
 
     double err = arma::norm(grad, 2);
-    if (err <= err_tol) 
-    {
+    if (err <= err_tol) {
         return true;
     }
 
@@ -101,8 +100,7 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         //
 
         err = arma::norm(grad, 2);
-        if (err <= err_tol) 
-        {
+        if (err <= err_tol) {
             break;
         }
 

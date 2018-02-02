@@ -80,11 +80,14 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
-        if (vals_bound) {
+        if (vals_bound)
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             return opt_objfn(vals_inv_trans,nullptr,opt_data);
-        } else {
+        }
+        else
+        {
             return opt_objfn(vals_inp,nullptr,opt_data);
         }
     };
@@ -98,7 +101,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (int i=0; i < n_pop; i++) 
+    for (size_t i=0; i < n_pop; i++) 
     {
         if (center_particle && i == n_pop - 1) {
             P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / static_cast<double>(n_pop-1); // center vector
@@ -134,7 +137,8 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     int iter = 0;
     double err = 2.0*err_tol;
 
-    while (err > err_tol && iter < n_gen) {
+    while (err > err_tol && iter < n_gen)
+    {
         iter++;
         
         //
@@ -146,7 +150,8 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
             par_w *= par_damp;
         }
 
-        if (velocity_method == 2) {
+        if (velocity_method == 2)
+        {
             par_c_cog = par_initial_c_cog - (par_initial_c_cog - par_final_c_cog) * (iter + 1) / n_gen;
             par_c_soc = par_initial_c_soc - (par_initial_c_soc - par_final_c_soc) * (iter + 1) / n_gen;
         }
@@ -157,13 +162,16 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 #ifdef OPTIM_USE_OMP
         #pragma omp parallel for 
 #endif
-        for (int i=0; i < n_pop; i++) {
-
-            if ( !(center_particle && i == n_pop - 1) ) {
+        for (size_t i=0; i < n_pop; i++)
+        {
+            if ( !(center_particle && i == n_pop - 1) )
+            {
                 V.row(i) = par_w*V.row(i) + par_c_cog*arma::randu(1,n_vals)%(best_vecs.row(i) - P.row(i)) + par_c_soc*arma::randu(1,n_vals)%(global_best_vec - P.row(i));
 
                 P.row(i) += V.row(i);
-            } else {
+            }
+            else
+            {
                 P.row(i) = arma::sum(P.rows(0,n_pop-2),0) / static_cast<double>(n_pop-1); // center vector
             }
             
@@ -177,13 +185,15 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
         
             objfn_vals(i) = prop_objfn_val;
                 
-            if (objfn_vals(i) < best_vals(i)) {
+            if (objfn_vals(i) < best_vals(i))
+            {
                 best_vals(i) = objfn_vals(i);
                 best_vecs.row(i) = P.row(i);
             }
         }
 
-        if (best_vals.min() < global_best_val) {
+        if (best_vals.min() < global_best_val)
+        {
             global_best_val = best_vals.min();
             global_best_vec = best_vecs.row( best_vals.index_min() );
         }

@@ -30,8 +30,10 @@ determine_bounds_type(const bool vals_bound, const int n_vals, const arma::vec& 
 
     ret_vec.fill(1); // base case: 1 - no bounds imposed
 
-    if (vals_bound) {
-        for (int i=0; i < n_vals; i++) {
+    if (vals_bound)
+    {
+        for (size_t i=0; i < n_vals; i++)
+        {
             if ( std::isfinite(lower_bounds(i)) && std::isfinite(upper_bounds(i)) ) {
                 // lower and upper bound imposed
                 ret_vec(i) = 4;
@@ -44,6 +46,8 @@ determine_bounds_type(const bool vals_bound, const int n_vals, const arma::vec& 
             }
         }
     }
+
     //
+    
     return ret_vec;
 }

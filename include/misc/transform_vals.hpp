@@ -28,8 +28,10 @@ transform(const arma::vec& vals_inp, const arma::uvec& bounds_type, const arma::
 
     arma::vec vals_trans_out(n_vals);
 
-    for (int i=0; i < n_vals; i++) {
-        switch (bounds_type(i)) {
+    for (size_t i=0; i < n_vals; i++)
+    {
+        switch (bounds_type(i))
+        {
             case 1: // no bounds
                 vals_trans_out(i) = vals_inp(i);
                 break;
@@ -44,7 +46,9 @@ transform(const arma::vec& vals_inp, const arma::uvec& bounds_type, const arma::
                 break;
         }
     }
+
     //
+
     return vals_trans_out;
 }
 
@@ -56,8 +60,10 @@ inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, co
 
     arma::vec vals_out(n_vals);
 
-    for (int i=0; i < n_vals; i++) {
-        switch (bounds_type(i)) {
+    for (size_t i=0; i < n_vals; i++)
+    {
+        switch (bounds_type(i))
+        {
             case 1: // no bounds
                 vals_out(i) = vals_trans_inp(i);
                 break;
@@ -80,6 +86,8 @@ inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, co
                 break;
         }
     }
+
     //
+    
     return vals_out;
 }

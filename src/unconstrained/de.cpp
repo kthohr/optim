@@ -67,11 +67,14 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double
     {
-        if (vals_bound) {
+        if (vals_bound) 
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             return opt_objfn(vals_inv_trans,nullptr,opt_data);
-        } else {
+        }
+        else
+        {
             return opt_objfn(vals_inp,nullptr,opt_data);
         }
     };
@@ -85,7 +88,8 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (int i=0; i < n_pop; i++) {
+    for (int i=0; i < n_pop; i++)
+    {
         X_next.row(i) = par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
 
         double prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
@@ -114,7 +118,8 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     int iter = 0;
     double err = 2*err_tol;
 
-    while (err > err_tol && iter < n_gen + 1) {
+    while (err > err_tol && iter < n_gen + 1)
+    {
         iter++;
 
         X = X_next;
@@ -125,8 +130,8 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 #ifdef OPTIM_USE_OMP
         #pragma omp parallel for
 #endif
-        for (int i=0; i < n_pop; i++) {
-
+        for (int i=0; i < n_pop; i++)
+        {
             int c_1, c_2, c_3;
 
             do { // 'r_2' in paper's notation

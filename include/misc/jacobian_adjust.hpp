@@ -28,8 +28,10 @@ jacobian_adjust(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, 
 
     arma::mat ret_mat = arma::eye(n_vals,n_vals);
 
-    for (int i=0; i < n_vals; i++) {
-        switch (bounds_type(i)) {
+    for (size_t i=0; i < n_vals; i++)
+    {
+        switch (bounds_type(i)) 
+        {
             case 2: // lower bound only
                 ret_mat(i,i) = std::exp(vals_trans_inp(i));
                 break;
