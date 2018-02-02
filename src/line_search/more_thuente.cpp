@@ -18,13 +18,15 @@
 
 /*
  * Moré and Thuente line search
+ *
+ * Based on MINPACK fortran code and Dianne P. O'Leary's Matlab translation of MINPACK
  */
 
 #include "optim.hpp"
 
 double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, const double* wolfe_cons_1_inp, const double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
-    const int iter_max = 100;
+    const size_t iter_max = 100;
 
     const double step_min = 0.0;
     const double step_max = 10.0;
@@ -33,8 +35,10 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     // Wolfe parameters
     const double wolfe_cons_1 = (wolfe_cons_1_inp) ? *wolfe_cons_1_inp : 1E-03; // tolerence on the Armijo sufficient decrease condition; sometimes labelled 'mu'.
     const double wolfe_cons_2 = (wolfe_cons_2_inp) ? *wolfe_cons_2_inp : 0.90;  // tolerence on the curvature condition; sometimes labelled 'eta'.
+    
     //
-    int info = 0, infoc = 1;
+
+    size_t info = 0, infoc = 1;
     const double extrap_delta = 4; // 'delta' on page 20
 
     arma::vec x_0 = x;
@@ -52,7 +56,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     //
 
     bool bracket = false, stage_1 = true;
-    int iter = 0;
+    size_t iter = 0;
 
     double f_init = f_step, dgrad_test = wolfe_cons_1*dgrad_init;
     double width = step_max - step_min, width_old = 2*width;
@@ -80,7 +84,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
         step = std::max(step,step_min);
         step = std::min(step,step_max);
 
-        if ((bracket && (step <= st_min || step >= st_max)) || iter >= iter_max-1 || infoc == 0 || (bracket && st_max-st_min <= xtol*st_max)) {
+        if ( (bracket && (step <= st_min || step >= st_max)) || iter >= iter_max-1 || infoc == 0 || (bracket && st_max-st_min <= xtol*st_max)) {
             step = st_best;
         }
 
@@ -134,7 +138,9 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
             dgrad_other_mod = dgrad_other - dgrad_test;
 
             infoc = mt_step(st_best,f_best_mod,dgrad_best_mod,st_other,f_other_mod,dgrad_other_mod,step,f_mod,dgrad_mod,bracket,st_min,st_max);
+            
             //
+
             f_best = f_best_mod + st_best*dgrad_test;
             f_other = f_other_mod + st_other*dgrad_test;
 
@@ -167,10 +173,10 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 //
 // update the 'interval of uncertainty'
 
-int optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
+size_t optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
 {
     bool bound = false;
-    int info = 0;
+    size_t info = 0;
     double sgnd = d_step*(d_best / std::abs(d_best));
 
     double theta,s,gamma, p,q,r, step_c,step_q,step_f;
