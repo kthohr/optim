@@ -28,7 +28,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     bool success = false;
 
     const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // PSO settings
@@ -39,22 +39,22 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
     const bool center_particle = settings.pso_center_particle;
 
-    const int n_pop = (center_particle) ? settings.pso_n_pop + 1 : settings.pso_n_pop;
-    const int n_gen = settings.pso_n_gen;
+    const size_t n_pop = (center_particle) ? settings.pso_n_pop + 1 : settings.pso_n_pop;
+    const size_t n_gen = settings.pso_n_gen;
 
-    const int inertia_method = settings.pso_inertia_method;
+    const size_t inertia_method = settings.pso_inertia_method;
 
     double par_w = settings.pso_par_initial_w;
     const double par_w_max = settings.pso_par_w_max;
     const double par_w_min = settings.pso_par_w_min;
     const double par_damp = settings.pso_par_w_damp;
 
-    const int velocity_method = settings.pso_velocity_method;
+    const size_t velocity_method = settings.pso_velocity_method;
 
     double par_c_cog = settings.pso_par_c_cog;
     double par_c_soc = settings.pso_par_c_soc;
@@ -134,7 +134,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
     double err = 2.0*err_tol;
 
     while (err > err_tol && iter < n_gen)

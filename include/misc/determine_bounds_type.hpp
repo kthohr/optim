@@ -24,7 +24,7 @@
 
 inline
 arma::uvec
-determine_bounds_type(const bool vals_bound, const int n_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds)
+determine_bounds_type(const bool vals_bound, const size_t n_vals, const arma::vec& lower_bounds, const arma::vec& upper_bounds)
 {
     arma::uvec ret_vec(n_vals);
 

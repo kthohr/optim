@@ -29,7 +29,7 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
     bool success = false;
 
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // L-BFGS settings
@@ -40,14 +40,14 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
         settings = *settings_inp;
     }
     
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
     const double wolfe_cons_2 = 0.90;
 
-    const int par_M = settings.lbfgs_par_M; // how many previous iterations to use when updating the Hessian
+    const size_t par_M = settings.lbfgs_par_M; // how many previous iterations to use when updating the Hessian
 
     const bool vals_bound = settings.vals_bound;
     
@@ -146,7 +146,7 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max) 
     {
@@ -209,7 +209,7 @@ optim::lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& va
 
 // algorithm 7.4 of Nocedal and Wright (2006)
 arma::vec
-optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, const int M)
+optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, const size_t M)
 {
     arma::vec alpha_vec(M);
 

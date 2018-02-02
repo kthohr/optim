@@ -29,7 +29,7 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 
     bool success = false;
 
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // Newton settings
@@ -41,8 +41,8 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         settings = *settings_inp;
     }
     
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     //
@@ -84,7 +84,7 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {

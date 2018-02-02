@@ -29,7 +29,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
 
     bool success = false;
 
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // Broyden settings
@@ -40,8 +40,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     //
@@ -84,7 +84,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -155,8 +155,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     //
@@ -199,7 +199,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -267,7 +267,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     
     bool success = false;
 
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // Broyden settings
@@ -278,8 +278,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
@@ -343,7 +343,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -425,8 +425,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
@@ -492,7 +492,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -565,13 +565,13 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 // internal functions
 
 double
-optim::df_eta(int k)
+optim::df_eta(size_t k)
 {
     return 1.0 / (k*k);
 }
 
 double 
-optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, int k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
+optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, size_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {
     const double beta = 0.9;
     const double eta_k = df_eta(k);
@@ -594,7 +594,7 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
     
     while (1) 
     {
@@ -615,132 +615,3 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
 
     return lambda;
 }
-
-/*
-bool optim::broyden_mt(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
-{
-    // notation: 'p' stands for '+1'.
-    //
-    bool success = false;
-    int iter_max = 1000;
-    double err_tol = 1e-08;
-    double wolfe_cons_1 = 1E-03;
-    double wolfe_cons_2 = 0.50;
-    //
-    int n_vals = init_out_vals.n_elem;
-
-    arma::vec x = init_out_vals;
-
-    arma::mat B = arma::eye(n_vals,n_vals); // initial approx. to (inverse) Jacobian
-    //
-    // std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> ls_objfn = [opt_objfn, &B] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-    //     int n_vals = vals_inp.n_elem;
-    //     double eps_diff = 1e-04;
-
-    //     arma::vec Fx = opt_objfn(vals_inp,opt_data);
-    //     double ret = arma::dot(Fx,Fx)/2.0;
-    //     std::cout << "lambda ret: " << ret << std::endl;
-
-    //     arma::vec Fx_p, Fx_m;
-    //     for (int jj=0; jj < n_vals; jj++) {
-    //         arma::vec Fx_p = opt_objfn(vals_inp + eps_diff*unit_vec(jj,n_vals),opt_data);
-    //         arma::vec Fx_m = opt_objfn(vals_inp - eps_diff*unit_vec(jj,n_vals),opt_data);
-
-    //         grad(jj) = (arma::dot(Fx_p,Fx_p)/2.0 - arma::dot(Fx_m,Fx_m)/2.0) / (2*eps_diff);
-    //     }
-    //     arma::cout << "lambda grad: " << grad.t() << arma::endl;
-    //     //
-    //     return ret;
-    // };
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> ls_objfn = [opt_objfn, &B] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) -> double {
-        int n_vals = vals_inp.n_elem;
-        double eps_diff = 1e-06;
-
-        arma::vec Fx = opt_objfn(vals_inp,opt_data);
-        double ret = arma::dot(Fx,Fx)/2.0;
-        std::cout << "lambda ret: " << ret << std::endl;
-
-        if (grad_out) {
-            arma::vec Fx_p, Fx_m;
-            for (int jj=0; jj < n_vals; jj++) {
-                arma::vec Fx_p = opt_objfn(vals_inp + eps_diff*unit_vec(jj,n_vals),opt_data);
-                //arma::vec Fx_m = opt_objfn(vals_inp - eps_diff*unit_vec(jj,n_vals),opt_data);
-                
-                //grad(jj) = (arma::dot(Fx_p,Fx_p)/2.0 - arma::dot(Fx_m,Fx_m)/2.0) / (2*eps_diff);
-                (*grad_out)(jj) = (arma::dot(Fx_p,Fx_p)/2.0 - arma::dot(Fx,Fx)/2.0) / (eps_diff);
-            }
-            arma::cout << "lambda grad: " << (*grad_out).t() << arma::endl;
-        }
-        //
-        return ret;
-    };
-    //
-    // initialization
-    double t_init = 1;
-
-    arma::vec f_val = opt_objfn(x,opt_data);
-    double err = arma::accu(arma::abs(f_val));
-
-    if (err <= err_tol) {
-        return true;
-    }
-    //
-    arma::vec d = - B*f_val;
-
-    arma::vec x_p = x, grad_mt(n_vals);
-    double t = line_search_mt(t_init, x_p, grad_mt, d, &wolfe_cons_1, &wolfe_cons_2, ls_objfn, opt_data);
-    std::cout << "t: " << t << std::endl;
-    arma::cout << x_p << arma::endl;
-
-    arma::vec f_val_p = opt_objfn(x_p,opt_data);
-    err = arma::accu(arma::abs(f_val_p));
-
-    if (err <= err_tol) {
-        init_out_vals = x_p;
-        return true;
-    }
-    //
-    arma::vec s = x_p - x;
-    arma::vec y = f_val_p - f_val;
-
-    // update B
-    B += (s - B*y) * y.t() / arma::dot(y,y);
-
-    f_val = f_val_p;
-    //
-    // begin loop
-    int iter = 0;
-
-    while (err > err_tol && iter < iter_max) {
-        iter++;
-
-        d = - B*f_val;
-        arma::cout << "direction: \n" << d.t() << arma::endl;
-        t = line_search_mt(t_init, x_p, grad_mt, d, &wolfe_cons_1, &wolfe_cons_2, ls_objfn, opt_data);
-
-        f_val_p = opt_objfn(x_p,opt_data);
-        err = arma::accu(arma::abs(f_val_p));
-
-        if (err <= err_tol) {
-            break;
-        }
-
-        s = x_p - x;
-        y = f_val_p - f_val;
-        // update B
-        B += (s - B*y) * y.t() / arma::dot(y,y);
-        //
-        x = x_p;
-        f_val = f_val_p;
-
-        std::cout << "f_val_p:" << f_val_p << std::endl;
-    }
-    //
-    if (err <= err_tol && iter <= iter_max) {
-        init_out_vals = x_p;
-        success = true;
-    }
-    //
-    return success;
-}
-*/

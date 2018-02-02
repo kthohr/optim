@@ -27,7 +27,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 {
     bool success = false;
 
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // NM settings
@@ -38,8 +38,8 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         settings = *settings_inp;
     }
     
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     // expansion / contraction parameters
@@ -105,7 +105,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
     double err = 2*err_tol;
     arma::uvec sort_vec;
 

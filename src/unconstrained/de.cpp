@@ -28,7 +28,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     bool success = false;
 
     const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // DE settings
@@ -39,14 +39,14 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
-    const int n_pop = settings.de_n_pop;
-    const int n_gen = settings.de_n_gen;
-    const int check_freq = (settings.de_check_freq > 0) ? settings.de_check_freq : n_gen ;
+    const size_t n_pop = settings.de_n_pop;
+    const size_t n_gen = settings.de_n_gen;
+    const size_t check_freq = (settings.de_check_freq > 0) ? settings.de_check_freq : n_gen ;
 
-    const int mutation_method = settings.de_mutation_method;
+    const size_t mutation_method = settings.de_mutation_method;
 
     const double par_F = settings.de_par_F;
     const double par_CR = settings.de_par_CR;
@@ -88,7 +88,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (int i=0; i < n_pop; i++)
+    for (size_t i=0; i < n_pop; i++)
     {
         X_next.row(i) = par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
 
@@ -115,7 +115,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
     double err = 2*err_tol;
 
     while (err > err_tol && iter < n_gen + 1)
@@ -130,9 +130,9 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 #ifdef OPTIM_USE_OMP
         #pragma omp parallel for
 #endif
-        for (int i=0; i < n_pop; i++)
+        for (size_t i=0; i < n_pop; i++)
         {
-            int c_1, c_2, c_3;
+            size_t c_1, c_2, c_3;
 
             do { // 'r_2' in paper's notation
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
@@ -148,12 +148,12 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             //
 
-            const int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+            const size_t j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
             arma::vec rand_unif = arma::randu(n_vals);
             arma::rowvec X_prop(n_vals);
 
-            for (int k=0; k < n_vals; k++)
+            for (size_t k=0; k < n_vals; k++)
             {
                 if ( rand_unif(k) < par_CR || k == j )
                 {

@@ -29,7 +29,7 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     bool success = false;
     
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // CG settings
@@ -40,11 +40,11 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         settings = *settings_inp;
     }
     
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
-    const int cg_method = settings.cg_method; // update method
+    const size_t cg_method = settings.cg_method; // update method
     const double cg_restart_threshold = settings.cg_restart_threshold;
 
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
@@ -133,7 +133,7 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -185,7 +185,7 @@ optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 //
 // update formula
 
-double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const int iter, const int cg_method, const double cg_restart_threshold)
+double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const size_t iter, const size_t cg_method, const double cg_restart_threshold)
 {
     // threshold test
     double ratio_value = std::abs( arma::dot(grad_p,grad) ) / arma::dot(grad_p,grad_p);

@@ -22,7 +22,7 @@
 
 inline
 arma::vec
-unit_vec(const int j, const int n)
+unit_vec(const size_t j, const size_t n)
 {
     arma::vec ret = arma::zeros(n,1);
     ret(j) = 1;

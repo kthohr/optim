@@ -24,7 +24,7 @@ inline
 arma::mat
 jacobian_adjust(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, const arma::vec& lower_bounds, const arma::vec& upper_bounds)
 {
-    const int n_vals = bounds_type.n_elem;
+    const size_t n_vals = bounds_type.n_elem;
 
     arma::mat ret_mat = arma::eye(n_vals,n_vals);
 

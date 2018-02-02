@@ -28,7 +28,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     bool success = false;
 
     const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // DE settings
@@ -39,11 +39,11 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
-    int n_pop = settings.de_n_pop;
-    // const int check_freq = settings.de_check_freq;
+    size_t n_pop = settings.de_n_pop;
+    // const size_t check_freq = settings.de_check_freq;
 
     const double par_initial_F = settings.de_par_F;
     const double par_initial_CR = settings.de_par_CR;
@@ -60,13 +60,13 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     F_vec.fill(par_initial_F);
     CR_vec.fill(par_initial_CR);
 
-    const int max_fn_eval = settings.de_max_fn_eval;
-    const int pmax = settings.de_pmax;
-    const int n_pop_best = settings.de_n_pop_best;
+    const size_t max_fn_eval = settings.de_max_fn_eval;
+    const size_t pmax = settings.de_pmax;
+    const size_t n_pop_best = settings.de_n_pop_best;
 
     const double d_eps = 0.5;
 
-    int n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
+    size_t n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
 
     const bool vals_bound = settings.vals_bound;
     
@@ -128,8 +128,8 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
     arma::rowvec xchg_vec = best_sol_running;
     //
-    int n_reset = 1;
-    int iter = 0;
+    size_t n_reset = 1;
+    size_t iter = 0;
     double err = 2*err_tol;
 
     while (err > err_tol && iter < n_gen + 1)
@@ -141,7 +141,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
         if (iter == n_gen && n_reset < 4)
         {
-            int n_pop_temp = n_pop/2;
+            size_t n_pop_temp = n_pop/2;
 
             arma::vec objfn_vals_reset(n_pop_temp);
             arma::mat X_reset(n_pop_temp,n_vals);
@@ -196,7 +196,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            int c_1, c_2, c_3;
+            size_t c_1, c_2, c_3;
 
             do {
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
@@ -212,7 +212,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+            size_t j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
             arma::vec rand_unif = arma::randu(n_vals);
             arma::rowvec X_prop(n_vals);
@@ -274,7 +274,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            int c_1, c_2;
+            size_t c_1, c_2;
 
             do {
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
@@ -286,7 +286,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            int j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+            size_t j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
             arma::vec rand_unif = arma::randu(n_vals);
             arma::rowvec X_prop(n_vals);

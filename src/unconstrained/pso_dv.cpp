@@ -28,7 +28,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     bool success = false;
 
     const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // PSO settings
@@ -39,13 +39,13 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         settings = *settings_inp;
     }
 
-    const int conv_failure_switch = settings.conv_failure_switch;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
-    const int n_pop = (settings.pso_n_pop > 0) ? settings.pso_n_pop : 100;
-    const int n_gen = (settings.pso_n_gen > 0) ? settings.pso_n_gen : 1000;
+    const size_t n_pop = (settings.pso_n_pop > 0) ? settings.pso_n_pop : 100;
+    const size_t n_gen = (settings.pso_n_gen > 0) ? settings.pso_n_gen : 1000;
 
-    const int stag_limit = 50;
+    const size_t stag_limit = 50;
 
     double par_w = 1.0;
     double par_beta = 0.5;
@@ -124,7 +124,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
     double err = 2.0*err_tol;
 
     while (err > err_tol && iter < n_gen) {
@@ -138,7 +138,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 #endif
         for (size_t i=0; i < n_pop; i++) {
 
-            int c_1, c_2;
+            size_t c_1, c_2;
 
             do { // 'r_2' in paper's notation
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));

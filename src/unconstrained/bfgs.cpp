@@ -29,7 +29,7 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
 
     bool success = false;
 
-    const int n_vals = init_out_vals.n_elem;
+    const size_t n_vals = init_out_vals.n_elem;
 
     //
     // BFGS settings
@@ -40,8 +40,8 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
         settings = *settings_inp;
     }
     
-    const int conv_failure_switch = settings.conv_failure_switch;
-    const int iter_max = settings.iter_max;
+    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const size_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     const double wolfe_cons_1 = 1E-03; // line search tuning parameters
@@ -155,7 +155,7 @@ optim::bfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     //
     // begin loop
 
-    int iter = 0;
+    size_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {

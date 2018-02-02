@@ -24,7 +24,7 @@ inline
 arma::mat
 numerical_hessian(const arma::vec& vals_inp, const double* step_size_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* objfn_data)> objfn, void* objfn_data)
 {
-    const int n_vals = vals_inp.n_elem;
+    const size_t n_vals = vals_inp.n_elem;
     const double step_size = (step_size_inp) ? *step_size_inp : 1e-04;
     const double mach_eps = std::numeric_limits<double>::epsilon();
 
