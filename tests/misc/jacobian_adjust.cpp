@@ -24,6 +24,11 @@
 
 int main()
 {   
+
+    std::cout << "\n     ***** Begin JACOBIAN tests. *****     \n" << std::endl;
+    
+    //
+
     const bool vals_bound = true;
     const int n_vals = 4;
 
@@ -48,6 +53,10 @@ int main()
     arma::mat j_mat = optim::jacobian_adjust(vals_trans,bounds_type,lb,ub);
 
     arma::vec vals_inv_trans = optim::inv_transform(vals_trans,bounds_type,lb,ub);
+
+    //
+
+    std::cout << "\n     ***** END JACOBIAN tests. *****     \n" << std::endl;
 
     return 0;
 }

@@ -1,8 +1,23 @@
+/*################################################################################
+  ##
+  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##
+  ##   This file is part of the Optim C++ library.
+  ##
+  ##   Optim is free software: you can redistribute it and/or modify
+  ##   it under the terms of the GNU General Public License as published by
+  ##   the Free Software Foundation, either version 2 of the License, or
+  ##   (at your option) any later version.
+  ##
+  ##   Optim is distributed in the hope that it will be useful,
+  ##   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ##   GNU General Public License for more details.
+  ##
+  ################################################################################*/
+
 //
 // coverage tests for error_reporting
-//
-// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include error_reporting_test.cpp -o error_reporting.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include error_reporting.cpp -o error_reporting.test -L./../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"
@@ -35,6 +50,8 @@ int main()
     int iter_max = 2;
 
     optim::algo_settings settings;
+
+    std::cout << "\n     ***** Begin ERROR_REPORTING tests. *****     \n" << std::endl;
 
     //
     // error_reporting_1
@@ -92,6 +109,8 @@ int main()
     optim::error_reporting(out_vals,x_p,optim_simple_fn_2,nullptr,success,err_1,err_tol,iter_1,iter_max,conv_failure_switch,&settings);
 
     // done
+
+    std::cout << "\n     ***** End ERROR_REPORTING tests. *****     \n" << std::endl;
 
     return 0;
 }

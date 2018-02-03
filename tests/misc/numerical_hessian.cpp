@@ -1,8 +1,23 @@
+/*################################################################################
+  ##
+  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##
+  ##   This file is part of the Optim C++ library.
+  ##
+  ##   Optim is free software: you can redistribute it and/or modify
+  ##   it under the terms of the GNU General Public License as published by
+  ##   the Free Software Foundation, either version 2 of the License, or
+  ##   (at your option) any later version.
+  ##
+  ##   Optim is distributed in the hope that it will be useful,
+  ##   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ##   GNU General Public License for more details.
+  ##
+  ################################################################################*/
+
 //
 // numerical hessian tests
-//
-// g++-mp-7 -O2 -Wall -std=c++11 -I/opt/local/include bfgs_test.cpp -o bfgs.test -L/opt/local/lib -loptim -framework Accelerate
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include bfgs.cpp -o bfgs.test -L./../.. -loptim -framework Accelerate
 //
 
 #include "optim.hpp"
@@ -10,6 +25,9 @@
 
 int main()
 {
+
+    std::cout << "\n     ***** Begin numerical_hessian tests. *****     \n" << std::endl;
+
     //
     // test 1
     arma::vec x_1 = arma::ones(2,1);
@@ -53,6 +71,10 @@ int main()
     arma::mat hess_mat_5 = optim::numerical_hessian(x_5,nullptr,unconstr_test_fn_5,nullptr);
 
     arma::cout << "hessian 5:\n" << hess_mat_5 << arma::endl;
+
+    //
+
+    std::cout << "\n     ***** end numerical_hessian tests. *****     \n" << std::endl;
 
     return 0;
 }
