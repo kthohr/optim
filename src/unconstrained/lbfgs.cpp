@@ -231,7 +231,7 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 
     double beta = 1.0;
 
-    for (size_t i = M - 1; i >= 0; i--) 
+    for (int i = M - 1; i >= 0; i--) 
     {
         rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
         beta = rho*arma::dot(y_mat.col(i),r);
