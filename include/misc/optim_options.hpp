@@ -25,6 +25,8 @@
     #include "armadillo"
 #endif
 
-#ifndef OPTIM_BIG_POS_VAL
-    #define OPTIM_BIG_POS_VAL 1E09;
-#endif
+namespace optim
+{
+    static const double inf = std::numeric_limits<double>::infinity();
+    using uint_t = unsigned int;
+}

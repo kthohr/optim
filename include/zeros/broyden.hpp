@@ -61,7 +61,7 @@ bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::v
 
 // internal functions
 
-double df_eta(size_t k);
-double df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, size_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
+double df_eta(uint_t k);
+double df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, uint_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
 
 #endif

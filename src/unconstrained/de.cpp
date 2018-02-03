@@ -27,7 +27,6 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 {
     bool success = false;
 
-    const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
     const size_t n_vals = init_out_vals.n_elem;
 
     //
@@ -39,14 +38,14 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
     const size_t n_pop = settings.de_n_pop;
     const size_t n_gen = settings.de_n_gen;
-    const size_t check_freq = (settings.de_check_freq > 0) ? settings.de_check_freq : n_gen ;
+    const uint_t check_freq = (settings.de_check_freq > 0) ? settings.de_check_freq : n_gen ;
 
-    const size_t mutation_method = settings.de_mutation_method;
+    const uint_t mutation_method = settings.de_mutation_method;
 
     const double par_F = settings.de_par_F;
     const double par_CR = settings.de_par_CR;
@@ -95,7 +94,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         double prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
 
         if (!std::isfinite(prop_objfn_val)) {
-            prop_objfn_val = BIG_POS_VAL;
+            prop_objfn_val = inf;
         }
         
         objfn_vals(i) = prop_objfn_val;
@@ -115,7 +114,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
     double err = 2*err_tol;
 
     while (err > err_tol && iter < n_gen + 1)
@@ -132,7 +131,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 #endif
         for (size_t i=0; i < n_pop; i++)
         {
-            size_t c_1, c_2, c_3;
+            uint_t c_1, c_2, c_3;
 
             do { // 'r_2' in paper's notation
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
@@ -174,7 +173,7 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             double prop_objfn_val = box_objfn(X_prop.t(),nullptr,opt_data);
 
             if (!std::isfinite(prop_objfn_val)) {
-                prop_objfn_val = BIG_POS_VAL;
+                prop_objfn_val = inf;
             }
             
             if (prop_objfn_val <= objfn_vals(i))

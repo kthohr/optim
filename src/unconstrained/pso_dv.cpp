@@ -27,7 +27,6 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 {
     bool success = false;
 
-    const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
     const size_t n_vals = init_out_vals.n_elem;
 
     //
@@ -39,13 +38,13 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
     const size_t n_pop = (settings.pso_n_pop > 0) ? settings.pso_n_pop : 100;
     const size_t n_gen = (settings.pso_n_gen > 0) ? settings.pso_n_gen : 1000;
 
-    const size_t stag_limit = 50;
+    const uint_t stag_limit = 50;
 
     double par_w = 1.0;
     double par_beta = 0.5;
@@ -100,7 +99,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
         double prop_objfn_val = opt_objfn(P.row(i).t(),nullptr,opt_data);
 
         if (std::isnan(prop_objfn_val)) {
-            prop_objfn_val = BIG_POS_VAL;
+            prop_objfn_val = inf;
         }
         
         objfn_vals(i) = prop_objfn_val;
@@ -124,7 +123,7 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
     double err = 2.0*err_tol;
 
     while (err > err_tol && iter < n_gen) {
@@ -136,9 +135,9 @@ optim::pso_dv_int(arma::vec& init_out_vals, std::function<double (const arma::ve
 #ifdef OPTIM_USE_OMP
         #pragma omp parallel for 
 #endif
-        for (size_t i=0; i < n_pop; i++) {
-
-            size_t c_1, c_2;
+        for (size_t i=0; i < n_pop; i++)
+        {
+            uint_t c_1, c_2;
 
             do { // 'r_2' in paper's notation
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));

@@ -27,7 +27,6 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 {
     bool success = false;
 
-    const double BIG_POS_VAL = OPTIM_BIG_POS_VAL;
     const size_t n_vals = init_out_vals.n_elem;
 
     //
@@ -39,7 +38,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
     const double err_tol = settings.err_tol;
 
     size_t n_pop = settings.de_n_pop;
@@ -60,8 +59,8 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     F_vec.fill(par_initial_F);
     CR_vec.fill(par_initial_CR);
 
-    const size_t max_fn_eval = settings.de_max_fn_eval;
-    const size_t pmax = settings.de_pmax;
+    const uint_t max_fn_eval = settings.de_max_fn_eval;
+    const uint_t pmax = settings.de_pmax;
     const size_t n_pop_best = settings.de_n_pop_best;
 
     const double d_eps = 0.5;
@@ -106,7 +105,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
         double prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
 
         if (!std::isfinite(prop_objfn_val)) {
-            prop_objfn_val = BIG_POS_VAL;
+            prop_objfn_val = inf;
         }
         
         objfn_vals(i) = prop_objfn_val;
@@ -127,9 +126,11 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     arma::rowvec best_vec_best = best_sol_running;
 
     arma::rowvec xchg_vec = best_sol_running;
+
     //
-    size_t n_reset = 1;
-    size_t iter = 0;
+
+    uint_t n_reset = 1;
+    uint_t iter = 0;
     double err = 2*err_tol;
 
     while (err > err_tol && iter < n_gen + 1)
@@ -196,7 +197,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            size_t c_1, c_2, c_3;
+            uint_t c_1, c_2, c_3;
 
             do {
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
@@ -260,8 +261,8 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
         //
         // second population
 
-        for (size_t i = n_pop - n_pop_best; i < n_pop; i++) {
-
+        for (size_t i = n_pop - n_pop_best; i < n_pop; i++)
+        {
             arma::vec rand_pars = arma::randu(4);
 
             if (rand_pars(0) < tau_F) {
@@ -274,7 +275,7 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
 
             //
 
-            size_t c_1, c_2;
+            uint_t c_1, c_2;
 
             do {
                 c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));

@@ -26,7 +26,7 @@
 
 double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, const double* wolfe_cons_1_inp, const double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
-    const size_t iter_max = 100;
+    const uint_t iter_max = 100;
 
     const double step_min = 0.0;
     const double step_max = 10.0;
@@ -38,7 +38,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     
     //
 
-    size_t info = 0, infoc = 1;
+    uint_t info = 0, infoc = 1;
     const double extrap_delta = 4; // 'delta' on page 20
 
     arma::vec x_0 = x;
@@ -56,7 +56,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
     //
 
     bool bracket = false, stage_1 = true;
-    size_t iter = 0;
+    uint_t iter = 0;
 
     double f_init = f_step, dgrad_test = wolfe_cons_1*dgrad_init;
     double width = step_max - step_min, width_old = 2*width;
@@ -173,10 +173,11 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 //
 // update the 'interval of uncertainty'
 
-size_t optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
+optim::uint_t
+optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
 {
     bool bound = false;
-    size_t info = 0;
+    uint_t info = 0;
     double sgnd = d_step*(d_best / std::abs(d_best));
 
     double theta,s,gamma, p,q,r, step_c,step_q,step_f;

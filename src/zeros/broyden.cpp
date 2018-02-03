@@ -40,8 +40,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
-    const size_t iter_max = settings.iter_max;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     //
@@ -84,7 +84,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -155,8 +155,8 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
-    const size_t iter_max = settings.iter_max;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     //
@@ -199,7 +199,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -278,8 +278,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
-    const size_t iter_max = settings.iter_max;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
@@ -343,7 +343,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -425,8 +425,8 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
         settings = *settings_inp;
     }
 
-    const size_t conv_failure_switch = settings.conv_failure_switch;
-    const size_t iter_max = settings.iter_max;
+    const uint_t conv_failure_switch = settings.conv_failure_switch;
+    const uint_t iter_max = settings.iter_max;
     const double err_tol = settings.err_tol;
 
     const double rho = 0.9, sigma_1 = 0.001, sigma_2 = 0.001; // tuning parameters
@@ -492,7 +492,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
 
     while (err > err_tol && iter < iter_max)
     {
@@ -565,13 +565,13 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 // internal functions
 
 double
-optim::df_eta(size_t k)
+optim::df_eta(uint_t k)
 {
     return 1.0 / (k*k);
 }
 
 double 
-optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, size_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
+optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, uint_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {
     const double beta = 0.9;
     const double eta_k = df_eta(k);
@@ -594,7 +594,7 @@ optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1
     //
     // begin loop
 
-    size_t iter = 0;
+    uint_t iter = 0;
     
     while (1) 
     {
