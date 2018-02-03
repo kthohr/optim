@@ -25,8 +25,12 @@
 
 int main()
 {
+
+    std::cout << "\n     ***** Begin BFGS tests. *****     \n" << std::endl;
+
     //
     // test 1
+
     arma::vec x_1 = arma::ones(2,1);
 
     bool success_1 = optim::bfgs(x_1,unconstr_test_fn_1,nullptr);
@@ -37,7 +41,8 @@ int main()
         std::cout << "bfgs: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "bfgs: solution to test_1:\n" << x_1 << arma::endl;
+    std::cout << "Distance from the actual solution to test_1:\n" \
+              << arma::norm(x_1 - unconstr_test_sols::test_1()) << std::endl;
 
     //
     // test 2
@@ -47,55 +52,62 @@ int main()
     bool success_2 = optim::bfgs(x_2,unconstr_test_fn_2,nullptr);
 
     if (success_2) {
-        std::cout << "bfgs: test_2 completed successfully." << std::endl;
+        std::cout << "\nbfgs: test_2 completed successfully." << std::endl;
     } else {
-        std::cout << "bfgs: test_2 completed unsuccessfully." << std::endl;
+        std::cout << "\nbfgs: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "bfgs: solution to test_2:\n" << x_2 << arma::endl;
+    std::cout << "Distance from the actual solution to test_2:\n" \
+              << arma::norm(x_2 - unconstr_test_sols::test_2()) << std::endl;
 
     //
     // test 3
+    
     int test_3_dim = 5;
     arma::vec x_3 = arma::ones(test_3_dim,1);
 
     bool success_3 = optim::bfgs(x_3,unconstr_test_fn_3,nullptr);
 
     if (success_3) {
-        std::cout << "bfgs: test_3 completed successfully." << std::endl;
+        std::cout << "\nbfgs: test_3 completed successfully." << std::endl;
     } else {
-        std::cout << "bfgs: test_3 completed unsuccessfully." << std::endl;
+        std::cout << "\nbfgs: test_3 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "bfgs: solution to test_3:\n" << x_3 << arma::endl;
+    std::cout << "Distance from the actual solution to test_3:\n" \
+              << arma::norm(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
 
     //
     // test 4
+
     arma::vec x_4 = arma::ones(2,1);
 
     bool success_4 = optim::bfgs(x_4,unconstr_test_fn_4,nullptr);
 
     if (success_4) {
-        std::cout << "bfgs: test_4 completed successfully." << std::endl;
+        std::cout << "\nbfgs: test_4 completed successfully." << std::endl;
     } else {
-        std::cout << "bfgs: test_4 completed unsuccessfully." << std::endl;
+        std::cout << "\nbfgs: test_4 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "bfgs: solution to test_4:\n" << x_4 << arma::endl;
+    std::cout << "Distance from the actual solution to test_4:\n" \
+              << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl;
 
     //
     // test 5
+
     arma::vec x_5 = arma::zeros(2,1);
 
     bool success_5 = optim::bfgs(x_5,unconstr_test_fn_5,nullptr);
 
     if (success_5) {
-        std::cout << "bfgs: test_5 completed successfully." << std::endl;
+        std::cout << "\nbfgs: test_5 completed successfully." << std::endl;
     } else {
-        std::cout << "bfgs: test_5 completed unsuccessfully." << std::endl;
+        std::cout << "\nbfgs: test_5 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "bfgs: solution to test_5:\n" << x_5 << arma::endl;
+    std::cout << "Distance from the actual solution to test_5:\n" \
+              << arma::norm(x_5 - unconstr_test_sols::test_5()) << std::endl;
 
     //
     // for coverage
@@ -113,7 +125,18 @@ int main()
     
     success_4 = optim::bfgs(x_4,unconstr_test_fn_4,nullptr,settings);
 
-    arma::cout << "bfgs: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
+    if (success_4) {
+        std::cout << "\nbfgs with box constraints: test_4 completed successfully." << std::endl;
+    } else {
+        std::cout << "\nbfgs with box constraints: test_4 completed unsuccessfully." << std::endl;
+    }
+
+    std::cout << "Distance from the actual solution to test_4:\n" \
+              << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl;
+
+    //
+
+    std::cout << "\n     ***** End BFGS tests. *****     \n" << std::endl;
 
     return 0;
 }

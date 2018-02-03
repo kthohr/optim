@@ -16,37 +16,93 @@
   ##
   ################################################################################*/
 
-/*
- * Newton tests
- */
+#ifndef OPTIMLIB_TEST_SOLUTIONS
+#define OPTIMLIB_TEST_SOLUTIONS
 
-#include "optim.hpp"
-#include "./../test_fns/test_fns.hpp"
-
-int main()
+namespace unconstr_test_sols
 {
-    std::cout << "\n     ***** Begin Newton tests. *****     \n" << std::endl;
 
-    //
-    // test 3
+arma::vec test_1()
+{
+    arma::vec ret(2);
 
-    int test_3_dim = 5;
-    arma::vec x_3 = arma::ones(test_3_dim,1);
+    ret(0) = 2.25;
+    ret(1) = -4.75;
 
-    bool success_3 = optim::newton(x_3,unconstr_test_fn_3_whess,nullptr);
-
-    if (success_3) {
-        std::cout << "\nnewton: test_3 completed successfully." << std::endl;
-    } else {
-        std::cout << "\nnewton: test_3 completed unsuccessfully." << std::endl;
-    }
-
-    std::cout << "Distance from the actual solution to test_3:\n" \
-              << arma::norm(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
-
-    //
-
-    std::cout << "\n     ***** End Newton tests. *****     \n" << std::endl;
-
-    return 0;
+    return ret;
 }
+
+//
+
+arma::vec test_2()
+{
+    return arma::ones(2,1);
+}
+
+//
+
+arma::vec test_3(const int n)
+{
+    return arma::zeros(n,1);
+}
+
+//
+
+arma::vec test_4()
+{
+    arma::vec ret(2);
+
+    ret(0) = 3.0;
+    ret(1) = 0.5;
+
+    return ret;
+}
+
+//
+
+arma::vec test_5()
+{
+    arma::vec ret(2);
+
+    ret(0) = 1.0;
+    ret(1) = 3.0;
+
+    return ret;
+}
+
+//
+
+arma::vec test_6()
+{
+    return arma::zeros(2,1);
+}
+
+//
+
+arma::vec test_7()
+{
+    return arma::zeros(2,1);
+}
+
+//
+
+arma::vec test_8()
+{
+    return arma::ones(2,1);
+}
+
+//
+
+arma::vec test_9()
+{
+    arma::vec ret(2);
+
+    ret(0) = -10.0;
+    ret(1) =   1.0;
+
+    return ret;
+}
+
+}
+
+#endif

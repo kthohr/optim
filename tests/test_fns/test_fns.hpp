@@ -37,4 +37,6 @@
 #include "zeros_test_fn_1.hpp"
 #include "zeros_test_fn_2.hpp"
 
+#include "test_solutions.hpp"
+
 #endif

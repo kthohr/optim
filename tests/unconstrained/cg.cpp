@@ -25,8 +25,12 @@
 
 int main()
 {
+
+    std::cout << "\n     ***** Begin CG tests. *****     \n" << std::endl;
+    
     //
     // test 1
+
     optim::algo_settings settings_1;
 
     settings_1.iter_max = 2000;
@@ -43,7 +47,8 @@ int main()
         std::cout << "cg: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "cg: solution to test_1:\n" << x_1 << arma::endl;
+    std::cout << "Distance from the actual solution to test_1:\n" \
+              << arma::norm(x_1 - unconstr_test_sols::test_1()) << std::endl;
 
     //
     // test 2
@@ -53,44 +58,50 @@ int main()
     bool success_2 = optim::cg(x_2,unconstr_test_fn_2,nullptr);
 
     if (success_2) {
-        std::cout << "cg: test_2 completed successfully." << std::endl;
+        std::cout << "\ncg: test_2 completed successfully." << std::endl;
     } else {
-        std::cout << "cg: test_2 completed unsuccessfully." << std::endl;
+        std::cout << "\ncg: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "cg: solution to test_2:\n" << x_2 << arma::endl;
+    std::cout << "Distance from the actual solution to test_2:\n" \
+              << arma::norm(x_2 - unconstr_test_sols::test_2()) << std::endl;
 
     //
     // test 3
+
     int test_3_dim = 5;
     arma::vec x_3 = arma::ones(test_3_dim,1);
 
     bool success_3 = optim::cg(x_3,unconstr_test_fn_3,nullptr);
 
     if (success_3) {
-        std::cout << "cg: test_3 completed successfully." << std::endl;
+        std::cout << "\ncg: test_3 completed successfully." << std::endl;
     } else {
-        std::cout << "cg: test_3 completed unsuccessfully." << std::endl;
+        std::cout << "\ncg: test_3 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "cg: solution to test_3:\n" << x_3 << arma::endl;
+    std::cout << "Distance from the actual solution to test_3:\n" \
+              << arma::norm(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
 
     //
     // test 4
+
     arma::vec x_4 = arma::ones(2,1);
 
     bool success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr);
 
     if (success_4) {
-        std::cout << "cg: test_4 completed successfully." << std::endl;
+        std::cout << "\ncg: test_4 completed successfully." << std::endl;
     } else {
-        std::cout << "cg: test_4 completed unsuccessfully." << std::endl;
+        std::cout << "\ncg: test_4 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "cg: solution to test_4:\n" << x_4 << arma::endl;
+    std::cout << "Distance from the actual solution to test_4:\n" \
+              << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl;
 
     //
     // test 5
+
     optim::algo_settings settings_5;
     settings_5.iter_max = 10000;
     settings_5.cg_method = 5;
@@ -100,12 +111,13 @@ int main()
     bool success_5 = optim::cg(x_5,unconstr_test_fn_5,nullptr,settings_5);
 
     if (success_5) {
-        std::cout << "cg: test_5 completed successfully." << std::endl;
+        std::cout << "\ncg: test_5 completed successfully." << std::endl;
     } else {
-        std::cout << "cg: test_5 completed unsuccessfully." << std::endl;
+        std::cout << "\ncg: test_5 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "cg: solution to test_5:\n" << x_5 << arma::endl;
+    std::cout << "Distance from the actual solution to test_5:\n" \
+              << arma::norm(x_5 - unconstr_test_sols::test_5()) << std::endl;
 
     //
     // for coverage
@@ -116,7 +128,7 @@ int main()
     settings.cg_method = 1;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
 
-    arma::cout << "cg: solution to test_2 using cg_method = 1\n" << x_1 << arma::endl;
+    arma::cout << "\ncg: solution to test_2 using cg_method = 1\n" << x_1 << arma::endl;
 
     x_1 = arma::zeros(2,1);
     settings.cg_method = 2;
@@ -162,7 +174,16 @@ int main()
     
     success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr,settings_2);
 
-    arma::cout << "cg: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
+    if (success_4) {
+        std::cout << "\ncg with box constraints: test_4 completed successfully." << std::endl;
+    } else {
+        std::cout << "\ncg with box constraints: test_4 completed unsuccessfully." << std::endl;
+    }
+
+    std::cout << "Distance from the actual solution to test_4:\n" \
+              << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl;
+
+    std::cout << "\n     ***** End CG tests. *****     \n" << std::endl;
 
     return 0;
 }

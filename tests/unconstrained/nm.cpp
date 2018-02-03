@@ -25,8 +25,12 @@
 
 int main()
 {
+    
+    std::cout << "\n     ***** Begin NM tests. *****     \n" << std::endl;
+
     //
     // test 1
+
     arma::vec x_1 = arma::ones(2,1);
 
     bool success_1 = optim::nm(x_1,unconstr_test_fn_1,nullptr);
@@ -37,7 +41,8 @@ int main()
         std::cout << "nm: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_1:\n" << x_1 << arma::endl;
+    std::cout << "Distance from the actual solution to test_1:\n" \
+              << arma::norm(x_1 - unconstr_test_sols::test_1()) << std::endl;
 
     //
     // test 2
@@ -47,41 +52,46 @@ int main()
     bool success_2 = optim::nm(x_2,unconstr_test_fn_2,nullptr);
 
     if (success_2) {
-        std::cout << "nm: test_2 completed successfully." << std::endl;
+        std::cout << "\nnm: test_2 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_2 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_2:\n" << x_2 << arma::endl;
+    std::cout << "Distance from the actual solution to test_2:\n" \
+              << arma::norm(x_2 - unconstr_test_sols::test_2()) << std::endl;
 
     //
     // test 3
+
     int test_3_dim = 5;
     arma::vec x_3 = arma::ones(test_3_dim,1);
 
     bool success_3 = optim::nm(x_3,unconstr_test_fn_3,nullptr);
 
     if (success_3) {
-        std::cout << "nm: test_3 completed successfully." << std::endl;
+        std::cout << "\nnm: test_3 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_3 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_3 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_3:\n" << x_3 << arma::endl;
+    std::cout << "Distance from the actual solution to test_3:\n" \
+              << arma::norm(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
 
     //
     // test 4
+
     arma::vec x_4 = arma::ones(2,1);
 
     bool success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr);
 
     if (success_4) {
-        std::cout << "nm: test_4 completed successfully." << std::endl;
+        std::cout << "\nnm: test_4 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_4 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_4 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_4:\n" << x_4 << arma::endl; // should fail
+    std::cout << "Distance from the actual solution to test_4:\n" \
+              << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl; // should fail
 
     //
     // test 5
@@ -90,12 +100,13 @@ int main()
     bool success_5 = optim::nm(x_5,unconstr_test_fn_5,nullptr);
 
     if (success_5) {
-        std::cout << "nm: test_5 completed successfully." << std::endl;
+        std::cout << "\nnm: test_5 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_5 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_5 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_5:\n" << x_5 << arma::endl;
+    std::cout << "Distance from the actual solution to test_5:\n" \
+              << arma::norm(x_5 - unconstr_test_sols::test_5()) << std::endl;
 
     //
     // test 6
@@ -107,12 +118,13 @@ int main()
     bool success_6 = optim::nm(x_6,unconstr_test_fn_6,&test_6_data);
 
     if (success_6) {
-        std::cout << "nm: test_6 completed successfully." << std::endl;
+        std::cout << "\nnm: test_6 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_6 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_6 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_6:\n" << x_6 << arma::endl; // should fail
+    std::cout << "Distance from the actual solution to test_6:\n" \
+              << arma::norm(x_6 - unconstr_test_sols::test_6()) << std::endl; // should fail
 
     //
     // test 7
@@ -121,12 +133,13 @@ int main()
     bool success_7 = optim::nm(x_7,unconstr_test_fn_7,nullptr);
 
     if (success_7) {
-        std::cout << "nm: test_7 completed successfully." << std::endl;
+        std::cout << "\nnm: test_7 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_7 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_7 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_7:\n" << x_7 << arma::endl; // should fail
+    std::cout << "Distance from the actual solution to test_7:\n" \
+              << arma::norm(x_7 - unconstr_test_sols::test_7()) << std::endl; // should fail
 
     //
     // test 8
@@ -135,12 +148,13 @@ int main()
     bool success_8 = optim::nm(x_8,unconstr_test_fn_8,nullptr);
 
     if (success_8) {
-        std::cout << "nm: test_8 completed successfully." << std::endl;
+        std::cout << "\nnm: test_8 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_8 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_8 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_8:\n" << x_8 << arma::endl; // should fail
+    std::cout << "Distance from the actual solution to test_8:\n" \
+              << arma::norm(x_8 - unconstr_test_sols::test_8()) << std::endl; // should fail
 
     //
     // test 9
@@ -149,12 +163,13 @@ int main()
     bool success_9 = optim::nm(x_9,unconstr_test_fn_9,nullptr);
 
     if (success_9) {
-        std::cout << "nm: test_9 completed successfully." << std::endl;
+        std::cout << "\nnm: test_9 completed successfully." << std::endl;
     } else {
-        std::cout << "nm: test_9 completed unsuccessfully." << std::endl;
+        std::cout << "\nnm: test_9 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "nm: solution to test_9:\n" << x_9 << arma::endl; // should fail
+    std::cout << "Distance from the actual solution to test_9:\n" \
+              << arma::norm(x_9 - unconstr_test_sols::test_9()) << std::endl; // should fail
 
     //
     // for coverage
@@ -176,7 +191,18 @@ int main()
     
     success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr,settings_2);
 
-    arma::cout << "nm: solution to test_4 with box constraints:\n" << x_4 << arma::endl;
+    if (success_4) {
+        std::cout << "\nnm with box constraints: test_4 completed successfully." << std::endl;
+    } else {
+        std::cout << "\nnm with box constraints: test_4 completed unsuccessfully." << std::endl;
+    }
+
+    std::cout << "Distance from the actual solution to test_4:\n" \
+              << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl;
+
+    //
+
+    std::cout << "\n     ***** End NM tests. *****     \n" << std::endl;
 
     return 0;
 }

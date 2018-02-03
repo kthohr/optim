@@ -1,22 +1,33 @@
+/*################################################################################
+  ##
+  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##
+  ##   This file is part of the OptimLib C++ library.
+  ##
+  ##   OptimLib is free software: you can redistribute it and/or modify
+  ##   it under the terms of the GNU General Public License as published by
+  ##   the Free Software Foundation, either version 2 of the License, or
+  ##   (at your option) any later version.
+  ##
+  ##   OptimLib is distributed in the hope that it will be useful,
+  ##   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ##   GNU General Public License for more details.
+  ##
+  ################################################################################*/
 
-//
-// g++-mp-7 -O2 -Wall -std=c++11 -I./../../include broyden.cpp -o broyden.test -L./../.. -loptim -framework Accelerate
-//
+/*
+ * Broyden tests
+ */
 
 #include "optim.hpp"
 #include "./../test_fns/test_fns.hpp"
 
-// this example is from Matlab's help page
-// https://www.mathworks.com/help/optim/ug/fsolve.html
-//
-// F = [2*x_1 - x_2   - exp(-x_1);
-//      -x_1  + 2*x_2 - exp(-x_2)]
-// 
-// solution is: (0.5671,0.5671)
-//
-
 int main()
 {
+    
+    std::cout << "\n     ***** Begin Broyden tests. *****     \n" << std::endl;
+
     //
     // test 1
 
@@ -163,6 +174,9 @@ int main()
     optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
     optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,settings);
 
+    //
+
+    std::cout << "\n     ***** End Broyden tests. *****     \n" << std::endl;
 
     return 0;
 }
