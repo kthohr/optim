@@ -16,6 +16,8 @@
   ##
   ################################################################################*/
 
+#pragma once
+
 #ifdef USE_RCPP_ARMADILLO
     #include <RcppArmadillo.h>
 #else
