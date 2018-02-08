@@ -43,8 +43,8 @@ bool bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 The library is installed in the usual way:
 
 ```bash
-# clone optim
-git clone -b master --single-branch https://github.com/kthohr/optim ./optim
+# clone optim into the current directory
+git clone https://github.com/kthohr/optim ./optim
 # build and install
 cd ./optim
 ./configure
