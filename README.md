@@ -6,14 +6,13 @@ Features:
 
 * Parallelized C++11 library of local and global optimization algorithms, as well as root finding techniques.
 * Numerous derivative-free algorithms including advanced metaheuristics.
-* Constrained optimization: from simple box constraints to complicated nonlinear constraints.
+* Constrained optimization routines can handle simple box constraints to systems of complicated nonlinear constraints.
 * Built on the [Armadillo C++ linear algebra library](http://arma.sourceforge.net/) for fast and efficient matrix-based computation.
+* Released under a permissive, non-GPL license.
 
 ## Status
 
-The library is actively maintained, and is still being extended.
-
-Algorithms:
+The library is actively maintained, and is still being extended. A list of algorithms includes:
 
 * Newton's method, BFGS, and L-BFGS
 * Nonlinear Conjugate Gradient
@@ -52,12 +51,13 @@ make
 make install
 ```
 
-The last line will install OptimLib into /usr/local
+The last line will install OptimLib into `/usr/local`.
 
-There are several configure options available:
+There are several configure options available (`./configure -h`):
 * `-c` a coverage build
 * `-d` a 'development' build with install names set to the build directory (as opposed to an install path)
 * `-g` a debugging build
+* `-h` print help
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features
@@ -137,5 +137,4 @@ Keith O'Hara
 
 ## License
 
-GPL (>= 2)
-
+Apache Version 2

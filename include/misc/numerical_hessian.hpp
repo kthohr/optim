@@ -4,20 +4,22 @@
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
-  ##   OptimLib is free software: you can redistribute it and/or modify
-  ##   it under the terms of the GNU General Public License as published by
-  ##   the Free Software Foundation, either version 2 of the License, or
-  ##   (at your option) any later version.
+  ##   Licensed under the Apache License, Version 2.0 (the "License");
+  ##   you may not use this file except in compliance with the License.
+  ##   You may obtain a copy of the License at
   ##
-  ##   OptimLib is distributed in the hope that it will be useful,
-  ##   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ##   GNU General Public License for more details.
+  ##       http://www.apache.org/licenses/LICENSE-2.0
+  ##
+  ##   Unless required by applicable law or agreed to in writing, software
+  ##   distributed under the License is distributed on an "AS IS" BASIS,
+  ##   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ##   See the License for the specific language governing permissions and
+  ##   limitations under the License.
   ##
   ################################################################################*/
 
 /*
- * Numerical Hessian, using Abramowitz and Stegun (1972, p. 884)
+ * Numerical Hessian, using Abramowitz and Stegun (1972, p. 884, 25.3.24 and 25.3.26)
  */
 
 inline
@@ -25,6 +27,7 @@ arma::mat
 numerical_hessian(const arma::vec& vals_inp, const double* step_size_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* objfn_data)> objfn, void* objfn_data)
 {
     const size_t n_vals = vals_inp.n_elem;
+
     const double step_size = (step_size_inp) ? *step_size_inp : 1e-04;
     const double mach_eps = std::numeric_limits<double>::epsilon();
 
@@ -80,10 +83,10 @@ numerical_hessian(const arma::vec& vals_inp, const double* step_size_inp, std::f
                 
                 //
 
-                double term_1 = objfn(x_term_1, nullptr, objfn_data);
+                double term_1 =  objfn(x_term_1, nullptr, objfn_data);
                 double term_2 = -objfn(x_term_2, nullptr, objfn_data);
                 double term_3 = -objfn(x_term_3, nullptr, objfn_data);
-                double term_4 = objfn(x_term_4, nullptr, objfn_data);
+                double term_4 =  objfn(x_term_4, nullptr, objfn_data);
 
                 double denom_term = 4.0 * step_vec(i) * step_vec(j);
                 

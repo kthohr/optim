@@ -1,0 +1,4 @@
+OptimLib: A Lightweight C++ Library of Numerical Optimization Methods for Nonlinear Functions
+Copyright 2016-2018 Keith O'Hara
+
+This product includes software developed by Keith O'Hara (http://www.kthohr.com)
