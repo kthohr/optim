@@ -1,13 +1,30 @@
 #!/bin/bash
 ## Optim tests config script
 
-while getopts cdgm:o: option; do
+function print_help
+{ 
+    # echo "" ;
+    echo -e "\x1B[32mConfigure options:\033[0m" >&2 ;
+    echo "" ;
+    echo "-c    Coverage build" ;
+    echo "-d    Development build (install paths set to current directory)" ;
+    echo "-g    Debugging build (optimization flags set to -O0 -g)" ;
+    echo "-h    Print help" ;
+    echo "-m    Specify the BLAS and Lapack libraries to link against" ; 
+    echo "        Examples: -m \"-lopenblas\" or -m \"-framework Accelerate\"" ;
+    echo "-o    Compiler optimization options; defaults to:" ;
+    echo "        -O3 -march=native -ffp-contract=fast -DARMA_NO_DEBUG" ;
+}
+
+while getopts hcdgm:o: option; do
     case "${option}" in
+        h) print_help; exit 2;;
         c) OPTIM_COVERAGE="y";;
         d) OPTIM_BUILD="dev";;
         g) OPTIM_DEBUG="y";;
         m) OPTIM_MATRIX_OPS=${OPTARG};;
         o) OPTIM_OPT=${OPTARG};;
+        ?) print_help; exit 2;;
     esac
 done
 
@@ -58,7 +75,7 @@ elif [[ "${OPTIM_DEBUG}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-g -O0"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        OPTIM_OPT_FLAGS="-O3 -march=native -DARMA_NO_DEBUG"
+        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -DARMA_NO_DEBUG"
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
