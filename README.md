@@ -62,6 +62,14 @@ There are several configure options available (`./configure -h`):
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features
 
+### Armadillo
+
+OptimLib is built on the Armadillo C++ linear algebra library. The build script will search for Armadillo files in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files were installed to a different location, set:
+``` bash
+export ARMA_INCLUDE_PATH=/path/to/armadillo
+```
+before running `./configure`. Otherwise the build script will download the required files from the Armadillo GitHub repository.
+
 ## Example
 
 Find the global minimum of the [Ackley function](https://en.wikipedia.org/wiki/Ackley_function):
