@@ -196,10 +196,7 @@ if [ "$IS_DARWIN" -eq "1" ] && [ "$GCC_COMPILER" -eq "1" ]; then
 fi
 
 echo ""
-echo -e "\x1B[32mConfiguration completed. Creating Makefile.\033[0m" >&2 ;
-echo ""
-
-# end
+echo -e "\x1B[32mConfiguration completed. Creating Makefile... \c\033[0m" >&2 ;
 
 sed -e "s|@CC@|${CC}|" \
     -e "s|@CXX@|${CXX}|" \
@@ -212,3 +209,6 @@ sed -e "s|@CC@|${CC}|" \
     -e "s|@OPTIM_SHLIB_FLAGS@|${OPTIM_SHLIB_FLAGS}|" \
     -e "s|@OPTIM_INSTALL_PATH@|${OPTIM_INSTALL_PATH}|" \
     Makefile.in > Makefile
+
+echo -e "\x1B[32mdone.\033[0m" >&2 ;
+echo ""
