@@ -46,7 +46,7 @@ The library is installed in the usual way:
 git clone https://github.com/kthohr/optim ./optim
 # build and install
 cd ./optim
-./configure
+./configure -i "/usr/local"
 make
 make install
 ```
@@ -54,13 +54,14 @@ make install
 The last line will install OptimLib into `/usr/local`.
 
 There are several configure options available (`./configure -h`):
-* `-c` a coverage build
-* `-d` a 'development' build with install names set to the build directory (as opposed to an install path)
-* `-g` a debugging build
+* `-c` a coverage build (used with Codecov)
+* `-d` a 'development' build
+* `-g` a debugging build (optimization flags set to `-O0 -g`)
 * `-h` print help
+* `-i` install path; default: current directory.
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
-* `-p` enable OpenMP parallelization features
+* `-p` enable OpenMP parallelization features (*recommended*)
 
 ### Armadillo
 

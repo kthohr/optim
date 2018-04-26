@@ -3,26 +3,29 @@
 
 function print_help
 { 
-    # echo "" ;
-    echo -e "\x1B[32mConfigure options:\033[0m" >&2 ;
     echo "" ;
+    echo -e "\x1B[32mOptimLib configure options:\033[0m" >&2 ;
     echo "-c    Coverage build" ;
-    echo "-d    Development build (install paths set to current directory)" ;
+    echo "-d    Development build" ;
     echo "-g    Debugging build (optimization flags set to -O0 -g)" ;
     echo "-h    Print help" ;
+    echo "-i    Install path (default: current directory)" ;
+    echo "        Example: /usr/local" ;
     echo "-m    Specify the BLAS and Lapack libraries to link against" ; 
     echo "        Examples: -m \"-lopenblas\" or -m \"-framework Accelerate\"" ;
     echo "-o    Compiler optimization options; defaults to:" ;
     echo "        -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG" ;
     echo "-p    Enable OpenMP parallelization features" ;
+    echo "" ;
 }
 
-while getopts hcdgm:o:p option; do
+while getopts hcdgi:m:o:p option; do
     case "${option}" in
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE="y";;
         d) OPTIM_BUILD="dev";;
-        g) OPTIM_DEBUG="y";;
+        g) OPTIM_DEBUG_BUILD="y";;
+        i) OPTIM_INSTALL_PATH=${OPTARG};;
         m) OPTIM_MATRIX_OPS=${OPTARG};;
         o) OPTIM_OPT=${OPTARG};;
         p) OPTIM_PARALLEL="y";;
@@ -40,28 +43,17 @@ if [ -z ${FC+x} ]; then
     FC=gfortran
 fi
 
+#
+
+echo ""
+echo -e "\x1B[32mOptimLib Configuration...\033[0m" >&2 ;
+echo ""
+
 # compiler checks
 
 IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
 GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
 # APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
-
-# announcements
-
-echo ""
-
-if [[ "${OPTIM_COVERAGE}" == "y" ]]; then 
-    echo "Optim: coverage build"
-fi
-
-if [[ "${OPTIM_BUILD}" == "dev" ]]; then
-    echo "Optim: dev version"
-fi
-
-if [[ "${OPTIM_DEBUG}" == "y" ]]; then
-    echo "Optim: debug build"
-fi
-
 
 # get working directory
 WDIR=${PWD}
@@ -80,21 +72,16 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     done
 
     if [[ $ARMA_INCLUDE_PATH == "" ]]; then
-        echo ""
-        echo "Optim: cannot find armadillo files. Cloning from GitHub"
+        echo -e "\x1B[31m  - note: cannot find Armadillo files. Cloning from GitHub\033[0m" >&2 ;
         echo ""
 
         mkdir ${WDIR}/arma_tmp
-        git clone -b unstable --single-branch https://github.com/conradsnicta/armadillo-code ${WDIR}/arma_tmp
+        git clone -b unstable --single-branch https://github.com/conradsnicta/armadillo-code ${WDIR}/arma_tmp > /dev/null 2>&1
         mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
         rm -rf ${WDIR}/arma_tmp
         ARMA_INCLUDE_PATH="./include"
-
-        echo ""
     fi
 fi
-
-echo "Optim: ARMA_INCLUDE_PATH set to: ${ARMA_INCLUDE_PATH}"
 
 # set build and optimization flags
 
@@ -102,16 +89,13 @@ if [[ "${OPTIM_COVERAGE}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        # OPTIM_OPT_FLAGS="-Ofast -march=native -DARMA_NO_DEBUG"
-        # echo "Optim: experimental optimization; use of NaN or +/-Inf not recognized"
         OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG"
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
 
     if [[ "${OPTIM_PARALLEL}" == "y" ]]; then
-        echo "Optim: using OpenMP"
-        OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -fopenmp -DOPTIM_USE_OMP"
+        OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -fopenmp"
     fi
 fi
 
@@ -121,30 +105,22 @@ OPTIM_WARN_FLAGS="-Wall"
 
 OPTIM_SHLIB_NAME="liboptim.so"
 
-if [[ !("${OPTIM_BUILD}" == "dev") ]]; then
-    if [ -z ${OPTIM_INSTALL_PATH+x} ]; then
-        OPTIM_INSTALL_PATH="/usr/local"
-    fi
-    echo ""
-    echo "Optim: install path set to: ${OPTIM_INSTALL_PATH}"
+if [[ "${OPTIM_INSTALL_PATH}" == "" ]]; then
+    OPTIM_INSTALL_PATH="${WDIR}"
+    OPTIM_INSTALL_LIB_PATH="${WDIR}"
+else
+    OPTIM_INSTALL_LIB_PATH="${OPTIM_INSTALL_PATH}/lib"
 fi
 
 if [[ $OSTYPE == darwin* ]] ; then
-    if [[ "${OPTIM_BUILD}" == "dev" ]]; then
-        OPTIM_SHLIB_FLAGS="-dynamiclib -install_name ${WDIR}/${OPTIM_SHLIB_NAME} -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"
-    else
-        OPTIM_SHLIB_FLAGS="-dynamiclib -install_name ${OPTIM_INSTALL_PATH}/lib/${OPTIM_SHLIB_NAME} -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"
-    fi
 
+    OPTIM_SHLIB_FLAGS="-dynamiclib -install_name ${OPTIM_INSTALL_LIB_PATH}/${OPTIM_SHLIB_NAME} -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress"
     OPTIM_BLAS_LAPACK="-framework Accelerate"
-elif [[ $OSTYPE == *linux* ]] ; then
-    OPTIM_OPT_FLAGS="-fPIC ${OPTIM_OPT_FLAGS}"
 
-    if [[ "${OPTIM_BUILD}" == "dev" ]]; then
-        OPTIM_SHLIB_FLAGS="-fPIC -shared -L${WDIR} -Wl,-Bsymbolic-functions -Wl,-z,relro "
-    else
-        OPTIM_SHLIB_FLAGS="-fPIC -shared -L${OPTIM_INSTALL_PATH}/lib -Wl,-Bsymbolic-functions -Wl,-z,relro"
-    fi
+elif [[ $OSTYPE == *linux* ]] ; then
+
+    OPTIM_OPT_FLAGS="-fPIC ${OPTIM_OPT_FLAGS}"
+    OPTIM_SHLIB_FLAGS="-fPIC -shared -L${OPTIM_INSTALL_LIB_PATH} -Wl,-Bsymbolic-functions -Wl,-z,relro"
 
     OPTIM_BLAS_LAPACK="-lblas -llapack"
 else
@@ -153,19 +129,15 @@ fi
 
 if [[ !(-z ${OPTIM_MATRIX_OPS+x}) ]]; then
     OPTIM_BLAS_LAPACK="${OPTIM_MATRIX_OPS}"
-    echo ""
-    echo "Optim: BLAS and Lapack libraries set to ${OPTIM_BLAS_LAPACK}"
 fi
 
 if [ "$IS_DARWIN" -eq "1" ] && [ "$GCC_COMPILER" -eq "1" ]; then
-    echo ""
-    echo "Optim: To enable AVX features, your compiler will use the Apple LLVM assembler"
     OPTIM_OPT_FLAGS="-Wa,-q ${OPTIM_OPT_FLAGS}"
 fi
 
 # final optimization checks
 
-if [[ "${OPTIM_DEBUG}" == "y" ]]; then
+if [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-O0 -g"
 fi
 
@@ -175,11 +147,59 @@ else
     OPTIM_SHLIB_FLAGS="${OPTIM_OPT_FLAGS} ${OPTIM_SHLIB_FLAGS}"
 fi
 
-echo "Optim: optimization flags set to: ${OPTIM_OPT_FLAGS}"
+#
 
-# end
+#
+# final print:
+
+echo "  - OS: ${OSTYPE}"
+
+if [[ "${OPTIM_BUILD}" == "dev" ]]; then
+    echo "  - Build version: development"
+elif [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then
+    echo "  - Build version: coverage"
+elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
+    echo "  - Build version: debug"
+else
+    echo "  - Build version: release"
+fi
 
 echo ""
+
+echo "  - ARMA_INCLUDE_PATH set to:"
+echo "    ${ARMA_INCLUDE_PATH}"
+echo "  - BLAS and Lapack libraries set to:"
+echo "    ${OPTIM_BLAS_LAPACK}"
+
+echo ""
+
+if [[ "${OPTIM_PARALLEL}" == "y" ]]; then
+    echo -e "  - OpenMP features: \x1B[32menabled\033[0m" >&2 ;
+else
+    echo -e "  - OpenMP features: \x1B[31mdisabled\033[0m" >&2 ;
+fi
+
+echo "  - optimization flags:"
+echo "    ${OPTIM_OPT_FLAGS}"
+
+echo ""
+
+echo "  - OptimLib install path:"
+echo "    ${OPTIM_INSTALL_PATH}"
+
+echo ""
+echo "  - Additional notes:"
+
+if [ "$IS_DARWIN" -eq "1" ] && [ "$GCC_COMPILER" -eq "1" ]; then
+    echo "    - To enable AVX features, your compiler will use the Apple LLVM"
+    echo "      assembler"
+fi
+
+echo ""
+echo -e "\x1B[32mConfiguration completed. Creating Makefile.\033[0m" >&2 ;
+echo ""
+
+# end
 
 sed -e "s|@CC@|${CC}|" \
     -e "s|@CXX@|${CXX}|" \
