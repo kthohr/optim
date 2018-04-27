@@ -46,7 +46,7 @@ The library is installed in the usual way:
 git clone https://github.com/kthohr/optim ./optim
 # build and install
 cd ./optim
-./configure -i "/usr/local"
+./configure -i "/usr/local" -p
 make
 make install
 ```
