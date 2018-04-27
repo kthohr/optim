@@ -9,6 +9,7 @@ Makefile
 *.o
 *.so
 *.test
+*.tmp
 *.vscode
 
 *.gcda
