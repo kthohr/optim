@@ -53,7 +53,7 @@ echo ""
 
 IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
 GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
-# APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
+APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
 
 # get working directory
 WDIR=${PWD}
@@ -189,6 +189,11 @@ echo "    ${OPTIM_INSTALL_PATH}"
 
 echo ""
 echo "  - Additional notes:"
+
+if [ "$APPLE_COMPILER" -eq "1" ] && [[ "${OPTIM_PARALLEL}" == "y" ]]; then
+    echo -e "    \x1B[31m- You have enabled OpenMP, but your C++ compiler does not\033[0m" >&2 ;
+    echo -e "    \x1B[31m  support this feature!\033[0m" >&2 ;
+fi
 
 if [ "$IS_DARWIN" -eq "1" ] && [ "$GCC_COMPILER" -eq "1" ]; then
     echo "    - To enable AVX features, your compiler will use the Apple LLVM"
