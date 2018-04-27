@@ -152,7 +152,8 @@ fi
 #
 # final print:
 
-echo "  - OS: ${OSTYPE}"
+echo "  - OS:            ${OSTYPE}"
+echo "  - C++ compiler:  ${CXX}"
 
 if [[ "${OPTIM_BUILD}" == "dev" ]]; then
     echo "  - Build version: development"
