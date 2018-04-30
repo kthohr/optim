@@ -17,7 +17,7 @@ declare -a DIRS=("constrained" "misc" "unconstrained" "zeros")
 for i in "${DIRS[@]}"; do
     cd "$WDIR"/"$i"
 
-    ./configure -c -d
+    ./configure -c
     make
     sh ./../test_setup/cov_check
 done

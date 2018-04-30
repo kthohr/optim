@@ -1,11 +1,44 @@
 #!/bin/bash
+# OptimLib test setup
+
+function print_help
+{
+    echo "" ;
+    echo -e "\x1B[32mOptimLib Test setup options:\033[0m" >&2 ;
+    echo "-c    Clean binary files" ;
+    echo "-h    Print help" ;
+    echo "" ;
+}
+
+while getopts hcdgi:m:o:p option; do
+    case "${option}" in
+        h) print_help; exit 2;;
+        c) OPTIM_TEST_SETUP_CLEAN="y";;
+        ?) print_help; exit 2;;
+    esac
+done
+
+# 
 
 declare -a DIRS=("constrained" "misc" "unconstrained" "zeros")
 
-for i in "${DIRS[@]}"; do
-    rm -f ./"$i"/configure
-    rm -f ./"$i"/Makefile.in
+# 
 
-    cp test_setup/configure.in ./"$i"/configure
-    cp test_setup/Makefile.in ./"$i"/Makefile.in
-done
+if [[ "${OPTIM_TEST_SETUP_CLEAN}" == "y" ]]; then
+    for i in "${DIRS[@]}"; do
+        rm -rf ./"$i"/*.dSYM
+        rm -f ./"$i"/*.o
+        rm -f ./"$i"/*.test
+        rm -f ./"$i"/configure
+        rm -f ./"$i"/Makefile
+        rm -f ./"$i"/Makefile.in
+    done
+else
+    for i in "${DIRS[@]}"; do
+        rm -f ./"$i"/configure
+        rm -f ./"$i"/Makefile.in
+
+        cp test_setup/configure.in ./"$i"/configure
+        cp test_setup/Makefile.in ./"$i"/Makefile.in
+    done
+fi
