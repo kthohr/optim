@@ -64,7 +64,7 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     done
 
     if [[ $ARMA_INCLUDE_PATH == "" ]]; then
-        echo "Optim tests: cannot find the armadillo library."
+        echo -e "  \x1B[31m- error: cannot find the Armadillo library. Exiting.\033[0m" >&2 ;
         echo ""
         exit 1
     fi
@@ -74,6 +74,8 @@ fi
 
 if [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then 
     OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
+elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
+    OPTIM_OPT_FLAGS="-g -O0"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
         OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -DARMA_NO_DEBUG"
@@ -118,10 +120,6 @@ else
 fi
 
 # final optimization checks
-
-if [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
-    OPTIM_OPT_FLAGS="-O0 -g"
-fi
 
 if [ "$IS_DARWIN" -eq "1" ] && [ "$GCC_COMPILER" -eq "1" ]; then
     OPTIM_OPT_FLAGS="-Wa,-q ${OPTIM_OPT_FLAGS}"
