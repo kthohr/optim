@@ -23,7 +23,7 @@ while getopts hcdgi:m:o:p option; do
     case "${option}" in
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE_BUILD="y";;
-        d) OPTIM_BUILD="dev";;
+        d) OPTIM_DEV_BUILD="y";;
         g) OPTIM_DEBUG_BUILD="y";;
         i) OPTIM_INSTALL_PATH=${OPTARG};;
         m) OPTIM_MATRIX_OPS=${OPTARG};;
@@ -89,7 +89,7 @@ if [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG"
+        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG -DARMA_NO_DEBUG"
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
@@ -155,7 +155,7 @@ fi
 echo "  - OS:            ${OSTYPE}"
 echo "  - C++ compiler:  ${CXX}"
 
-if [[ "${OPTIM_BUILD}" == "dev" ]]; then
+if [[ "${OPTIM_DEV_BUILD}" == "y" ]]; then
     echo "  - Build version: development"
 elif [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then
     echo "  - Build version: coverage"
