@@ -25,7 +25,7 @@
 #include "optim.hpp"
 
 bool
-optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
+optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
     // notation: 'p' stands for '+1'.
 
@@ -36,7 +36,7 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
     //
     // L-BFGS settings
 
-    algo_settings settings;
+    algo_settings_t settings;
 
     if (settings_inp) {
         settings = *settings_inp;
@@ -204,7 +204,7 @@ optim::lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& va
 }
 
 bool
-optim::lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings& settings)
+optim::lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {
     return lbfgs_int(init_out_vals,opt_objfn,opt_data,&settings);
 }

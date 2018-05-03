@@ -19,15 +19,19 @@
   ################################################################################*/
 
 /*
- * Nelder-Mead
+ * Gradient Descent (GD)
  */
 
-#ifndef _optim_nm_HPP
-#define _optim_nm_HPP
+#ifndef _optim_gd_HPP
+#define _optim_gd_HPP
 
-bool nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+bool gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
 
-bool nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
-bool nm(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool gd(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
+bool gd(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+
+// internal update function
+arma::vec gd_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, 
+                    const uint_t iter, const uint_t gd_method_inp, gd_settings_t& gd_settings);
 
 #endif

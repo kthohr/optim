@@ -176,14 +176,14 @@ int main()
     //
     // for coverage
 
-    optim::algo_settings settings;
+    optim::algo_settings_t settings;
 
     optim::nm(x_1,unconstr_test_fn_1,nullptr);
     optim::nm(x_1,unconstr_test_fn_1,nullptr,settings);
 
     //
 
-    optim::algo_settings settings_2;
+    optim::algo_settings_t settings_2;
 
     settings_2.vals_bound = true;
     settings_2.lower_bounds = arma::zeros(2,1) - 4.5;

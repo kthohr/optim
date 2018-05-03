@@ -26,7 +26,7 @@
 
 bool
 optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-                std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings* settings_inp)
+                std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings_t* settings_inp)
 {
     // notation: 'p' stands for '+1'.
 
@@ -35,7 +35,7 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     //
     // SUMT settings
 
-    algo_settings settings;
+    algo_settings_t settings;
 
     if (settings_inp) {
         settings = *settings_inp;
@@ -147,7 +147,7 @@ optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& val
 
 bool
 optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
-            std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings& settings)
+            std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings_t& settings)
 {
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,&settings);
 }

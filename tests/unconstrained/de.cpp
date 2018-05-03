@@ -98,7 +98,7 @@ int main()
     //
     // test 6
 
-    optim::algo_settings settings_6;
+    optim::algo_settings_t settings_6;
 
     settings_6.de_n_pop = 200;
 
@@ -156,7 +156,7 @@ int main()
     //
     // test 9
 
-    optim::algo_settings settings_9;
+    optim::algo_settings_t settings_9;
     
     settings_9.de_initial_lb = arma::zeros(2,1);
     settings_9.de_initial_lb(0) = -13;
@@ -193,7 +193,7 @@ int main()
     //
     // for coverage
 
-    optim::algo_settings settings;
+    optim::algo_settings_t settings;
 
     optim::de(x_1,unconstr_test_fn_1,nullptr);
     optim::de(x_1,unconstr_test_fn_1,nullptr,settings);
@@ -212,7 +212,7 @@ int main()
 
     //
 
-    optim::algo_settings settings_2;
+    optim::algo_settings_t settings_2;
 
     settings_2.vals_bound = true;
     settings_2.lower_bounds = arma::zeros(2,1) - 4.5;

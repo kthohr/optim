@@ -34,6 +34,7 @@ OBJECTS_OPTIM_LS= $(SOURCES_OPTIM_LS:.cpp=.o)
 
 SOURCES_OPTIM_UNCONSTR= $(OPTIM_SRC_DIR)/unconstrained/bfgs.cpp $(OPTIM_SRC_DIR)/unconstrained/lbfgs.cpp \
                         $(OPTIM_SRC_DIR)/unconstrained/newton.cpp $(OPTIM_SRC_DIR)/unconstrained/cg.cpp  \
+                        $(OPTIM_SRC_DIR)/unconstrained/gd.cpp                                            \
                         $(OPTIM_SRC_DIR)/unconstrained/de.cpp $(OPTIM_SRC_DIR)/unconstrained/de_prmm.cpp \
                         $(OPTIM_SRC_DIR)/unconstrained/nm.cpp $(OPTIM_SRC_DIR)/unconstrained/pso.cpp     \
                         $(OPTIM_SRC_DIR)/unconstrained/pso_dv.cpp

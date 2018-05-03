@@ -19,7 +19,7 @@
   ################################################################################*/
 
 /*
- * Nonlinear CG tests
+ * Gradient Descent tests
  */
 
 #include "optim.hpp"
@@ -28,7 +28,7 @@
 int main()
 {
 
-    std::cout << "\n     ***** Begin CG tests. *****     \n" << std::endl;
+    std::cout << "\n     ***** Begin GD tests. *****     \n" << std::endl;
     
     //
     // test 1
@@ -36,17 +36,17 @@ int main()
     optim::algo_settings_t settings_1;
 
     settings_1.iter_max = 2000;
-    settings_1.conv_failure_switch = 1;
-    settings_1.cg_method = 5;
+    settings_1.gd_method = 1;
+    settings_1.gd_settings.step_size = 0.1;
 
     arma::vec x_1 = arma::ones(2,1);
 
-    bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,settings_1);
+    bool success_1 = optim::gd(x_1,unconstr_test_fn_1,nullptr,settings_1);
 
     if (success_1) {
-        std::cout << "cg: test_1 completed successfully." << std::endl;
+        std::cout << "gd: test_1 completed successfully." << std::endl;
     } else {
-        std::cout << "cg: test_1 completed unsuccessfully." << std::endl;
+        std::cout << "gd: test_1 completed unsuccessfully." << std::endl;
     }
 
     std::cout << "Distance from the actual solution to test_1:\n" \
@@ -55,14 +55,17 @@ int main()
     //
     // test 2
 
+    settings_1.gd_settings.step_size = 0.001;
+    // settings_1.gd_settings.step_decay = true;
+
     arma::vec x_2 = arma::zeros(2,1);
 
-    bool success_2 = optim::cg(x_2,unconstr_test_fn_2,nullptr);
+    bool success_2 = optim::gd(x_2,unconstr_test_fn_2,nullptr,settings_1);
 
     if (success_2) {
-        std::cout << "\ncg: test_2 completed successfully." << std::endl;
+        std::cout << "\ngd: test_2 completed successfully." << std::endl;
     } else {
-        std::cout << "\ncg: test_2 completed unsuccessfully." << std::endl;
+        std::cout << "\ngd: test_2 completed unsuccessfully." << std::endl;
     }
 
     std::cout << "Distance from the actual solution to test_2:\n" \
@@ -71,15 +74,18 @@ int main()
     //
     // test 3
 
+    settings_1.gd_settings.step_size = 0.01;
+    settings_1.gd_settings.step_decay = false;
+
     int test_3_dim = 5;
     arma::vec x_3 = arma::ones(test_3_dim,1);
 
-    bool success_3 = optim::cg(x_3,unconstr_test_fn_3,nullptr);
+    bool success_3 = optim::gd(x_3,unconstr_test_fn_3,nullptr,settings_1);
 
     if (success_3) {
-        std::cout << "\ncg: test_3 completed successfully." << std::endl;
+        std::cout << "\ngd: test_3 completed successfully." << std::endl;
     } else {
-        std::cout << "\ncg: test_3 completed unsuccessfully." << std::endl;
+        std::cout << "\ngd: test_3 completed unsuccessfully." << std::endl;
     }
 
     std::cout << "Distance from the actual solution to test_3:\n" \
@@ -90,12 +96,12 @@ int main()
 
     arma::vec x_4 = arma::ones(2,1);
 
-    bool success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr);
+    bool success_4 = optim::gd(x_4,unconstr_test_fn_4,nullptr,settings_1);
 
     if (success_4) {
-        std::cout << "\ncg: test_4 completed successfully." << std::endl;
+        std::cout << "\ngd: test_4 completed successfully." << std::endl;
     } else {
-        std::cout << "\ncg: test_4 completed unsuccessfully." << std::endl;
+        std::cout << "\ngd: test_4 completed unsuccessfully." << std::endl;
     }
 
     std::cout << "Distance from the actual solution to test_4:\n" \
@@ -106,16 +112,16 @@ int main()
 
     optim::algo_settings_t settings_5;
     settings_5.iter_max = 10000;
-    settings_5.cg_method = 5;
+    settings_5.gd_method = 2;
 
     arma::vec x_5 = arma::zeros(2,1) + 2;
 
-    bool success_5 = optim::cg(x_5,unconstr_test_fn_5,nullptr,settings_5);
+    bool success_5 = optim::gd(x_5,unconstr_test_fn_5,nullptr,settings_5);
 
     if (success_5) {
-        std::cout << "\ncg: test_5 completed successfully." << std::endl;
+        std::cout << "\ngd: test_5 completed successfully." << std::endl;
     } else {
-        std::cout << "\ncg: test_5 completed unsuccessfully." << std::endl;
+        std::cout << "\ngd: test_5 completed unsuccessfully." << std::endl;
     }
 
     std::cout << "Distance from the actual solution to test_5:\n" \
@@ -127,42 +133,19 @@ int main()
     optim::algo_settings_t settings;
 
     x_1 = arma::zeros(2,1);
-    settings.cg_method = 1;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
-
-    arma::cout << "\ncg: solution to test_2 using cg_method = 1\n" << x_1 << arma::endl;
-
-    x_1 = arma::zeros(2,1);
-    settings.cg_method = 2;
-
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
-
-    arma::cout << "cg: solution to test_2 using cg_method = 2\n" << x_1 << arma::endl;
-
-    x_1 = arma::zeros(2,1);
-    settings.cg_method = 3;
-
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
-
-    arma::cout << "cg: solution to test_2 using cg_method = 3\n" << x_1 << arma::endl;
-
-    x_1 = arma::zeros(2,1);
-    settings.cg_method = 4;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
-
-    arma::cout << "cg: solution to test_2 using cg_method = 4\n" << x_1 << arma::endl;
-
-    x_1 = arma::zeros(2,1);
-    settings.cg_method = 5;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
-
-    arma::cout << "cg: solution to test_2 using cg_method = 5\n" << x_1 << arma::endl;
+    settings.gd_method = 1;
+    settings.gd_settings.step_size = 0.001;
     
-    x_1 = arma::zeros(2,1);
-    settings.cg_method = 6;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    optim::gd(x_1,unconstr_test_fn_2,nullptr,settings);
 
-    arma::cout << "cg: solution to test_2 using cg_method = 6\n" << x_1 << arma::endl;
+    arma::cout << "\ngd: solution to test_2 using gd_method = 1\n" << x_1 << arma::endl;
+
+    x_1 = arma::zeros(2,1);
+    settings.gd_method = 2;
+
+    optim::gd(x_1,unconstr_test_fn_2,nullptr,settings);
+
+    arma::cout << "gd: solution to test_2 using gd_method = 2\n" << x_1 << arma::endl;
 
     //
 
@@ -174,18 +157,18 @@ int main()
 
     x_4 = arma::ones(2,1);
     
-    success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr,settings_2);
+    success_4 = optim::gd(x_4,unconstr_test_fn_4,nullptr,settings_2);
 
     if (success_4) {
-        std::cout << "\ncg with box constraints: test_4 completed successfully." << std::endl;
+        std::cout << "\ngd with box constraints: test_4 completed successfully." << std::endl;
     } else {
-        std::cout << "\ncg with box constraints: test_4 completed unsuccessfully." << std::endl;
+        std::cout << "\ngd with box constraints: test_4 completed unsuccessfully." << std::endl;
     }
 
     std::cout << "Distance from the actual solution to test_4:\n" \
               << arma::norm(x_4 - unconstr_test_sols::test_4()) << std::endl;
 
-    std::cout << "\n     ***** End CG tests. *****     \n" << std::endl;
+    std::cout << "\n     ***** End DG tests. *****     \n" << std::endl;
 
     return 0;
 }

@@ -27,7 +27,7 @@
 #endif
 
 #ifndef OPTIM_VERSION_MINOR
-    #define OPTIM_VERSION_MINOR 0
+    #define OPTIM_VERSION_MINOR 1
 #endif
 
 #ifndef OPTIM_VERSION_PATCH

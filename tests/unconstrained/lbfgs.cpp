@@ -106,7 +106,7 @@ int main()
     //
     // for coverage
 
-    optim::algo_settings settings;
+    optim::algo_settings_t settings;
 
     optim::lbfgs(x_1,unconstr_test_fn_1,nullptr);
     optim::lbfgs(x_1,unconstr_test_fn_1,nullptr,settings);

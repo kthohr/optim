@@ -25,9 +25,9 @@
 #ifndef _optim_newton_HPP
 #define _optim_newton_HPP
 
-bool newton_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp);
+bool newton_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
 
 bool newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data);
-bool newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings& settings);
+bool newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
 
 #endif

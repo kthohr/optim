@@ -51,7 +51,7 @@ int main()
     int iter_2 = 3;
     int iter_max = 2;
 
-    optim::algo_settings settings;
+    optim::algo_settings_t settings;
 
     std::cout << "\n     ***** Begin ERROR_REPORTING tests. *****     \n" << std::endl;
 

@@ -25,7 +25,20 @@
 #ifndef optim_structs_HPP
 #define optim_structs_HPP
 
-struct algo_settings {
+struct gd_settings_t
+{
+    // step size, or 'learning rate'
+    double step_size = 0.1;
+    bool step_decay = false;
+    uint_t step_decay_periods = 10;
+    double step_decay_val = 0.5;
+
+    // momentum parameter
+    double momentum_par = 0.9;
+};
+
+struct algo_settings_t
+{
     // general
     int conv_failure_switch = 0;
     int iter_max = 2000;
@@ -73,6 +86,10 @@ struct algo_settings {
 
     arma::vec de_initial_lb; // this will default to -0.5
     arma::vec de_initial_ub; // this will default to  0.5
+
+    // GD
+    int gd_method = 1;
+    gd_settings_t gd_settings;
 
     // L-BFGS
     int lbfgs_par_M = 10;

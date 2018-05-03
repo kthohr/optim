@@ -25,7 +25,7 @@
 #include "optim.hpp"
 
 bool
-optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings* settings_inp)
+optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
     bool success = false;
 
@@ -34,7 +34,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     //
     // PSO settings
 
-    algo_settings settings;
+    algo_settings_t settings;
 
     if (settings_inp) {
         settings = *settings_inp;
@@ -220,7 +220,7 @@ optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals
 }
 
 bool
-optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings& settings)
+optim::pso(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {
     return pso_int(init_out_vals,opt_objfn,opt_data,&settings);
 }

@@ -63,7 +63,7 @@ int main()
     //
     // coverage tests
 
-    optim::algo_settings settings;
+    optim::algo_settings_t settings;
 
     optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
     optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,settings);

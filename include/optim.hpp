@@ -39,6 +39,7 @@ namespace optim
     #include "unconstrained/lbfgs.hpp"
     #include "unconstrained/newton.hpp"
     #include "unconstrained/cg.hpp"
+    #include "unconstrained/gd.hpp"
     #include "unconstrained/de.hpp"
     #include "unconstrained/de_prmm.hpp"
     #include "unconstrained/nm.hpp"
