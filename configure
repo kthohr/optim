@@ -4,7 +4,7 @@
 function print_help
 { 
     echo "" ;
-    echo -e "\x1B[32mOptimLib configure options:\033[0m" >&2 ;
+    echo -e "\x1B[32mOptimLib Configuration Options:\033[0m" >&2 ;
     echo "-c    Coverage build" ;
     echo "-d    Development build" ;
     echo "-g    Debugging build (optimization flags set to -O0 -g)" ;

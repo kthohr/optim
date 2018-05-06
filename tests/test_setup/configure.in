@@ -4,7 +4,7 @@
 function print_help
 {
     echo "" ;
-    echo -e "\x1B[32mOptimLib Tests configure options:\033[0m" >&2 ;
+    echo -e "\x1B[32mOptimLib Test Configuration Options:\033[0m" >&2 ;
     echo "-c    Coverage build" ;
     echo "-d    Development build" ;
     echo "-g    Debugging build (optimization flags set to -O0 -g)" ;
@@ -22,7 +22,7 @@ while getopts hcdgi:m:o:p option; do
     case "${option}" in
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE_BUILD="y";;
-        d) OPTIM_BUILD="dev";;
+        d) OPTIM_DEV_BUILD="y";;
         g) OPTIM_DEBUG_BUILD="y";;
         i) OPTIM_INSTALL_PATH=${OPTARG};;
         m) OPTIM_MATRIX_OPS=${OPTARG};;
@@ -131,7 +131,7 @@ fi
 echo "  - OS:            ${OSTYPE}"
 echo "  - C++ compiler:  ${CXX}"
 
-if [[ "${OPTIM_BUILD}" == "dev" ]]; then
+if [[ "${OPTIM_DEV_BUILD}" == "y" ]]; then
     echo "  - Build version: development"
 elif [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then
     echo "  - Build version: coverage"
