@@ -58,7 +58,7 @@ There are several configure options available (`./configure -h`):
 * `-d` a 'development' build
 * `-g` a debugging build (optimization flags set to `-O0 -g`)
 * `-h` print help
-* `-i` install path; default: current directory.
+* `-i` install path; default: build directory
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features (*recommended*)
