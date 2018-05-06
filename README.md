@@ -6,7 +6,7 @@ Features:
 
 * Parallelized C++11 library of local and global optimization algorithms, as well as root finding techniques.
 * Numerous derivative-free algorithms including advanced metaheuristics.
-* Constrained optimization routines can handle simple box constraints to systems of complicated nonlinear constraints.
+* Constrained optimization routines can handle simple box constraints or systems of complicated nonlinear constraints.
 * Built on the [Armadillo C++ linear algebra library](http://arma.sourceforge.net/) for fast and efficient matrix-based computation.
 * Released under a permissive, non-GPL license.
 
