@@ -21,11 +21,3 @@ for i in "${DIRS[@]}"; do
     make
     sh ./../test_setup/cov_check
 done
-
-cd $WDIR/..
-rm -rf ./include/armadillo*
-rm -rf ./include/optim
-rm -rf ./src/optim
-rm -rf ./src/math
-rm -rf ./src/prob
-cd $WDIR
