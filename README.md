@@ -23,14 +23,13 @@ The library is actively maintained, and is still being extended. A list of algor
 
 ## Syntax
 
-OptimLib functions are generally defined as
+OptimLib functions generally exhibit the following structure:
 ```
-algorithm(<initial and end values>, <objective function>, <data for objective function>)
+algorithm(<initial and output values>, <objective function>, <data for the objective function>)
 ```
-where the inputs, in order, are:
-* a vector of initial values that define the starting point for the algorithm, and will contain the solution vector at completion;
-* the objective function to be minimized (or zeroed-out); and
-* any additional parameters passed to the objective function.
+* The vector of initial values defines the starting point for the algorithm, and will contain the solution vector upon successful completion of the algorithm.
+* The 'objective function' is the function to be minimized over, or zeroed-out in the case of Broyden's method.
+* The final input passes any additional parameters required to evaluate the objective function (*optional*).
 
 For example, the BFGS algorithm is called using:
 ``` cpp
@@ -53,7 +52,7 @@ make install
 
 The last line will install OptimLib into `/usr/local`.
 
-There are several configure options available (`./configure -h`):
+There are several configuration options available (see `./configure -h`):
 * `-c` a coverage build (used with Codecov)
 * `-d` a 'development' build
 * `-g` a debugging build (optimization flags set to `-O0 -g`)
@@ -65,11 +64,11 @@ There are several configure options available (`./configure -h`):
 
 ### Armadillo
 
-OptimLib is built on the Armadillo C++ linear algebra library. The build script will search for Armadillo files in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files were installed to a different location, set:
+OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo files in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set:
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
 ```
-before running `./configure`. Otherwise the build script will download the required files from the Armadillo GitHub repository.
+Set this environment variable before before running `./configure`. Otherwise the build script will download the required files from the Armadillo GitHub repository.
 
 ## Example
 
@@ -136,7 +135,7 @@ de: solution to Ackley test:
   -1.2702e-17
   -3.8432e-16
 ```
-On a standard laptop OptimLib will compute the solution to within machine precision in a fraction of a second.
+On a standard laptop, OptimLib will compute the solution to within machine precision in a fraction of a second.
 
 See http://www.kthohr.com/optimlib.html for a detailed description of each algorithm, and more examples.
 
