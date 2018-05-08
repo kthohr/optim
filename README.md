@@ -52,7 +52,7 @@ make
 make install
 ```
 
-The last line will install OptimLib into `/usr/local`.
+The final command will install OptimLib into `/usr/local`.
 
 There are several configuration options available (see `./configure -h`):
 * `-c` a coverage build (used with Codecov)
@@ -66,7 +66,7 @@ There are several configuration options available (see `./configure -h`):
 
 ### Armadillo
 
-OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo files in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set the following environment variable *before* running `./configure`:
+OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo files in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set the following environment variable *before* running `configure`:
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
 ```
@@ -78,7 +78,7 @@ To illustrate OptimLib at work, consider the problem of finding the global minim
 
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
 
-This is a well-known test function with many local minima. Newton-type methods (like BFGS) are sensitive to the choice of initial values, and will perform rather poorly here. As such, we will employ a global search method; in this case: Differential Evolution.
+This is a well-known test function with many local minima. Newton-type methods (such as BFGS) are sensitive to the choice of initial values, and will perform rather poorly here. As such, we will employ a global search method; in this case: Differential Evolution.
 
 Code:
 
