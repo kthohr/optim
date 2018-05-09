@@ -24,12 +24,12 @@ The library is actively maintained, and is still being extended. A list of algor
 
 ## Syntax
 
-OptimLib functions generally exhibit the following structure:
+OptimLib functions generally have the following structure:
 ```
 algorithm(<initial-to-output values>, <objective function>, <objective function data>)
 ```
 In order:
-* The vector of initial values defines the starting point for the algorithm, and will contain the solution vector upon successful completion of the algorithm.
+* A writable vector of initial values that defines the starting point of the algorithm, and will contain the solution vector upon successful completion of the algorithm.
 * The 'objective function' is the function to be minimized, or zeroed-out in the case of Broyden's method.
 * The final input is optional: it is any object that contains additional parameters required to evaluate the objective function.
 
