@@ -152,7 +152,8 @@ optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::
 
     //
 
-    if (vals_bound) {
+    if (vals_bound)
+    {
         x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
     }
 
@@ -187,7 +188,6 @@ arma::vec optim::gd_update(const arma::vec& grad, const arma::vec& grad_p, const
     {
         if (iter % gd_settings.step_decay_periods == 0)
         {
-            // printf("decay point!\n");
             gd_settings.step_size *= gd_settings.step_decay_val;
         }
     }
