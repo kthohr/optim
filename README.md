@@ -239,23 +239,13 @@ int main()
 
     // run optim
 
-    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
- 
     bool success = optim::newton(x,ll_fn,&opt_data);
-
-    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
 
     //
  
     if (success) {
-        std::cout << "newton: logit_reg test completed successfully.\n"
-                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
-    } else {
-        std::cout << "newton: logit_reg test completed unsuccessfully." << std::endl;
+        arma::cout << "\nnewton: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
     }
- 
-    arma::cout << "\nnewton: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
  
     return 0;
 }
