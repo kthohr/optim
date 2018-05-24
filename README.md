@@ -47,7 +47,7 @@ bool bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 
 ## Installation
 
-The library is installed using the standard `./configure && make` method:
+The library is installed on Unix-alike systems via the standard `./configure && make` method:
 
 ```bash
 # clone optim into the current directory
