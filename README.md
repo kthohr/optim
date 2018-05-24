@@ -22,7 +22,7 @@ Features:
 
 The library is actively maintained, and is still being extended. A list of algorithms includes:
 
-* Broyden's Method
+* Broyden's Method (for root finding)
 * Newton's method, BFGS, and L-BFGS
 * Nonlinear Conjugate Gradient
 * Nelder-Mead
@@ -37,7 +37,7 @@ algorithm(<initial-to-output values>, <objective function>, <objective function 
 ```
 In order:
 * A writable vector of initial values that defines the starting point of the algorithm, and will contain the solution vector upon successful completion of the algorithm.
-* The 'objective function' is the function to be minimized, or zeroed-out in the case of Broyden's method.
+* The 'objective function' is the function to be minimized, or zeroed-out in the case of root finding.
 * The final input is optional: it is any object that contains additional parameters required to evaluate the objective function.
 
 For example, the BFGS algorithm is called using
@@ -157,7 +157,7 @@ Check the `/tests` directory for additional examples, and http://www.kthohr.com/
 
 ### Logistic regression
 
-For a data-based example, consider maximum likelihood estimation of a logit model, common in statistics and machine learning. In this case we have closed-form expressions for the gradient and hessian.
+For a data-based example, consider maximum likelihood estimation of a logit model, common in statistics and machine learning. In this case we have closed-form expressions for the gradient and hessian so we will employ a pure Newton-based algorithm.
 
 ``` cpp
 #include "optim.hpp"
