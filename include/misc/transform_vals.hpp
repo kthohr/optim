@@ -17,7 +17,7 @@
   ##   limitations under the License.
   ##
   ################################################################################*/
- 
+
 /*
  * transform values
  */
@@ -38,13 +38,13 @@ transform(const arma::vec& vals_inp, const arma::uvec& bounds_type, const arma::
                 vals_trans_out(i) = vals_inp(i);
                 break;
             case 2: // lower bound only
-                vals_trans_out(i) = std::log(vals_inp(i) - lower_bounds(i));
+                vals_trans_out(i) = std::log(vals_inp(i) - lower_bounds(i) + eps_dbl);
                 break;
             case 3: // upper bound only
-                vals_trans_out(i) = - std::log(upper_bounds(i) - vals_inp(i));
+                vals_trans_out(i) = - std::log(upper_bounds(i) - vals_inp(i) + eps_dbl);
                 break;
             case 4: // upper and lower bounds
-                vals_trans_out(i) = std::log(vals_inp(i) - lower_bounds(i)) - std::log(upper_bounds(i) - vals_inp(i));
+                vals_trans_out(i) = std::log(vals_inp(i) - lower_bounds(i) + eps_dbl) - std::log(upper_bounds(i) - vals_inp(i) + eps_dbl);
                 break;
         }
     }
@@ -70,26 +70,51 @@ inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, co
                 vals_out(i) = vals_trans_inp(i);
                 break;
             case 2: // lower bound only
-                vals_out(i) = lower_bounds(i) + std::exp(vals_trans_inp(i));
-                break;
-            case 3: // upper bound only
-                vals_out(i) = upper_bounds(i) - std::exp(-vals_trans_inp(i));
-                break;
-            case 4: // upper and lower bounds
-                if (!std::isfinite(vals_trans_inp(i))) {
-                    if (vals_trans_inp(i) < 0.0) {
-                        vals_out(i) = lower_bounds(i);
-                    } else {
-                        vals_out(i) = upper_bounds(i);
-                    }
-                } else {
-                    vals_out(i) = ( lower_bounds(i) + upper_bounds(i)*std::exp(vals_trans_inp(i)) ) / ( 1 + std::exp(vals_trans_inp(i)) );
+                if (!std::isfinite(vals_trans_inp(i)))
+                {
+                    vals_out(i) = lower_bounds(i) + eps_dbl;
+                }
+                else
+                {
+                    vals_out(i) = lower_bounds(i) + eps_dbl + std::exp(vals_trans_inp(i));
                 }
                 break;
+            case 3: // upper bound only
+                if (!std::isfinite(vals_trans_inp(i)))
+                {
+                    vals_out(i) = upper_bounds(i) - eps_dbl;
+                }
+                else
+                {
+                    vals_out(i) = upper_bounds(i) - eps_dbl - std::exp(-vals_trans_inp(i));
+                }
+                break;
+            case 4: // upper and lower bounds
+                if (!std::isfinite(vals_trans_inp(i)))
+                {
+                    if (std::isnan(vals_trans_inp(i))) {
+                        vals_out(i) = (upper_bounds(i) - lower_bounds(i)) / 2.0;
+                    } else if (vals_trans_inp(i) < 0.0) {
+                        vals_out(i) = lower_bounds(i) + eps_dbl;
+                    } else {
+                        vals_out(i) = upper_bounds(i) - eps_dbl;
+                    }
+                }
+                else
+                {
+                    vals_out(i) = ( lower_bounds(i) + eps_dbl + (upper_bounds(i) - eps_dbl)*std::exp(vals_trans_inp(i)) ) \
+                                    / ( 1.0 + std::exp(vals_trans_inp(i)) );
+                }
+                break;
+        }
+
+        if (std::isnan(vals_out(i)))
+        {
+            vals_out(i) = upper_bounds(i) - eps_dbl;
         }
     }
 
     //
-    
+
     return vals_out;
 }

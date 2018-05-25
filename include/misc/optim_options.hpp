@@ -78,6 +78,7 @@
 
 namespace optim
 {
+    static const double eps_dbl = std::numeric_limits<double>::epsilon();
     static const double inf = std::numeric_limits<double>::infinity();
     using uint_t = unsigned int;
 }
