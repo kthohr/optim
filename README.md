@@ -16,7 +16,7 @@ Features:
 * [Syntax](#syntax)
 * [Installation](#installation)
 * [Examples](#examples)
-* [License](#license)
+* [Author and License](#author)
 
 ## Status
 
