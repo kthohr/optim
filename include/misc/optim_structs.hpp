@@ -29,12 +29,22 @@ struct gd_settings_t
 {
     // step size, or 'learning rate'
     double step_size = 0.1;
+
+    // decay
     bool step_decay = false;
+
     uint_t step_decay_periods = 10;
     double step_decay_val = 0.5;
 
     // momentum parameter
     double momentum_par = 0.9;
+
+    // Ada parameters
+    double norm_term = 10e-08;
+
+    // Adam parameters
+    double adam_beta_1 = 0.9;
+    double adam_beta_2 = 0.999;
 };
 
 struct algo_settings_t

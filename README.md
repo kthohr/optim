@@ -24,6 +24,7 @@ The library is actively maintained, and is still being extended. A list of algor
 
 * Broyden's Method (for root finding)
 * Newton's method, BFGS, and L-BFGS
+* Gradient descent: basic, momentum, Adam, and more
 * Nonlinear Conjugate Gradient
 * Nelder-Mead
 * Differential Evolution (DE)

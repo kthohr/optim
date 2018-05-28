@@ -132,20 +132,41 @@ int main()
 
     optim::algo_settings_t settings;
 
-    x_1 = arma::zeros(2,1);
+    x_1 = arma::ones(2,1);
     settings.gd_method = 1;
-    settings.gd_settings.step_size = 0.001;
+    settings.gd_settings.step_size = 0.1;
     
-    optim::gd(x_1,unconstr_test_fn_2,nullptr,settings);
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "\ngd: solution to test_2 using gd_method = 1\n" << x_1 << arma::endl;
+    arma::cout << "\ngd: solution to test_3 using gd_method = 1\n" << x_1 << arma::endl;
 
-    x_1 = arma::zeros(2,1);
+    x_1 = arma::ones(2,1);
     settings.gd_method = 2;
 
-    optim::gd(x_1,unconstr_test_fn_2,nullptr,settings);
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "gd: solution to test_2 using gd_method = 2\n" << x_1 << arma::endl;
+    arma::cout << "gd: solution to test_3 using gd_method = 2\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 3;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    arma::cout << "gd: solution to test_3 using gd_method = 3\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 4;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    arma::cout << "gd: solution to test_3 using gd_method = 4\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 6;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    arma::cout << "gd: solution to test_3 using gd_method = 6\n" << x_1 << arma::endl;
 
     //
 
