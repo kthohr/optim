@@ -82,7 +82,7 @@ Otherwise the build script will download the required files from the Armadillo G
 
 ## Examples
 
-To illustrate OptimLib at work, consider the problem of finding the global minimum of the [Ackley function](https://en.wikipedia.org/wiki/Ackley_function):
+To illustrate OptimLib at work, consider searching for the global minimum of the [Ackley function](https://en.wikipedia.org/wiki/Ackley_function):
 
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
 
