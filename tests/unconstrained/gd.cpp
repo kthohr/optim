@@ -36,7 +36,7 @@ int main()
     optim::algo_settings_t settings_1;
 
     settings_1.iter_max = 2000;
-    settings_1.gd_method = 1;
+    settings_1.gd_method = 0;
     settings_1.gd_settings.step_size = 0.1;
 
     arma::vec x_1 = arma::ones(2,1);
@@ -112,7 +112,7 @@ int main()
 
     optim::algo_settings_t settings_5;
     settings_5.iter_max = 10000;
-    settings_5.gd_method = 2;
+    settings_5.gd_method = 1;
 
     arma::vec x_5 = arma::zeros(2,1) + 2;
 
@@ -133,40 +133,81 @@ int main()
     optim::algo_settings_t settings;
 
     x_1 = arma::ones(2,1);
-    settings.gd_method = 1;
+    settings.gd_method = 0;
     settings.gd_settings.step_size = 0.1;
     
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "\ngd: solution to test_3 using gd_method = 1\n" << x_1 << arma::endl;
+    arma::cout << "\ngd: solution to test_3 using gd_method = 0 (basic)\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 1;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    arma::cout << "gd: solution to test_3 using gd_method = 1 (momentum)\n" << x_1 << arma::endl;
 
     x_1 = arma::ones(2,1);
     settings.gd_method = 2;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "gd: solution to test_3 using gd_method = 2\n" << x_1 << arma::endl;
+    arma::cout << "gd: solution to test_3 using gd_method = 2 (NAG)\n" << x_1 << arma::endl;
 
     x_1 = arma::ones(2,1);
     settings.gd_method = 3;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "gd: solution to test_3 using gd_method = 3\n" << x_1 << arma::endl;
+    arma::cout << "gd: solution to test_3 using gd_method = 3 (AdaGrad)\n" << x_1 << arma::endl;
 
     x_1 = arma::ones(2,1);
     settings.gd_method = 4;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "gd: solution to test_3 using gd_method = 4\n" << x_1 << arma::endl;
+    arma::cout << "gd: solution to test_3 using gd_method = 4 (RMSProp)\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 5;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    arma::cout << "gd: solution to test_3 using gd_method = 5 (Adadelta)\n" << x_1 << arma::endl;
 
     x_1 = arma::ones(2,1);
     settings.gd_method = 6;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
-    arma::cout << "gd: solution to test_3 using gd_method = 6\n" << x_1 << arma::endl;
+    arma::cout << "gd: solution to test_3 using gd_method = 6 (Adam)\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 6;
+    settings.gd_settings.ada_max = true;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    settings.gd_settings.ada_max = false;
+
+    arma::cout << "gd: solution to test_3 using gd_method = 6 with max (AdaMax)\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 7;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    arma::cout << "gd: solution to test_3 using gd_method = 7 (Nadam)\n" << x_1 << arma::endl;
+
+    x_1 = arma::ones(2,1);
+    settings.gd_method = 7;
+    settings.gd_settings.ada_max = true;
+
+    optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
+
+    settings.gd_settings.ada_max = false;
+
+    arma::cout << "gd: solution to test_3 using gd_method = 7 with max (NadaMax)\n" << x_1 << arma::endl;
 
     //
 

@@ -51,20 +51,20 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
 
     switch (gd_method)
     {
-        case 1: // basic
+        case 0: // basic
         {
             direc_out = gd_settings.step_size * grad_p;
             break;
         }
 
-        case 2: // momentum
+        case 1: // momentum
         {
             // direc_out = gd_settings.step_size * (gd_settings.momentum_par * direc + grad_p);
             direc_out = gd_settings.momentum_par * direc + gd_settings.step_size * grad_p;
             break;
         }
 
-        case 3: // Nesterov accelerated gradient
+        case 2: // Nesterov accelerated gradient
         {
             arma::vec NAG_grad(vals_inp.n_elem);
             box_objfn(vals_inp - gd_settings.momentum_par * direc, &NAG_grad, opt_data);
@@ -74,7 +74,7 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
             break;
         }
 
-        case 4: // Adagrad
+        case 3: // AdaGrad
         {
             adam_vec_v += arma::pow(grad_p,2);
 
@@ -82,15 +82,78 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
             break;
         }
 
-        case 6: // Adam optimization
+        case 4: // RMSProp
         {
-            double adam_step_size = gd_settings.step_size * std::sqrt(1.0 - std::pow(gd_settings.adam_beta_2,iter)) \
-                                     / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+            adam_vec_v = gd_settings.ada_rho * adam_vec_v + (1.0 - gd_settings.ada_rho) * arma::pow(grad_p,2);
 
+            direc_out = gd_settings.step_size * grad_p / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+            break;
+        }
+
+        case 5: // Adadelta
+        {
+            if (iter == 1) {
+                adam_vec_m += gd_settings.step_size;
+            }
+            adam_vec_v = gd_settings.ada_rho * adam_vec_v + (1.0 - gd_settings.ada_rho) * arma::pow(grad_p,2);
+
+            direc_out = grad_p % (arma::sqrt(adam_vec_m) + gd_settings.norm_term) / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+
+            adam_vec_m = gd_settings.ada_rho * adam_vec_m + (1.0 - gd_settings.ada_rho) * arma::pow(direc_out,2);
+            break;
+        }
+
+        case 6: // Adam and AdaMax
+        {
             adam_vec_m = gd_settings.adam_beta_1 * adam_vec_m + (1.0 - gd_settings.adam_beta_1) * grad_p;
-            adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * arma::pow(grad_p,2);
 
-            direc_out = adam_step_size * adam_vec_m / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+            if (gd_settings.ada_max)
+            {
+                adam_vec_v = arma::max(gd_settings.adam_beta_2 * adam_vec_v,arma::abs(grad_p));
+
+                double adam_step_size = gd_settings.step_size / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+
+                direc_out = adam_step_size * adam_vec_m / (adam_vec_v + gd_settings.norm_term);
+            }
+            else
+            {
+                double adam_step_size = gd_settings.step_size * std::sqrt(1.0 - std::pow(gd_settings.adam_beta_2,iter)) \
+                                     / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                
+                adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * arma::pow(grad_p,2);
+
+                direc_out = adam_step_size * adam_vec_m / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+            }
+
+            break;
+        }
+
+        case 7: // Nadam and NadaMax
+        {
+            adam_vec_m = gd_settings.adam_beta_1 * adam_vec_m + (1.0 - gd_settings.adam_beta_1) * grad_p;
+
+            if (gd_settings.ada_max)
+            {
+                adam_vec_v = arma::max(gd_settings.adam_beta_2 * adam_vec_v,arma::abs(grad_p));
+
+                arma::vec m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                arma::vec grad_hat = grad_p / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+
+                direc_out = gd_settings.step_size * ( gd_settings.adam_beta_1 * m_hat + (1.0 - gd_settings.adam_beta_1) * grad_hat ) \
+                            / (adam_vec_v + gd_settings.norm_term);
+            }
+            else
+            {
+                adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * arma::pow(grad_p,2);
+
+                arma::vec m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                arma::vec v_hat = adam_vec_v / (1.0 - std::pow(gd_settings.adam_beta_2,iter));
+                arma::vec grad_hat = grad_p / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+
+                direc_out = gd_settings.step_size * ( gd_settings.adam_beta_1 * m_hat + (1.0 - gd_settings.adam_beta_1) * grad_hat ) \
+                            / (arma::sqrt(v_hat) + gd_settings.norm_term);
+            }
+
             break;
         }
 

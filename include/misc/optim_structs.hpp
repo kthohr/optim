@@ -42,6 +42,10 @@ struct gd_settings_t
     // Ada parameters
     double norm_term = 10e-08;
 
+    double ada_rho = 0.9;
+
+    bool ada_max = false;
+
     // Adam parameters
     double adam_beta_1 = 0.9;
     double adam_beta_2 = 0.999;
@@ -98,7 +102,7 @@ struct algo_settings_t
     arma::vec de_initial_ub; // this will default to  0.5
 
     // GD
-    int gd_method = 1;
+    int gd_method = 0;
     gd_settings_t gd_settings;
 
     // L-BFGS

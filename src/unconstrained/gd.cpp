@@ -129,12 +129,12 @@ optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::
     arma::vec adam_vec_m;
     arma::vec adam_vec_v;
 
-    if (settings.gd_method == 4)
+    if (settings.gd_method == 3 || settings.gd_method == 4)
     {
         adam_vec_v = arma::zeros(n_vals);
     }
 
-    if (settings.gd_method == 6)
+    if (settings.gd_method == 5 || settings.gd_method == 6 || settings.gd_method == 7)
     {
         adam_vec_m = arma::zeros(n_vals);
         adam_vec_v = arma::zeros(n_vals);
