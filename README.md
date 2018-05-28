@@ -158,7 +158,7 @@ Check the `/tests` directory for additional examples, and http://www.kthohr.com/
 
 ### Logistic regression
 
-For a data-based example, consider maximum likelihood estimation of a logit model, common in statistics and machine learning. In this case we have closed-form expressions for the gradient and hessian so we will employ a pure Newton-based algorithm.
+For a data-based example, consider maximum likelihood estimation of a logit model, common in statistics and machine learning. In this case we have closed-form expressions for the gradient and hessian. We will employ a popular gradient descent method, Adam (Adaptive Moment Estimation), and compare to a pure Newton-based algorithm.
 
 ``` cpp
 #include "optim.hpp"
@@ -170,7 +170,7 @@ arma::mat sigm(const arma::mat& X)
     return 1.0 / (1.0 + arma::exp(-X));
 }
 
-// log-likelihood function and data
+// log-likelihood function data
 
 struct ll_data_t
 {
@@ -178,7 +178,36 @@ struct ll_data_t
     arma::mat X;
 };
 
-double ll_fn(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
+// log-likelihood function for Adam
+
+double ll_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+{
+    ll_data_t* objfn_data = reinterpret_cast<ll_data_t*>(opt_data);
+
+    arma::vec Y = objfn_data->Y;
+    arma::mat X = objfn_data->X;
+
+    arma::vec mu = sigm(X*vals_inp);
+
+    const double norm_term = static_cast<double>(Y.n_elem);
+
+    const double obj_val = - arma::accu( Y%arma::log(mu) + (1.0-Y)%arma::log(1.0-mu) ) / norm_term;
+
+    //
+
+    if (grad_out)
+    {
+        *grad_out = X.t() * (mu - Y) / norm_term;
+    }
+
+    //
+
+    return obj_val;
+}
+
+// log-likelihood function with hessian
+
+double ll_fn_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
 {
     ll_data_t* objfn_data = reinterpret_cast<ll_data_t*>(opt_data);
 
@@ -238,18 +267,78 @@ int main()
 
     arma::vec x = arma::ones(n_dim,1) + 1.0; // initial values
 
-    // run optim
+    // run Adam-based optim
 
-    bool success = optim::newton(x,ll_fn,&opt_data);
+    optim::algo_settings_t settings;
+
+    settings.gd_method = 6;
+    settings.gd_settings.step_size = 0.1; // the 'learning rate'
+
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+ 
+    bool success = optim::gd(x,ll_fn,&opt_data,settings);
+
+    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
 
     //
  
     if (success) {
-        arma::cout << "\nnewton: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
+        std::cout << "Adam: logit_reg test completed successfully.\n"
+                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
+    } else {
+        std::cout << "Adam: logit_reg test completed unsuccessfully." << std::endl;
     }
+ 
+    arma::cout << "\nAdam: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
+
+    //
+    // run Newton-based optim
+
+    x = arma::ones(n_dim,1) + 1.0; // initial values
+
+    start = std::chrono::system_clock::now();
+ 
+    success = optim::newton(x,ll_fn_whess,&opt_data);
+
+    end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+
+    //
+ 
+    if (success) {
+        std::cout << "newton: logit_reg test completed successfully.\n"
+                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
+    } else {
+        std::cout << "newton: logit_reg test completed unsuccessfully." << std::endl;
+    }
+ 
+    arma::cout << "\nnewton: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
  
     return 0;
 }
+```
+Output:
+```
+Adam: logit_reg test completed successfully.
+elapsed time: 0.025128s
+
+Adam: true values vs estimates:
+   2.7850   2.6993
+   3.6561   3.6798
+   2.3379   2.3860
+   2.3167   2.4313
+   2.2465   2.3064
+
+newton: logit_reg test completed successfully.
+elapsed time: 0.255909s
+
+newton: true values vs estimates:
+   2.7850   2.6993
+   3.6561   3.6798
+   2.3379   2.3860
+   2.3167   2.4313
+   2.2465   2.3064
 ```
 
 ## Author
