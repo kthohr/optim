@@ -82,11 +82,14 @@ optim::de_prmm_int(arma::vec& init_out_vals, std::function<double (const arma::v
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
-        if (vals_bound) {
+        if (vals_bound)
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             return opt_objfn(vals_inv_trans,nullptr,opt_data);
-        } else {
+        }
+        else
+        {
             return opt_objfn(vals_inp,nullptr,opt_data);
         }
     };

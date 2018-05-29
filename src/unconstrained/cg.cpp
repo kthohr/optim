@@ -65,30 +65,33 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
-        if (vals_bound) {
-
+        if (vals_bound)
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
-            
             double ret;
             
-            if (grad_out) {
+            if (grad_out)
+            {
                 arma::vec grad_obj = *grad_out;
 
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
-                arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
+                // arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
+                arma::vec jacob_vec = arma::diagvec(jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds));
 
-                // *grad_out = jacob_matrix.t() * grad_obj; // correct gradient for transformation
-                *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
-            } else {
+                // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
+                *grad_out = jacob_vec % grad_obj;
+            }
+            else
+            {
                 ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
             }
 
             return ret;
-        } else {
-            double ret = opt_objfn(vals_inp,grad_out,opt_data);
-
-            return ret;
+        }
+        else
+        {
+            return opt_objfn(vals_inp,grad_out,opt_data);
         }
     };
 

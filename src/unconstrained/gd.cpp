@@ -61,8 +61,8 @@ optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::
     = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
     -> double 
     {
-        if (vals_bound) {
-
+        if (vals_bound)
+        {
             arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             double ret;
@@ -77,15 +77,17 @@ optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::
 
                 // *grad_out = jacob_matrix * grad_obj; //
                 *grad_out = jacob_vec % grad_obj; //
-            } else {
+            }
+            else
+            {
                 ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
             }
 
             return ret;
-        } else {
-            double ret = opt_objfn(vals_inp,grad_out,opt_data);
-
-            return ret;
+        }
+        else
+        {
+            return opt_objfn(vals_inp,grad_out,opt_data);
         }
     };
 

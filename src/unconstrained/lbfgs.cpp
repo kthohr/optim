@@ -76,9 +76,11 @@ optim::lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec
 
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
-                arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
+                // arma::mat jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
+                arma::vec jacob_vec = arma::diagvec(jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds));
 
-                *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
+                // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
+                *grad_out = jacob_vec % grad_obj;
             }
             else
             {
