@@ -92,11 +92,16 @@ inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, co
             case 4: // upper and lower bounds
                 if (!std::isfinite(vals_trans_inp(i)))
                 {
-                    if (std::isnan(vals_trans_inp(i))) {
+                    if (std::isnan(vals_trans_inp(i)))
+                    {
                         vals_out(i) = (upper_bounds(i) - lower_bounds(i)) / 2.0;
-                    } else if (vals_trans_inp(i) < 0.0) {
+                    }
+                    else if (vals_trans_inp(i) < 0.0)
+                    {
                         vals_out(i) = lower_bounds(i) + eps_dbl;
-                    } else {
+                    }
+                    else
+                    {
                         vals_out(i) = upper_bounds(i) - eps_dbl;
                     }
                 }
@@ -104,13 +109,13 @@ inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, co
                 {
                     vals_out(i) = ( lower_bounds(i) + eps_dbl + (upper_bounds(i) - eps_dbl)*std::exp(vals_trans_inp(i)) ) \
                                     / ( 1.0 + std::exp(vals_trans_inp(i)) );
+
+                    if (!std::isfinite(vals_out(i)))
+                    {
+                        vals_out(i) = upper_bounds(i) - eps_dbl;
+                    }
                 }
                 break;
-        }
-
-        if (std::isnan(vals_out(i)))
-        {
-            vals_out(i) = upper_bounds(i) - eps_dbl;
         }
     }
 
