@@ -92,6 +92,8 @@ if [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then
     else # clang:
         OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline"
     fi
+elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
+    OPTIM_OPT_FLAGS="-O0 -g"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
         OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG -DARMA_NO_DEBUG"
@@ -142,17 +144,11 @@ fi
 
 # final optimization checks
 
-if [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
-    OPTIM_OPT_FLAGS="-O0 -g"
-fi
-
 if [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then 
     OPTIM_SHLIB_FLAGS="--coverage ${OPTIM_SHLIB_FLAGS}"
 else
     OPTIM_SHLIB_FLAGS="${OPTIM_OPT_FLAGS} ${OPTIM_SHLIB_FLAGS}"
 fi
-
-#
 
 #
 # final print:
