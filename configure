@@ -53,6 +53,7 @@ echo ""
 
 IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
 GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
+CLANG_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "clang")
 APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
 
 # get working directory
@@ -86,7 +87,11 @@ fi
 # set build and optimization flags
 
 if [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then 
-    OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
+    if [ "$GCC_COMPILER" -eq "1" ]; then
+        OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
+    else # clang:
+        OPTIM_OPT_FLAGS="-g -O0 --coverage -fno-inline"
+    fi
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
         OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG -DARMA_NO_DEBUG"

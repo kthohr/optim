@@ -57,7 +57,7 @@ matrix:
       compiler: gcc
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
       compiler: clang
@@ -72,10 +72,10 @@ install:
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         sudo apt-get update
         sudo apt-get install libblas-dev liblapack-dev
-      else
+      # else
         # OSX
-        brew upgrade gcc || brew install gcc
-        export FC=gfortran
+        # brew upgrade gcc || brew install gcc
+        # export FC=gfortran
       fi
 
 script:
@@ -86,7 +86,10 @@ script:
   - cd ..
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        bash <(curl -s https://codecov.io/bash)
+      fi
 
 after_failure:
   - ./travis-tool.sh dump_logs
