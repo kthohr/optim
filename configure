@@ -72,7 +72,7 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     done
 
     if [[ $ARMA_INCLUDE_PATH == "" ]]; then
-        echo -e "\x1B[31m  - note: cannot find Armadillo files. Cloning from GitHub\033[0m" >&2 ;
+        echo -e "\x1B[31m  - note: cannot find Armadillo files. Cloning from GitLab\033[0m" >&2 ;
         echo ""
 
         mkdir ${WDIR}/arma_tmp

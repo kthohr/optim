@@ -78,7 +78,7 @@ OptimLib is built on the Armadillo C++ linear algebra library. The `configure` s
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
 ```
-Otherwise the build script will download the required files from the Armadillo GitHub repository.
+Otherwise the build script will download the required files from the Armadillo GitLab repository.
 
 ## Examples
 
