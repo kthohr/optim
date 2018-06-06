@@ -76,7 +76,7 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
         echo ""
 
         mkdir ${WDIR}/arma_tmp
-        git clone -b unstable --single-branch https://github.com/conradsnicta/armadillo-code ${WDIR}/arma_tmp > /dev/null 2>&1
+        git clone -b unstable --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
         mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
         rm -rf ${WDIR}/arma_tmp
         ARMA_INCLUDE_PATH="./include"
