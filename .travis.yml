@@ -43,11 +43,24 @@ matrix:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && FC=gfortran-7"
       compiler: gcc
 
-    # - os: osx
-      # osx_image: xcode8
-      # env:
-        # - MATRIX_EVAL="CC=clang && CXX=clang++"
-      # compiler: clang
+    - os: linux
+      dist: trusty
+      addons:
+        apt:
+          packages:
+            - g++-8
+            - gfortran-8
+          sources: &sources
+            - ubuntu-toolchain-r-test
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && FC=gfortran-8"
+      compiler: gcc
+
+    - os: osx
+      osx_image: xcode8
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+      compiler: clang
 
 before_install:
     - export FC=gfortran
@@ -62,6 +75,7 @@ install:
       else
         # OSX
         brew upgrade gcc || brew install gcc
+        export FC=gfortran
       fi
 
 script:
