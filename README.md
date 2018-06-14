@@ -12,7 +12,7 @@ Features:
 * Released under a permissive, non-GPL license.
 
 ### Contents:
-* [Status](#status) 
+* [Status](#status)
 * [Syntax](#syntax)
 * [Installation](#installation)
 * [Examples](#examples)
@@ -48,7 +48,7 @@ bool bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 
 ## Installation
 
-The library is installed on Unix-alike systems via the standard `./configure && make` method:
+The library can be installed on Unix-alike systems via the standard `./configure && make` method:
 
 ```bash
 # clone optim into the current directory
@@ -101,14 +101,14 @@ double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
     const double x = vals_inp(0);
     const double y = vals_inp(1);
     const double pi = arma::datum::pi;
- 
+
     double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + 22.718282L;
 
     //
 
     return obj_val;
 }
- 
+
 int main()
 {
     // initial values:
@@ -117,21 +117,21 @@ int main()
     //
 
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
- 
+
     bool success = optim::de(x,ackley_fn,nullptr);
 
     std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
- 
+
     if (success) {
         std::cout << "de: Ackley test completed successfully.\n"
                   << "elapsed time: " << elapsed_seconds.count() << "s\n";
     } else {
         std::cout << "de: Ackley test completed unsuccessfully." << std::endl;
     }
- 
+
     arma::cout << "\nde: solution to Ackley test:\n" << x << arma::endl;
- 
+
     return 0;
 }
 ```
@@ -256,21 +256,21 @@ int main()
     settings.gd_settings.step_size = 0.1;
 
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
- 
+
     bool success = optim::gd(x,ll_fn,&opt_data,settings);
 
     std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
 
     //
- 
+
     if (success) {
         std::cout << "Adam: logit_reg test completed successfully.\n"
                   << "elapsed time: " << elapsed_seconds.count() << "s\n";
     } else {
         std::cout << "Adam: logit_reg test completed unsuccessfully." << std::endl;
     }
- 
+
     arma::cout << "\nAdam: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
 
     //
@@ -279,23 +279,23 @@ int main()
     x = arma::ones(n_dim,1) + 1.0; // initial values
 
     start = std::chrono::system_clock::now();
- 
+
     success = optim::newton(x,ll_fn_whess,&opt_data);
 
     end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
 
     //
- 
+
     if (success) {
         std::cout << "newton: logit_reg test completed successfully.\n"
                   << "elapsed time: " << elapsed_seconds.count() << "s\n";
     } else {
         std::cout << "newton: logit_reg test completed unsuccessfully." << std::endl;
     }
- 
+
     arma::cout << "\nnewton: true values vs estimates:\n" << arma::join_rows(theta_0,x) << arma::endl;
- 
+
     return 0;
 }
 ```
