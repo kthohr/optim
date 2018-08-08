@@ -16,10 +16,12 @@ function print_help
     echo "-o    Compiler optimization options; defaults to:" ;
     echo "        -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG" ;
     echo "-p    Enable OpenMP parallelization features" ;
+    echo "-R    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
+    echo "        Example: -R \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
     echo "" ;
 }
 
-while getopts hcdgi:m:o:p option; do
+while getopts hcdgi:m:o:pR: option; do
     case "${option}" in
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE_BUILD="y";;
@@ -29,6 +31,7 @@ while getopts hcdgi:m:o:p option; do
         m) OPTIM_MATRIX_OPS=${OPTARG};;
         o) OPTIM_OPT=${OPTARG};;
         p) OPTIM_PARALLEL="y";;
+        R) OPTIM_R_BUILD=${OPTARG};;
         ?) print_help; exit 2;;
     esac
 done
@@ -60,6 +63,14 @@ APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
 WDIR=${PWD}
 
 # look for Armadillo
+if [[ "${OPTIM_R_BUILD}" != "" ]]; then
+    ARMA_INCLUDE_PATH="."
+    for word in $OPTIM_R_BUILD
+    do
+        ARMA_INCLUDE_PATH="$ARMA_INCLUDE_PATH -I$word"
+    done
+fi
+
 if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
     
     declare -a ARMA_DIRS=("${WDIR}/include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
@@ -99,6 +110,10 @@ else
         OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG -DARMA_NO_DEBUG"
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
+    fi
+
+    if [[ "${OPTIM_R_BUILD}" != "" ]]; then
+        OPTIM_OPT_FLAGS="${OPTIM_OPT_FLAGS} -DUSE_RCPP_ARMADILLO"
     fi
 
     if [[ "${OPTIM_PARALLEL}" == "y" ]]; then
@@ -162,6 +177,8 @@ elif [[ "${OPTIM_COVERAGE_BUILD}" == "y" ]]; then
     echo "  - Build version: coverage"
 elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
     echo "  - Build version: debug"
+elif [[ "${OPTIM_R_BUILD}" != "" ]]; then
+    echo "  - Build version: RcppArmadillo"
 else
     echo "  - Build version: release"
 fi
