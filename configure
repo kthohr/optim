@@ -16,12 +16,12 @@ function print_help
     echo "-o    Compiler optimization options; defaults to:" ;
     echo "        -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG" ;
     echo "-p    Enable OpenMP parallelization features" ;
-    echo "-R    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
-    echo "        Example: -R \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
+    echo "-r    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
+    echo "        Example: -r \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
     echo "" ;
 }
 
-while getopts hcdgi:m:o:pR: option; do
+while getopts hcdgi:m:o:pr: option; do
     case "${option}" in
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE_BUILD="y";;
@@ -31,7 +31,7 @@ while getopts hcdgi:m:o:pR: option; do
         m) OPTIM_MATRIX_OPS=${OPTARG};;
         o) OPTIM_OPT=${OPTARG};;
         p) OPTIM_PARALLEL="y";;
-        R) OPTIM_R_BUILD=${OPTARG};;
+        r) OPTIM_R_BUILD=${OPTARG};;
         ?) print_help; exit 2;;
     esac
 done
