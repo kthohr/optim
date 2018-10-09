@@ -75,7 +75,7 @@ if [[ "${OPTIM_GEN_NEW_HEADERS}" == "y" ]]; then
 
         for file_ in $file_names; do
             file_=${file_%.hpp}
-            sed -i -e "s|#endif|//\n|" $file_.hpp
+            sed -i'' -e "s|#endif|//\n|" $file_.hpp
             sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" >> "$file_".hpp
             echo -e "\n#endif" >> "$file_".hpp
         done
