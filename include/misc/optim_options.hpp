@@ -76,6 +76,10 @@
     #include "armadillo"
 #endif
 
+#ifndef optimlib_inline
+    #define optimlib_inline 
+#endif
+
 namespace optim
 {
     static const double eps_dbl = std::numeric_limits<double>::epsilon();

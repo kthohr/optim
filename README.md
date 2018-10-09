@@ -6,15 +6,19 @@ Features:
 
 * C++11 library of local and global optimization algorithms, as well as root finding techniques.
 * Derivative-free optimization using advanced, parallelized metaheuristics.
-* Constrained optimization routines can handle simple box constraints, or systems of nonlinear constraints.
+* Constrained optimization routines can handle simple box constraints, as well as systems of nonlinear constraints.
 * Built on the [Armadillo C++ linear algebra library](http://arma.sourceforge.net/) for fast and efficient matrix-based computation.
-* OpenMP-accelerated library, and straightforward linking with parallelized BLAS libraries such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
+* OpenMP-accelerated accelerated algorithms for parallel computation. 
+* Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
+* Available in header-only format or as a linkable library.
 * Released under a permissive, non-GPL license.
 
 ### Contents:
 * [Status](#status)
 * [Syntax](#syntax)
 * [Installation](#installation)
+* [Header-only Version](#header-only-version)
+* [R Compatibility](#r-compatibility)
 * [Examples](#examples)
 * [Author and License](#author)
 
@@ -62,16 +66,16 @@ make install
 
 The final command will install OptimLib into `/usr/local`.
 
-There are several configuration options available (see `./configure -h`):
+Configuration options (see `./configure -h`):
 * `-c` a coverage build (used with Codecov)
 * `-d` a 'development' build
 * `-g` a debugging build (optimization flags set to `-O0 -g`)
 * `-h` print help
-* `-i` install path; default: the build directory
+* `-i` installation path; default: the build directory
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features (*recommended*)
-* `-R` RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)
+<!-- * `-R` RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo) -->
 
 ### Armadillo
 
@@ -79,7 +83,30 @@ OptimLib is built on the Armadillo C++ linear algebra library. The `configure` s
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
 ```
-Otherwise the build script will download the required files from the Armadillo GitLab repository.
+Otherwise the build script will download files from the Armadillo GitLab repository.
+
+## Header-only Version
+
+The library is also available in header-only format (i.e., without compiling a shared library). Simply run `configure` with the `--header-version` option:
+
+```bash
+./configure --header-version
+```
+
+This will create a new directory `header_only_version` that contains a header-only copy of OptimLib.
+
+## R Compatibility
+
+To use OptimLib with your R package, first generate a header-only version of the library (see [above](#header-only-version)). Then add the compiler definition `USE_RCPP_ARMADILLO` before you include the OptimLib files:
+
+```cpp
+#define USE_RCPP_ARMADILLO
+#include "optim.hpp"
+```
+Or you can set this preprocessor directive during compilation:
+```bash
+g++ ... -DUSE_RCPP_ARMADILLO ...
+```
 
 ## Examples
 

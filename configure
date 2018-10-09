@@ -16,13 +16,21 @@ function print_help
     echo "-o    Compiler optimization options; defaults to:" ;
     echo "        -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG" ;
     echo "-p    Enable OpenMP parallelization features" ;
-    echo "-r    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
-    echo "        Example: -r \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
+    #echo "-r    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
+    #echo "        Example: -r \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
+    echo "" ;
+    echo "--header-version    Generate header-only version of OptimLib" ;
     echo "" ;
 }
 
-while getopts hcdgi:m:o:pr: option; do
+while getopts hcdgi:m:o:pr:-: option; do
     case "${option}" in
+        -)
+            case "${OPTARG}" in
+                header-version)
+                    OPTIM_GEN_NEW_HEADERS="y";;
+                ?) print_help; exit 2;;
+            esac;;
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE_BUILD="y";;
         d) OPTIM_DEV_BUILD="y";;
@@ -46,6 +54,36 @@ if [ -z ${FC+x} ]; then
     FC=gfortran
 fi
 
+# get working directory
+WDIR=${PWD}
+
+# generate header-only version of OptimLib
+
+if [[ "${OPTIM_GEN_NEW_HEADERS}" == "y" ]]; then
+    rm -rf ./header_only_version
+    mkdir ./header_only_version
+
+    cp -rf ./include/* ./header_only_version/
+
+    #
+
+    declare -a DIRS=("constrained" "line_search" "unconstrained" "zeros")
+
+    for dir_ in "${DIRS[@]}"; do
+        cd "$WDIR"/header_only_version/"$dir_"
+        file_names=`ls *.hpp`
+
+        for file_ in $file_names; do
+            file_=${file_%.hpp}
+            sed -i -e "s|#endif|//\n|" $file_.hpp
+            sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" >> "$file_".hpp
+            echo -e "\n#endif" >> "$file_".hpp
+        done
+    done
+
+    exit 0
+fi
+
 #
 
 echo ""
@@ -58,9 +96,6 @@ IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
 GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
 CLANG_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "clang")
 APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
-
-# get working directory
-WDIR=${PWD}
 
 # look for Armadillo
 if [[ "${OPTIM_R_BUILD}" != "" ]]; then
@@ -88,7 +123,7 @@ if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
         echo ""
 
         mkdir ${WDIR}/arma_tmp
-        git clone -b unstable --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
+        git clone --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
         mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
         rm -rf ${WDIR}/arma_tmp
         ARMA_INCLUDE_PATH="./include"

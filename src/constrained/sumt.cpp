@@ -24,6 +24,8 @@
 
 #include "optim.hpp"
 
+// [OPTIM_BEGIN]
+optimlib_inline
 bool
 optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
                 std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings_t* settings_inp)
@@ -138,6 +140,7 @@ optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec&
     return success;
 }
 
+optimlib_inline
 bool
 optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
             std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data)
@@ -145,6 +148,7 @@ optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& val
     return sumt_int(init_out_vals,opt_objfn,opt_data,constr_fn,constr_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
             std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings_t& settings)

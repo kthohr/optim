@@ -24,6 +24,8 @@
 
 #include "optim.hpp"
 
+// [OPTIM_BEGIN]
+optimlib_inline
 bool
 optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
@@ -120,12 +122,14 @@ optim::newton_int(arma::vec& init_out_vals, std::function<double (const arma::ve
     return success;
 }
 
+optimlib_inline
 bool
 optim::newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     return newton_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::newton(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {

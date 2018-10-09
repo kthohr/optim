@@ -24,6 +24,8 @@
 
 #include "optim.hpp"
 
+// [OPTIM_BEGIN]
+optimlib_inline
 bool
 optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
@@ -125,12 +127,14 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     return success;
 }
 
+optimlib_inline
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {
     return broyden_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {
@@ -140,6 +144,7 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 //
 // broyden with jacobian
 
+optimlib_inline
 bool
 optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                    std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t* settings_inp)
@@ -244,6 +249,7 @@ optim::broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma
     return success;
 }
 
+optimlib_inline
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data)
@@ -251,6 +257,7 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
     return broyden_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data,
@@ -262,6 +269,7 @@ optim::broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::ve
 //
 // derivative-free method of Li and Fukushima (2000)
 
+optimlib_inline
 bool
 optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
@@ -395,12 +403,14 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     return success;
 }
 
+optimlib_inline
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {
     return broyden_df_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {
@@ -410,6 +420,7 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 //
 // derivative-free method with jacobian
 
+optimlib_inline
 bool
 optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                       std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t* settings_inp)
@@ -549,6 +560,7 @@ optim::broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const a
     return success;
 }
 
+optimlib_inline
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data)
@@ -556,6 +568,7 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
     return broyden_df_int(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t& settings)
@@ -566,12 +579,14 @@ optim::broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma:
 //
 // internal functions
 
+optimlib_inline
 double
 optim::df_eta(uint_t k)
 {
     return 1.0 / (k*k);
 }
 
+optimlib_inline
 double 
 optim::df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, uint_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data)
 {

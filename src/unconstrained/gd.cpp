@@ -24,6 +24,8 @@
 
 #include "optim.hpp"
 
+// [OPTIM_BEGIN]
+optimlib_inline
 bool
 optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
@@ -183,12 +185,14 @@ optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::
     return success;
 }
 
+optimlib_inline
 bool
 optim::gd(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     return gd_basic_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::gd(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {

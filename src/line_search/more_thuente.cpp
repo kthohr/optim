@@ -26,7 +26,10 @@
 
 #include "optim.hpp"
 
-double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, const double* wolfe_cons_1_inp, const double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
+// [OPTIM_BEGIN]
+optimlib_inline
+double
+optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, const double* wolfe_cons_1_inp, const double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     const uint_t iter_max = 100;
 
@@ -175,6 +178,7 @@ double optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const a
 //
 // update the 'interval of uncertainty'
 
+optimlib_inline
 optim::uint_t
 optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
 {
@@ -361,7 +365,9 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
     return info;
 }
 
-double optim::mt_sup_norm(const double a, const double b, const double c)
+optimlib_inline
+double
+optim::mt_sup_norm(const double a, const double b, const double c)
 {
     return std::max( std::max(std::abs(a), std::abs(b)), std::abs(c) );
 }

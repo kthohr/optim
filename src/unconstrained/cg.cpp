@@ -24,6 +24,8 @@
 
 #include "optim.hpp"
 
+// [OPTIM_BEGIN]
+optimlib_inline
 bool
 optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
 {
@@ -175,12 +177,14 @@ optim::cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     return success;
 }
 
+optimlib_inline
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
 {
     return cg_int(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
+optimlib_inline
 bool
 optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
 {
@@ -190,7 +194,9 @@ optim::cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 //
 // update formula
 
-double optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const uint_t iter, const uint_t cg_method, const double cg_restart_threshold)
+optimlib_inline
+double
+optim::cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const uint_t iter, const uint_t cg_method, const double cg_restart_threshold)
 {
     // threshold test
     double ratio_value = std::abs( arma::dot(grad_p,grad) ) / arma::dot(grad_p,grad_p);
