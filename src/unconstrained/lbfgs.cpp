@@ -224,11 +224,11 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 
     // forwards
 
-    double rho = 1.0;
+    // double rho = 1.0;
 
     for (size_t i=0; i < M; i++) 
     {
-        rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
+        double rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
         alpha_vec(i) = rho*arma::dot(s_mat.col(i),q);
 
         q -= alpha_vec(i)*y_mat.col(i);
@@ -238,12 +238,12 @@ optim::lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, 
 
     // backwards
 
-    double beta = 1.0;
+    // double beta = 1.0;
 
     for (int i = M - 1; i >= 0; i--) 
     {
-        rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
-        beta = rho*arma::dot(y_mat.col(i),r);
+        double rho = 1.0 / arma::dot(y_mat.col(i),s_mat.col(i));
+        double beta = rho*arma::dot(y_mat.col(i),r);
 
         r += (alpha_vec(i) - beta)*s_mat.col(i);
     }

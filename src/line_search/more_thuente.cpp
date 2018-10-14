@@ -60,8 +60,9 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
 
     //
 
-    bool bracket = false, stage_1 = true;
     uint_t iter = 0;
+
+    bool bracket = false, stage_1 = true;
 
     double f_init = f_step, dgrad_test = wolfe_cons_1*dgrad_init;
     double width = step_max - step_min, width_old = 2*width;
@@ -69,11 +70,11 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
     double st_best = 0.0, f_best = f_init, dgrad_best = dgrad_init;
     double st_other = 0.0, f_other = f_init, dgrad_other = dgrad_init;
 
-    double st_min, st_max;
-    double armijo_check_val, f_mod, f_best_mod, f_other_mod, dgrad_mod, dgrad_best_mod, dgrad_other_mod;
-
-    while (1) {
+    while (1)
+    {
         iter++;
+
+        double st_min, st_max;
 
         if (bracket) 
         {
@@ -86,18 +87,19 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
             st_max = step + extrap_delta*(step - st_best);
         }
 
-        step = std::max(step,step_min);
-        step = std::min(step,step_max);
+        step = std::min(std::max(step,step_min),step_max);
 
         if ( (bracket && (step <= st_min || step >= st_max)) || iter >= iter_max-1 || infoc == 0 || (bracket && st_max-st_min <= xtol*st_max)) {
             step = st_best;
         }
 
+        //
+
         x = x_0 + step * direc;
         f_step = opt_objfn(x,&grad,opt_data);
 
         dgrad = arma::dot(grad,direc);
-        armijo_check_val = f_init + step*dgrad_test;
+        double armijo_check_val = f_init + step*dgrad_test;
 
         // check stop conditions
 
@@ -134,13 +136,13 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
 
         if (stage_1 && f_step <= f_best && f_step > armijo_check_val)
         {
-            f_mod  = f_step - step*dgrad_test;
-            f_best_mod = f_best - st_best*dgrad_test;
-            f_other_mod = f_other - st_other*dgrad_test;
+            double f_mod  = f_step - step*dgrad_test;
+            double f_best_mod = f_best - st_best*dgrad_test;
+            double f_other_mod = f_other - st_other*dgrad_test;
 
-            dgrad_mod  = dgrad - dgrad_test;
-            dgrad_best_mod = dgrad_best - dgrad_test;
-            dgrad_other_mod = dgrad_other - dgrad_test;
+            double dgrad_mod  = dgrad - dgrad_test;
+            double dgrad_best_mod = dgrad_best - dgrad_test;
+            double dgrad_other_mod = dgrad_other - dgrad_test;
 
             infoc = mt_step(st_best,f_best_mod,dgrad_best_mod,st_other,f_other_mod,dgrad_other_mod,step,f_mod,dgrad_mod,bracket,st_min,st_max);
             
@@ -180,7 +182,8 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
 
 optimlib_inline
 optim::uint_t
-optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
+optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, 
+               double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
 {
     bool bound = false;
     uint_t info = 0;

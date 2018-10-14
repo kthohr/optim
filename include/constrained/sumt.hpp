@@ -34,8 +34,4 @@ bool sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_
 bool sumt(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,
           std::function<arma::vec (const arma::vec& vals_inp, arma::mat* jacob_out, void* constr_data)> constr_fn, void* constr_data, algo_settings_t& settings);
 
-struct sumt_struct {
-    double c_pen;
-};
-
 #endif

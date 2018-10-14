@@ -25,6 +25,10 @@
 #include "optim.hpp"
 
 // [OPTIM_BEGIN]
+struct sumt_struct {
+    double c_pen;
+};
+
 optimlib_inline
 bool
 optim::sumt_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data,

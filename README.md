@@ -1,23 +1,23 @@
-# OptimLib &nbsp; [![Build Status](https://travis-ci.org/kthohr/optim.svg?branch=master)](https://travis-ci.org/kthohr/optim) [![Coverage Status](https://codecov.io/github/kthohr/optim/coverage.svg?branch=master)](https://codecov.io/github/kthohr/optim?branch=master) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](./LICENSE)
+# OptimLib &nbsp; [![Build Status](https://travis-ci.org/kthohr/optim.svg?branch=master)](https://travis-ci.org/kthohr/optim) [![Coverage Status](https://codecov.io/github/kthohr/optim/coverage.svg?branch=master)](https://codecov.io/github/kthohr/optim?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9fea40836c4c4d5fa3a29b5675b58f6e)](https://www.codacy.com/app/kthohr/optim?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kthohr/optim&amp;utm_campaign=Badge_Grade) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](./LICENSE)
 
 OptimLib is a lightweight C++ library of numerical optimization methods for nonlinear functions.
 
 Features:
 
-* C++11 library of local and global optimization algorithms, as well as root finding techniques.
+* A C++11 library of local and global optimization algorithms, as well as root finding techniques.
 * Derivative-free optimization using advanced, parallelized metaheuristics.
-* Constrained optimization routines can handle simple box constraints, as well as systems of nonlinear constraints.
+* Constrained optimization routines to handle simple box constraints, as well as systems of nonlinear constraints.
 * Built on the [Armadillo C++ linear algebra library](http://arma.sourceforge.net/) for fast and efficient matrix-based computation.
 * OpenMP-accelerated accelerated algorithms for parallel computation. 
 * Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
-* Available in header-only format or as a linkable library.
+* Available as a header-only library, or in shared library format.
 * Released under a permissive, non-GPL license.
 
 ### Contents:
 * [Status](#status)
-* [Syntax](#syntax)
-* [Installation](#installation)
-* [Header-only Version](#header-only-version)
+* [General Syntax](#general-syntax)
+* [Installation Method 1: Shared Library](#installation-method-1-shared-library)
+* [Installation Method 2: Header-only Library](#installation-method-2-header-only-library)
 * [R Compatibility](#r-compatibility)
 * [Examples](#examples)
 * [Author and License](#author)
@@ -34,23 +34,23 @@ The library is actively maintained, and is still being extended. A list of algor
 * Differential Evolution (DE)
 * Particle Swarm Optimization (PSO)
 
-## Syntax
+## General Syntax
 
-OptimLib functions generally have the following structure:
+OptimLib functions have the following generic form:
 ```
-algorithm(<initial-to-output values>, <objective function>, <objective function data>)
+algorithm_name(<initial and final values>, <objective function>, <objective function data>);
 ```
-In order:
-* A writable vector of initial values that defines the starting point of the algorithm, and will contain the solution vector upon successful completion of the algorithm.
-* The 'objective function' is the function to be minimized, or zeroed-out in the case of root finding.
-* The final input is optional: it is any object that contains additional parameters required to evaluate the objective function.
+The inputs, in order, are:
+* A writable vector of initial values to define the starting point of the algorithm. In the event of successful completion, the initial values will be overwritten by the solution vector.
+* The 'objective function' is the user-defined function to be minimized (or zeroed-out in the case of root finding methods).
+* The final input is optional: it is any object that contains additional parameters necessary to evaluate the objective function.
 
 For example, the BFGS algorithm is called using
 ``` cpp
 bool bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 ```
 
-## Installation
+## Installation Method 1: Shared Library
 
 The library can be installed on Unix-alike systems via the standard `./configure && make` method:
 
@@ -67,45 +67,48 @@ make install
 The final command will install OptimLib into `/usr/local`.
 
 Configuration options (see `./configure -h`):
-* `-c` a coverage build (used with Codecov)
-* `-d` a 'development' build
-* `-g` a debugging build (optimization flags set to `-O0 -g`)
+
+&nbsp; &nbsp; &nbsp; **Primary**
 * `-h` print help
 * `-i` installation path; default: the build directory
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features (*recommended*)
+
+&nbsp; &nbsp; &nbsp; **Secondary**
+* `-c` a coverage build (used with Codecov)
+* `-d` a 'development' build
+* `-g` a debugging build (optimization flags set to `-O0 -g`)
+
+&nbsp; &nbsp; &nbsp; **Special**
+* `--header-only-version` generate a header-only version of OptimLib (see [below](#installation-method-2-header-only-library))
 <!-- * `-R` RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo) -->
 
 ### Armadillo
 
-OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo files in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set the following environment variable *before* running `configure`:
+OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set the following environment variable *before* running `configure`:
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
 ```
-Otherwise the build script will download files from the Armadillo GitLab repository.
+Otherwise the build script will proceed to download any required files from the Armadillo GitLab repository.
 
-## Header-only Version
+## Installation Method 2: Header-only Library
 
-The library is also available in header-only format (i.e., without compiling a shared library). Simply run `configure` with the `--header-version` option:
+OptimLib is also available as a header-only library (i.e., without the need to compile a shared library). Simply run `configure` with the `--header-only-version` option:
 
 ```bash
-./configure --header-version
+./configure --header-only-version
 ```
 
-This will create a new directory `header_only_version` that contains a header-only copy of OptimLib.
+This will create a new directory, `header_only_version`, containing a copy of OptimLib, modified to work on an inline basis. With this header-only version, simply include the header files (`#include "optim.hpp`) and set the include path to the `head_only_version` directory (e.g.,`-I/path/to/optimlib/header_only_version`).
 
 ## R Compatibility
 
-To use OptimLib with your R package, first generate a header-only version of the library (see [above](#header-only-version)). Then add the compiler definition `USE_RCPP_ARMADILLO` before you include the OptimLib files:
+To use OptimLib with an R package, first generate a header-only version of the library (see [above](#installation-method-2-header-only-library)). Then add the compiler definition `USE_RCPP_ARMADILLO` before including the OptimLib files:
 
 ```cpp
 #define USE_RCPP_ARMADILLO
 #include "optim.hpp"
-```
-Or you can set this preprocessor directive during compilation:
-```bash
-g++ ... -DUSE_RCPP_ARMADILLO ...
 ```
 
 ## Examples

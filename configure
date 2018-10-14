@@ -19,7 +19,8 @@ function print_help
     #echo "-r    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
     #echo "        Example: -r \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
     echo "" ;
-    echo "--header-version    Generate header-only version of OptimLib" ;
+    echo "Special:" ;
+    echo "--header-only-version    Generate a header-only version of OptimLib" ;
     echo "" ;
 }
 
@@ -27,7 +28,7 @@ while getopts hcdgi:m:o:pr:-: option; do
     case "${option}" in
         -)
             case "${OPTARG}" in
-                header-version)
+                header-only-version)
                     OPTIM_GEN_NEW_HEADERS="y";;
                 ?) print_help; exit 2;;
             esac;;
@@ -57,6 +58,12 @@ fi
 # get working directory
 WDIR=${PWD}
 
+# compiler checks
+IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
+GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
+CLANG_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "clang")
+APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
+
 # generate header-only version of OptimLib
 
 if [[ "${OPTIM_GEN_NEW_HEADERS}" == "y" ]]; then
@@ -75,7 +82,11 @@ if [[ "${OPTIM_GEN_NEW_HEADERS}" == "y" ]]; then
 
         for file_ in $file_names; do
             file_=${file_%.hpp}
-            sed -i'' -e "s|#endif|//\n|" $file_.hpp
+            if [ "$IS_DARWIN" -eq "1" ]; then # macOS inplace replacement syntax changes a lot
+                sed -i '' -e "s|#endif|//\n|" $file_.hpp
+            else
+                sed -i -e "s|#endif|//\n|" $file_.hpp
+            fi
             sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" >> "$file_".hpp
             echo -e "\n#endif" >> "$file_".hpp
         done
@@ -89,13 +100,6 @@ fi
 echo ""
 echo -e "\x1B[32mOptimLib Configuration...\033[0m" >&2 ;
 echo ""
-
-# compiler checks
-
-IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
-GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
-CLANG_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "clang")
-APPLE_COMPILER=$($CXX --version 2>&1 | grep -i -c -E 'apple llvm')
 
 # look for Armadillo
 if [[ "${OPTIM_R_BUILD}" != "" ]]; then
