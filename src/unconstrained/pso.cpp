@@ -49,6 +49,7 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
     const size_t n_pop = (center_particle) ? settings.pso_n_pop + 1 : settings.pso_n_pop;
     const size_t n_gen = settings.pso_n_gen;
+    const uint_t check_freq = (settings.pso_check_freq > 0) ? settings.pso_check_freq : n_gen ;
 
     const uint_t inertia_method = settings.pso_inertia_method;
 
@@ -126,12 +127,10 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
     }
 
     arma::vec best_vals = objfn_vals;
-
     arma::mat best_vecs = P;
 
-    arma::mat V = arma::zeros(n_pop,n_vals);
-
     double global_best_val = objfn_vals.min();
+    double global_best_val_check = global_best_val;
     arma::rowvec global_best_vec = P.row( objfn_vals.index_min() );
 
     //
@@ -139,6 +138,8 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
 
     uint_t iter = 0;
     double err = 2.0*err_tol;
+
+    arma::mat V = arma::zeros(n_pop,n_vals);
 
     while (err > err_tol && iter < n_gen)
     {
@@ -195,10 +196,22 @@ optim::pso_int(arma::vec& init_out_vals, std::function<double (const arma::vec& 
             }
         }
 
-        if (best_vals.min() < global_best_val)
+        uint_t min_objfn_val_index = best_vals.index_min();
+        double min_objfn_val = best_vals(min_objfn_val_index);
+
+        if (min_objfn_val < global_best_val)
         {
-            global_best_val = best_vals.min();
-            global_best_vec = best_vecs.row( best_vals.index_min() );
+            global_best_val = min_objfn_val;
+            global_best_vec = best_vecs.row( min_objfn_val_index );
+        }
+
+        if (iter%check_freq == 0) 
+        {   
+            err = std::abs(global_best_val - global_best_val_check) / (1.0 + std::abs(global_best_val));
+            
+            if (global_best_val < global_best_val_check) {
+                global_best_val_check = global_best_val;
+            }
         }
     }
 

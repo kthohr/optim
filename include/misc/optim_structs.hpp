@@ -124,6 +124,8 @@ struct algo_settings_t
 
     int pso_inertia_method = 1; // 1 for linear decreasing between w_min and w_max; 2 for dampening
 
+    int pso_check_freq = -1;
+
     double pso_par_initial_w = 1.0;
     double pso_par_w_damp = 0.99;
 

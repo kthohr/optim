@@ -203,9 +203,9 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             best_sol_running = X_next.row( objfn_vals.index_min() );
         }
 
-        if (iter%check_freq == 0) 
+        if (iter%check_freq == 0)
         {   
-            err = std::abs(best_objfn_val_running - best_objfn_val_check);
+            err = std::abs(best_objfn_val_running - best_objfn_val_check) / (1.0 + std::abs(best_objfn_val_running));
             
             if (best_objfn_val_running < best_objfn_val_check) {
                 best_objfn_val_check = best_objfn_val_running;
