@@ -54,7 +54,7 @@ struct gd_settings_t
 struct algo_settings_t
 {
     // general
-    int verbose_level = 0;
+    int verbose_print_level = 0;
     int conv_failure_switch = 0;
     int iter_max = 2000;
     double err_tol = 1E-08;

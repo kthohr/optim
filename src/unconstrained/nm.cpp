@@ -42,7 +42,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         settings = *settings_inp;
     }
 
-    int verbose_level = settings.verbose_level;
+    int verbose_print_level = settings.verbose_print_level;
     
     const uint_t conv_failure_switch = settings.conv_failure_switch;
     const uint_t iter_max = settings.iter_max;
@@ -114,11 +114,11 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // begin loop
 
-    if (verbose_level > 0)
+    if (verbose_print_level > 0)
     {
         std::cout << "\nNelder-Mead: beginning search...\n";
 
-        if (verbose_level == 2)
+        if (verbose_print_level == 2)
         {
             std::cout << "  - Initialization Phase:\n";
             arma::cout << "    Objective function value at each vertex:\n" << simplex_fn_vals.t() << "\n";
@@ -231,19 +231,19 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
         // printing
 
-        if (verbose_level > 0)
+        if (verbose_print_level > 0)
         {
             std::cout << "  - Iteration: " << iter << "\n";
             std::cout << "    min_val:   " << min_val << "\n";
 
-            if (verbose_level == 1)
+            if (verbose_print_level == 1)
             {
                 printf("\n");
                 arma::cout << "    Current optimal input values:\n";
                 arma::cout << simplex_points.row(index_min(simplex_fn_vals)) << "\n";
             }
 
-            if (verbose_level == 2)
+            if (verbose_print_level == 2)
             {
                 printf("\n");
                 arma::cout << "    Objective function value at each vertex:\n" << simplex_fn_vals.t() << "\n";
@@ -253,7 +253,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
     }
 
-    if (verbose_level > 0) {
+    if (verbose_print_level > 0) {
         std::cout << "Nelder-Mead: search completed.\n";
     }
 
