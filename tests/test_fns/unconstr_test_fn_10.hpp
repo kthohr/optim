@@ -33,8 +33,7 @@
 #ifndef _optim_test_fn_10_HPP
 #define _optim_test_fn_10_HPP
 
-double unconstr_test_fn_10(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double 
 unconstr_test_fn_10(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
@@ -43,7 +42,9 @@ unconstr_test_fn_10(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_da
     const double pi = arma::datum::pi;
 
     double obj_val = - std::abs( std::sin(x)*std::cos(y)*std::exp( std::abs(1.0 - std::sqrt(x*x + y*y)/pi) ) );
+    
     //
+    
     return obj_val;
 }
 

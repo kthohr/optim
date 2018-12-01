@@ -32,9 +32,7 @@
 #ifndef _optim_test_fn_3_HPP
 #define _optim_test_fn_3_HPP
 
-double unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-double unconstr_test_fn_3_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data);
-
+inline
 double
 unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
@@ -51,6 +49,7 @@ unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_dat
     return obj_val;
 }
 
+inline
 double
 unconstr_test_fn_3_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
 {

@@ -33,8 +33,7 @@
 #ifndef _optim_test_fn_5_HPP
 #define _optim_test_fn_5_HPP
 
-double unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
 unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {

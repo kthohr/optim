@@ -152,6 +152,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         if (f_r >= simplex_fn_vals(0) && f_r < simplex_fn_vals(n_vals-1)) 
         {   // reflected point is neither best nor worst in the new simplex
             simplex_points.row(n_vals) = x_r.t();
+            simplex_fn_vals(n_vals) = f_r;
             next_iter = true;
         }
 
@@ -165,8 +166,10 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
             if (f_e < f_r) {
                 simplex_points.row(n_vals) = x_e.t();
+                simplex_fn_vals(n_vals) = f_e;
             } else {
                 simplex_points.row(n_vals) = x_r.t();
+                simplex_fn_vals(n_vals) = f_r;
             }
 
             next_iter = true;
@@ -188,10 +191,11 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 if (f_oc <= f_r)
                 {
                     simplex_points.row(n_vals) = x_oc.t();
+                    simplex_fn_vals(n_vals) = f_oc;
                     next_iter = true;
                 }
-            } 
-            else 
+            }
+            else
             {   // inside contraction: f_r >= simplex_fn_vals(n_vals)
                 
                 // x_ic = centroid - par_beta*(x_r - centroid);
@@ -202,6 +206,7 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 if (f_ic < simplex_fn_vals(n_vals))
                 {
                     simplex_points.row(n_vals) = x_ic.t();
+                    simplex_fn_vals(n_vals) = f_ic;
                     next_iter = true;
                 }
             }
@@ -214,14 +219,13 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
             for (size_t i=1; i < n_vals + 1; i++) {
                 simplex_points.row(i) = simplex_points.row(0) + par_delta*(simplex_points.row(i) - simplex_points.row(0));
             }
-        }
 
-        // check change in fn_val
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for
+            #pragma omp parallel for
 #endif
-        for (size_t i=0; i < n_vals + 1; i++) {
-            simplex_fn_vals(i) = box_objfn(simplex_points.row(i).t(),nullptr,opt_data);
+            for (size_t i=1; i < n_vals + 1; i++) {
+                simplex_fn_vals(i) = box_objfn(simplex_points.row(i).t(),nullptr,opt_data);
+            }
         }
 
         //
@@ -250,7 +254,6 @@ optim::nm_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
                 arma::cout << "    Simplex matrix:\n" << simplex_points << "\n";
             }
         }
-
     }
 
     if (verbose_print_level > 0) {

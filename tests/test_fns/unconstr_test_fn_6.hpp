@@ -37,8 +37,7 @@ struct unconstr_test_fn_6_data {
     double A;
 };
 
-double unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
 unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
