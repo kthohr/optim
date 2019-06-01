@@ -168,3 +168,28 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
 }
 
 #endif
+
+// gradient clipping
+
+inline
+void
+gradient_clipping(arma::vec& grad_, const gd_settings_t& settings_)
+{
+
+    double grad_norm;
+    if (settings_.clipping.max_norm) {
+        grad_norm = arma::norm(grad_, "inf");
+    } else if (settings_.clipping.min_norm) {
+        grad_norm = arma::norm(grad_, "-inf");
+    } else {
+        grad_norm = arma::norm(grad_, settings_.clipping.norm_type);
+    }
+
+    //
+
+    if (grad_norm > settings_.clipping.norm_bound) {
+        if (std::isfinite(grad_norm)) {
+            grad_ = settings_.clipping.norm_bound * (grad_ / grad_norm);
+        }
+    }
+}

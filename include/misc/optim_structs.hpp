@@ -25,9 +25,18 @@
 #ifndef optim_structs_HPP
 #define optim_structs_HPP
 
+struct gd_clipping_settings_t
+{
+    bool max_norm = false;
+    bool min_norm = false;
+    int norm_type = 2;
+
+    double norm_bound = 5.0;
+};
+
 struct gd_settings_t
 {
-    // step size, or 'learning rate'
+    // step size, or 'the learning rate'
     double step_size = 0.1;
 
     // decay
@@ -49,6 +58,10 @@ struct gd_settings_t
     // Adam parameters
     double adam_beta_1 = 0.9;
     double adam_beta_2 = 0.999;
+
+    // gradient clipping settings
+    bool clip_grad = false;
+    gd_clipping_settings_t clipping;
 };
 
 struct algo_settings_t

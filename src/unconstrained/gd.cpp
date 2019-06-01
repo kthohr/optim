@@ -163,6 +163,10 @@ optim::gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::
 
         box_objfn(x_p,&grad_p,opt_data);
 
+        if (gd_settings.clip_grad) {
+            gradient_clipping(grad_p,gd_settings);
+        }
+
         //
 
         err = arma::norm(grad_p, 2);
