@@ -18,6 +18,7 @@ Features:
 * [General Syntax](#general-syntax)
 * [Installation Method 1: Shared Library](#installation-method-1-shared-library)
 * [Installation Method 2: Header-only Library](#installation-method-2-header-only-library)
+* [Installation Method 3: With Catkin](#installation-method-3-catkin)
 * [R Compatibility](#r-compatibility)
 * [Examples](#examples)
 * [Author and License](#author)
@@ -86,6 +87,12 @@ Configuration options (see `./configure -h`):
 
 ### Armadillo
 
+To install Armadillo:
+```bash
+deb http://ppa.launchpad.net/edd/misc/ubuntu xenial main
+sudo apt-get install libarmadillo-dev libarmadillo8
+```
+
 OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set the following environment variable *before* running `configure`:
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
@@ -101,6 +108,13 @@ OptimLib is also available as a header-only library (i.e., without the need to c
 ```
 
 This will create a new directory, `header_only_version`, containing a copy of OptimLib, modified to work on an inline basis. With this header-only version, simply include the header files (`#include "optim.hpp`) and set the include path to the `head_only_version` directory (e.g.,`-I/path/to/optimlib/header_only_version`).
+
+## Installation Method 3: With Catkin
+
+If catkin workspace is setup simply install with:
+```bash
+catkin build optim
+```
 
 ## R Compatibility
 
