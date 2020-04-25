@@ -9,7 +9,7 @@
 // sigmoid function
 
 inline
-arma::mat sigm(const arma::mat& X)
+Mat_t sigm(const Mat_t& X)
 {
     return 1.0 / (1.0 + arma::exp(-X));
 }
@@ -18,20 +18,20 @@ arma::mat sigm(const arma::mat& X)
 
 struct ll_data_t
 {
-    arma::vec Y;
-    arma::mat X;
+    Vec_t Y;
+    Mat_t X;
 };
 
 // log-likelihood function with hessian
 
-double ll_fn_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
+double ll_fn_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
     ll_data_t* objfn_data = reinterpret_cast<ll_data_t*>(opt_data);
 
-    arma::vec Y = objfn_data->Y;
-    arma::mat X = objfn_data->X;
+    Vec_t Y = objfn_data->Y;
+    Mat_t X = objfn_data->X;
 
-    arma::vec mu = sigm(X*vals_inp);
+    Vec_t mu = sigm(X*vals_inp);
 
     const double norm_term = static_cast<double>(Y.n_elem);
 
@@ -48,7 +48,7 @@ double ll_fn_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* he
 
     if (hess_out)
     {
-        arma::mat S = arma::diagmat( mu%(1.0-mu) );
+        Mat_t S = arma::diagmat( mu%(1.0-mu) );
         *hess_out = X.t() * S * X / norm_term;
     }
 
@@ -59,7 +59,7 @@ double ll_fn_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* he
 
 // log-likelihood function for Adam
 
-double ll_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+double ll_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     return ll_fn_whess(vals_inp,grad_out,nullptr,opt_data);
 }
@@ -71,12 +71,12 @@ int main()
     int n_dim = 5;     // dimension of parameter vector
     int n_samp = 4000; // sample length
 
-    arma::mat X = arma::randn(n_samp,n_dim);
-    arma::vec theta_0 = 1.0 + 3.0*arma::randu(n_dim,1);
+    Mat_t X = arma::randn(n_samp,n_dim);
+    Vec_t theta_0 = 1.0 + 3.0*arma::randu(n_dim,1);
 
-    arma::vec mu = sigm(X*theta_0);
+    Vec_t mu = sigm(X*theta_0);
 
-    arma::vec Y(n_samp);
+    Vec_t Y(n_samp);
 
     for (int i=0; i < n_samp; i++)
     {
@@ -89,7 +89,7 @@ int main()
     opt_data.Y = std::move(Y);
     opt_data.X = std::move(X);
 
-    arma::vec x = arma::ones(n_dim,1) + 1.0; // initial values
+    Vec_t x = arma::ones(n_dim,1) + 1.0; // initial values
 
     // run Adam-based optim
 

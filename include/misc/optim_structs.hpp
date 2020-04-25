@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -74,12 +74,12 @@ struct algo_settings_t
 
     bool vals_bound = false;
     
-    arma::vec lower_bounds;
-    arma::vec upper_bounds;
+    Vec_t lower_bounds;
+    Vec_t upper_bounds;
 
     // returned by algorithms
-    double opt_value;      // will be returned by the optimization algorithm
-    arma::vec zero_values; // will be returned by the root-finding method
+    double opt_value;  // will be returned by the optimization algorithm
+    Vec_t zero_values; // will be returned by the root-finding method
 
     int opt_iter;
     double opt_err;
@@ -112,8 +112,8 @@ struct algo_settings_t
     double de_par_tau_F  = 0.1;
     double de_par_tau_CR = 0.1;
 
-    arma::vec de_initial_lb; // this will default to -0.5
-    arma::vec de_initial_ub; // this will default to  0.5
+    Vec_t de_initial_lb; // this will default to -0.5
+    Vec_t de_initial_ub; // this will default to  0.5
 
     // GD
     int gd_method = 0;
@@ -156,8 +156,8 @@ struct algo_settings_t
     double pso_par_initial_c_soc = 0.5;
     double pso_par_final_c_soc   = 2.5;
 
-    arma::vec pso_initial_lb; // this will default to -0.5
-    arma::vec pso_initial_ub; // this will default to  0.5
+    Vec_t pso_initial_lb; // this will default to -0.5
+    Vec_t pso_initial_ub; // this will default to  0.5
 };
 
 #endif

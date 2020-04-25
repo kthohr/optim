@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -25,7 +25,8 @@
 #ifndef _optim_unit_vec_HPP
 #define _optim_unit_vec_HPP
 
-inline arma::vec unit_vec(const size_t j, const size_t n);
+inline Vec_t unit_vec(const size_t j, 
+                      const size_t n);
 
 #include "unit_vec.ipp"
 

@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -24,12 +24,12 @@
 
 #include "optim.hpp"
 
-double optim_simple_fn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+double optim_simple_fn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     return 1.0;
 }
 
-arma::vec optim_simple_fn_2(const arma::vec& vals_inp, void* opt_data)
+Vec_t optim_simple_fn_2(const Vec_t& vals_inp, void* opt_data)
 {
     int n = vals_inp.n_elem;
     return arma::zeros(n,1);
@@ -38,8 +38,8 @@ arma::vec optim_simple_fn_2(const arma::vec& vals_inp, void* opt_data)
 int main()
 {
     
-    arma::vec out_vals = arma::ones(2,1);
-    arma::vec x_p = arma::ones(2,1);
+    Vec_t out_vals = arma::ones(2,1);
+    Vec_t x_p = arma::ones(2,1);
 
     bool success = false;
 

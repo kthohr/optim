@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -29,7 +29,14 @@
 // [OPTIM_BEGIN]
 optimlib_inline
 double
-optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::vec& direc, const double* wolfe_cons_1_inp, const double* wolfe_cons_2_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
+optim::line_search_mt(double step, 
+                      Vec_t& x, 
+                      Vec_t& grad, 
+                      const Vec_t& direc, 
+                      const double* wolfe_cons_1_inp, 
+                      const double* wolfe_cons_2_inp, 
+                      std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+                      void* opt_data)
 {
     const uint_t iter_max = 100;
 
@@ -46,11 +53,11 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
     uint_t info = 0, infoc = 1;
     const double extrap_delta = 4; // 'delta' on page 20
 
-    arma::vec x_0 = x;
+    Vec_t x_0 = x;
 
     double f_step = opt_objfn(x,&grad,opt_data); // q(0)
 
-    double dgrad_init = arma::dot(grad,direc);
+    double dgrad_init = OPTIM_MATOPS_DOT_PROD(grad,direc);
     
     if (dgrad_init >= 0.0) {
         return step;
@@ -70,9 +77,8 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
     double st_best = 0.0, f_best = f_init, dgrad_best = dgrad_init;
     double st_other = 0.0, f_other = f_init, dgrad_other = dgrad_init;
 
-    while (1)
-    {
-        iter++;
+    while (1) {
+        ++iter;
 
         double st_min, st_max;
 
@@ -89,7 +95,8 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
 
         step = std::min(std::max(step,step_min),step_max);
 
-        if ( (bracket && (step <= st_min || step >= st_max)) || iter >= iter_max-1 || infoc == 0 || (bracket && st_max-st_min <= xtol*st_max)) {
+        if ( (bracket && (step <= st_min || step >= st_max)) \
+                || iter >= iter_max-1 || infoc == 0 || (bracket && st_max-st_min <= xtol*st_max) ) {
             step = st_best;
         }
 
@@ -98,7 +105,7 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
         x = x_0 + step * direc;
         f_step = opt_objfn(x,&grad,opt_data);
 
-        dgrad = arma::dot(grad,direc);
+        dgrad = OPTIM_MATOPS_DOT_PROD(grad,direc);
         double armijo_check_val = f_init + step*dgrad_test;
 
         // check stop conditions
@@ -134,8 +141,7 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
             stage_1 = false;
         }
 
-        if (stage_1 && f_step <= f_best && f_step > armijo_check_val)
-        {
+        if (stage_1 && f_step <= f_best && f_step > armijo_check_val) {
             double f_mod  = f_step - step*dgrad_test;
             double f_best_mod = f_best - st_best*dgrad_test;
             double f_other_mod = f_other - st_other*dgrad_test;
@@ -153,16 +159,13 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
 
             dgrad_best = dgrad_best_mod + dgrad_test;
             dgrad_other = dgrad_other_mod + dgrad_test;
-        }
-        else 
-        {
+        } else {
             infoc = mt_step(st_best,f_best,dgrad_best,st_other,f_other,dgrad_other,step,f_step,dgrad,bracket,st_min,st_max);
         }
 
         //
 
-        if (bracket)
-        {
+        if (bracket) {
             if (std::abs(st_other - st_best) >= 0.66*width_old) {
                 step = st_best + 0.5*(st_other - st_best);
             }
@@ -182,8 +185,18 @@ optim::line_search_mt(double step, arma::vec& x, arma::vec& grad, const arma::ve
 
 optimlib_inline
 optim::uint_t
-optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other, double& f_other, double& d_other, 
-               double& step, double& f_step, double& d_step, bool& bracket, double step_min, double step_max)
+optim::mt_step(double& st_best, 
+               double& f_best, 
+               double& d_best, 
+               double& st_other, 
+               double& f_other, 
+               double& d_other, 
+               double& step, 
+               double& f_step, 
+               double& d_step, 
+               bool& bracket, 
+               double step_min, 
+               double step_max)
 {
     bool bound = false;
     uint_t info = 0;
@@ -191,8 +204,7 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
 
     double theta,s,gamma, p,q,r, step_c,step_q,step_f;
 
-    if (f_step > f_best)
-    {
+    if (f_step > f_best) {
         info = 1;
         bound = true;
 
@@ -218,16 +230,14 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
         }
 
         bracket = true;
-    }
-    else if (sgnd < 0.0)
-    {
+    } else if (sgnd < 0.0) {
         info = 2;
         bound = false;
      
         theta = 3*(f_best - f_step)/(step - st_best) + d_best + d_step;
         s = mt_sup_norm(theta,d_best,d_step); // sup norm
 
-        gamma = s*std::sqrt(std::pow(theta/s,2) - (d_best/s)*(d_step/s));
+        gamma = s * std::sqrt(std::pow(theta/s,2) - (d_best/s)*(d_step/s));
         if (step > st_best) {
             gamma = -gamma;
         }
@@ -246,9 +256,7 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
         }
 
         bracket = true;
-    }
-    else if (std::abs(d_step) < std::abs(d_best))
-    {
+    } else if (std::abs(d_step) < std::abs(d_best)) {
         info = 3;
         bound = true;
 
@@ -274,30 +282,24 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
 
         step_q = step + (d_step/(d_step-d_best))*(st_best - step);
 
-        if (bracket) 
-        {
+        if (bracket) {
             if (std::abs(step-step_c) < std::abs(step-step_q)) {
                 step_f = step_c;
             } else {
                 step_f = step_q;
             }
-        } 
-        else
-        {
+        } else {
             if (std::abs(step-step_c) > std::abs(step-step_q)) {
                 step_f = step_c;
             } else {
                 step_f = step_q;
             }
         }
-    }
-    else
-    {
+    } else {
         info = 4;
         bound = false;
 
-        if (bracket)
-        {
+        if (bracket) {
             theta = 3*(f_step - f_other)/(st_other - step) + d_other + d_step;
             s = mt_sup_norm(theta,d_other,d_step);
 
@@ -312,13 +314,9 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
 
             step_c = step + r*(st_other - step);
             step_f = step_c;
-        } 
-        else if (step > st_best)
-        {
+        }  else if (step > st_best) {
             step_f = step_max;
-        }
-        else
-        {
+        } else {
             step_f = step_min;
         }
     }
@@ -327,16 +325,12 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
      * Update the interval of uncertainty.
      */
 
-    if (f_step > f_best) 
-    {
+    if (f_step > f_best) {
         st_other = step;
         f_other = f_step;
         d_other = d_step;
-    } 
-    else
-    {
-        if (sgnd < 0.0) 
-        {
+    } else {
+        if (sgnd < 0.0) {
             st_other = st_best;
             f_other = f_best;
             d_other = d_best;
@@ -370,7 +364,9 @@ optim::mt_step(double& st_best, double& f_best, double& d_best, double& st_other
 
 optimlib_inline
 double
-optim::mt_sup_norm(const double a, const double b, const double c)
+optim::mt_sup_norm(const double a, 
+                   const double b, 
+                   const double c)
 {
     return std::max( std::max(std::abs(a), std::abs(b)), std::abs(c) );
 }

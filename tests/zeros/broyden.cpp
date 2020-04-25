@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -33,7 +33,7 @@ int main()
     //
     // test 1
 
-    arma::vec x_1 = arma::zeros(2,1);
+    Vec_t x_1 = OPTIM_MATOPS_ZERO_VEC(2);
 
     bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
 
@@ -43,12 +43,12 @@ int main()
         std::cout << "broyden_df: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden_df: solution to test_1:\n" << x_1 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden_df: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
 
-    arma::vec x_2 = arma::zeros(2,1);
+    Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
     bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr);
 
@@ -58,7 +58,7 @@ int main()
         std::cout << "broyden_df: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden_df: solution to test_2:\n" << x_2 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden_df: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests
@@ -71,7 +71,7 @@ int main()
     //
     // test 1
 
-    x_1 = arma::zeros(2,1);
+    x_1 = OPTIM_MATOPS_ZERO_VEC(2);
 
     success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
 
@@ -81,12 +81,12 @@ int main()
         std::cout << "broyden_df w jacobian: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden_df w jacobian: solution to test_1:\n" << x_1 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden_df w jacobian: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
 
-    x_2 = arma::zeros(2,1);
+    x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
     success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
 
@@ -96,7 +96,7 @@ int main()
         std::cout << "broyden_df w jacobian: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden_df w jacobian: solution to test_2:\n" << x_2 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden_df w jacobian: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests
@@ -107,7 +107,7 @@ int main()
     //
     // test 1
 
-    x_1 = arma::zeros(2,1);
+    x_1 = OPTIM_MATOPS_ZERO_VEC(2);
 
     success_1 = optim::broyden(x_1,zeros_test_objfn_1,nullptr);
 
@@ -117,12 +117,12 @@ int main()
         std::cout << "broyden: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden: solution to test_1:\n" << x_1 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
 
-    x_2 = arma::zeros(2,1);
+    x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
     success_2 = optim::broyden(x_2,zeros_test_objfn_2,nullptr);
 
@@ -132,7 +132,7 @@ int main()
         std::cout << "broyden: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden: solution to test_2:\n" << x_2 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests
@@ -143,7 +143,7 @@ int main()
     //
     // test 1
 
-    x_1 = arma::zeros(2,1);
+    x_1 = OPTIM_MATOPS_ZERO_VEC(2);
 
     success_1 = optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
 
@@ -153,12 +153,12 @@ int main()
         std::cout << "broyden w jacobian: test_1 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden w jacobian: solution to test_1:\n" << x_1 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden w jacobian: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
 
-    x_2 = arma::zeros(2,1);
+    x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
     success_2 = optim::broyden(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
 
@@ -168,7 +168,7 @@ int main()
         std::cout << "broyden w jacobian: test_2 completed unsuccessfully." << std::endl;
     }
 
-    arma::cout << "broyden w jacobian: solution to test_2:\n" << x_2 << arma::endl;
+    OPTIM_MATOPS_COUT << "broyden w jacobian: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests

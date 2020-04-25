@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -27,43 +27,84 @@
 
 // without jacobian
 
-bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+bool broyden_int(Vec_t& init_out_vals, 
+                 std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                 void* opt_data, 
+                 algo_settings_t* settings_inp);
 
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool broyden(Vec_t& init_out_vals, 
+             std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+             void* opt_data);
+
+bool broyden(Vec_t& init_out_vals, 
+             std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+             void* opt_data, 
+             algo_settings_t& settings);
 
 // with jacobian
 
-bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                 std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t* settings_inp);
+bool broyden_int(Vec_t& init_out_vals, 
+                 std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                 void* opt_data,
+                 std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+                 void* jacob_data, 
+                 algo_settings_t* settings_inp);
 
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-             std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data);
+bool broyden(Vec_t& init_out_vals, 
+             std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+             void* opt_data,
+             std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+             void* jacob_data);
 
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-             std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t& settings);
+bool broyden(Vec_t& init_out_vals, 
+             std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+             void* opt_data,
+             std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+             void* jacob_data, 
+             algo_settings_t& settings);
 
 // derivative-free method
 
-bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+bool broyden_df_int(Vec_t& init_out_vals, 
+                    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                    void* opt_data, 
+                    algo_settings_t* settings_inp);
 
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool broyden_df(Vec_t& init_out_vals, 
+                std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                void* opt_data);
+
+bool broyden_df(Vec_t& init_out_vals, 
+                std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                void* opt_data, 
+                algo_settings_t& settings);
 
 // derivative-free method with jacobian
 
-bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                    std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t* settings_inp);
+bool broyden_df_int(Vec_t& init_out_vals, 
+                    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
+                    std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, 
+                    algo_settings_t* settings_inp);
 
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data);
+bool broyden_df(Vec_t& init_out_vals, std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                void* opt_data,
+                std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+                void* jacob_data);
 
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t& settings);
+bool broyden_df(Vec_t& init_out_vals, std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                void* opt_data,
+                std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+                void* jacob_data, 
+                algo_settings_t& settings);
 
 // internal functions
 
 double df_eta(uint_t k);
-double df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, uint_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
+double df_proc_1(const Vec_t& x_vals, 
+                 const Vec_t& direc, 
+                 double sigma_1, 
+                 uint_t k, 
+                 std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+                 void* opt_data);
 
 #endif

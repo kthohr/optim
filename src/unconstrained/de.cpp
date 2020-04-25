@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -27,11 +27,14 @@
 // [OPTIM_BEGIN]
 optimlib_inline
 bool
-optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp)
+optim::de_int(Vec_t& init_out_vals, 
+              std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+              void* opt_data, 
+              algo_settings_t* settings_inp)
 {
     bool success = false;
 
-    const size_t n_vals = init_out_vals.n_elem;
+    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
 
     //
     // DE settings
@@ -54,30 +57,27 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     const double par_F = settings.de_par_F;
     const double par_CR = settings.de_par_CR;
 
-    const arma::vec par_initial_lb = (settings.de_initial_lb.n_elem == n_vals) ? settings.de_initial_lb : init_out_vals - 0.5;
-    const arma::vec par_initial_ub = (settings.de_initial_ub.n_elem == n_vals) ? settings.de_initial_ub : init_out_vals + 0.5;
+    const Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.de_initial_lb) == n_vals ) ? settings.de_initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
+    const Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.de_initial_ub) == n_vals ) ? settings.de_initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
 
     const bool vals_bound = settings.vals_bound;
     
-    const arma::vec lower_bounds = settings.lower_bounds;
-    const arma::vec upper_bounds = settings.upper_bounds;
+    const Vec_t lower_bounds = settings.lower_bounds;
+    const Vec_t upper_bounds = settings.upper_bounds;
 
-    const arma::uvec bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+    const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
     // lambda function for box constraints
 
-    std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* box_data)> box_objfn \
-    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data) \
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data) \
     -> double
     {
-        if (vals_bound) 
-        {
-            arma::vec vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+        if (vals_bound) {
+            Vec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             return opt_objfn(vals_inv_trans,nullptr,opt_data);
-        }
-        else
-        {
+        } else {
             return opt_objfn(vals_inp,nullptr,opt_data);
         }
     };
@@ -85,17 +85,16 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
     // setup
 
-    arma::vec objfn_vals(n_pop);
-    arma::mat X(n_pop,n_vals), X_next(n_pop,n_vals);
+    Vec_t objfn_vals(n_pop);
+    Mat_t X(n_pop,n_vals), X_next(n_pop,n_vals);
 
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (size_t i=0; i < n_pop; i++)
-    {
-        X_next.row(i) = par_initial_lb.t() + (par_initial_ub.t() - par_initial_lb.t())%arma::randu(1,n_vals);
+    for (size_t i = 0; i < n_pop; ++i) {
+        X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( OPTIM_MATOPS_HADAMARD_PROD( (par_initial_lb + (par_initial_ub - par_initial_lb)), OPTIM_MATOPS_RANDU_VEC(n_vals) ) );
 
-        double prop_objfn_val = opt_objfn(X_next.row(i).t(),nullptr,opt_data);
+        double prop_objfn_val = opt_objfn( OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), nullptr, opt_data);
 
         if (!std::isfinite(prop_objfn_val)) {
             prop_objfn_val = inf;
@@ -104,16 +103,18 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            X_next.row(i) = arma::trans( transform(X_next.row(i).t(), bounds_type, lower_bounds, upper_bounds) );
+            X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( transform( OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
         }
     }
 
-    double best_val = objfn_vals.min();
-    double best_objfn_val_running = best_val;
-    double best_objfn_val_check   = best_val;
+    size_t min_objfn_val_index = index_min(objfn_vals);
+    double min_objfn_val = objfn_vals(min_objfn_val_index);
 
-    arma::rowvec best_vec = X_next.row( objfn_vals.index_min() );
-    arma::rowvec best_sol_running = best_vec;
+    double min_objfn_val_running = min_objfn_val;
+    double min_objfn_val_check   = min_objfn_val;
+
+    RowVec_t best_vec = X_next.row( index_min(objfn_vals) );
+    RowVec_t best_sol_running = best_vec;
 
     //
     // begin loop
@@ -121,9 +122,8 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     uint_t iter = 0;
     double err = 2*err_tol;
 
-    while (err > err_tol && iter < n_gen + 1)
-    {
-        iter++;
+    while (err > err_tol && iter < n_gen + 1) {
+        ++iter;
 
         X = X_next;
 
@@ -133,82 +133,74 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 #ifdef OPTIM_USE_OMP
         #pragma omp parallel for
 #endif
-        for (size_t i=0; i < n_pop; i++)
-        {
+        for (size_t i = 0; i < n_pop; ++i) {
             uint_t c_1, c_2, c_3;
 
             do { // 'r_2' in paper's notation
-                c_1 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
-            } while(c_1==i);
+                c_1 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+            } while(c_1 == i);
 
             do { // 'r_3' in paper's notation
-                c_2 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                c_2 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_2==i || c_2==c_1);
 
             do { // 'r_1' in paper's notation
-                c_3 = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                c_3 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_3==i || c_3==c_1 || c_3==c_2);
 
             //
 
-            const size_t j = arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
+            const size_t j = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_vals-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
 
-            arma::vec rand_unif = arma::randu(n_vals);
-            arma::rowvec X_prop(n_vals);
+            Vec_t rand_unif = OPTIM_MATOPS_RANDU_VEC(n_vals);
+            RowVec_t X_prop(n_vals);
 
-            for (size_t k=0; k < n_vals; k++)
-            {
-                if ( rand_unif(k) < par_CR || k == j )
-                {
+            for (size_t k = 0; k < n_vals; ++k) {
+                if ( rand_unif(k) < par_CR || k == j ) {
                     if ( mutation_method == 1 ) {
                         X_prop(k) = X(c_3,k) + par_F*(X(c_1,k) - X(c_2,k));
                     } else {
                         X_prop(k) = best_vec(k) + par_F*(X(c_1,k) - X(c_2,k));
                     }
-                } 
-                else 
-                {
+                } else {
                     X_prop(k) = X(i,k);
                 }
             }
 
             //
 
-            double prop_objfn_val = box_objfn(X_prop.t(),nullptr,opt_data);
+            double prop_objfn_val = box_objfn( OPTIM_MATOPS_TRANSPOSE(X_prop), nullptr, opt_data);
 
             if (!std::isfinite(prop_objfn_val)) {
                 prop_objfn_val = inf;
             }
             
-            if (prop_objfn_val <= objfn_vals(i))
-            {
+            if (prop_objfn_val <= objfn_vals(i)) {
                 X_next.row(i) = X_prop;
                 objfn_vals(i) = prop_objfn_val;
-            }
-            else
-            {
+            } else {
                 X_next.row(i) = X.row(i);
             }
         }
 
-        best_val = objfn_vals.min();
-        best_vec = X_next.row( objfn_vals.index_min() );
+        min_objfn_val_index = index_min(objfn_vals);
+        min_objfn_val = objfn_vals(min_objfn_val_index);
+
+        best_vec = X_next.row( min_objfn_val_index );
 
         //
         // assign running global minimum
 
-        if (best_val < best_objfn_val_running)
-        {
-            best_objfn_val_running = objfn_vals.min();
-            best_sol_running = X_next.row( objfn_vals.index_min() );
+        if (min_objfn_val < min_objfn_val_running) {
+            min_objfn_val_running = min_objfn_val;
+            best_sol_running = best_vec;
         }
 
-        if (iter%check_freq == 0)
-        {   
-            err = std::abs(best_objfn_val_running - best_objfn_val_check) / (1.0 + std::abs(best_objfn_val_running));
+        if (iter%check_freq == 0) {   
+            err = std::abs(min_objfn_val_running - min_objfn_val_check) / (1.0 + std::abs(min_objfn_val_running));
             
-            if (best_objfn_val_running < best_objfn_val_check) {
-                best_objfn_val_check = best_objfn_val_running;
+            if (min_objfn_val_running < min_objfn_val_check) {
+                min_objfn_val_check = min_objfn_val_running;
             }
         }
     }
@@ -216,10 +208,10 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
     //
 
     if (vals_bound) {
-        best_sol_running = arma::trans( inv_transform(best_sol_running.t(), bounds_type, lower_bounds, upper_bounds) );
+        best_sol_running = OPTIM_MATOPS_TRANSPOSE( inv_transform(OPTIM_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
     }
 
-    error_reporting(init_out_vals,best_sol_running.t(),opt_objfn,opt_data,success,err,err_tol,iter,n_gen,conv_failure_switch,settings_inp);
+    error_reporting(init_out_vals, OPTIM_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, success, err, err_tol, iter, n_gen, conv_failure_switch, settings_inp);
 
     //
     
@@ -228,14 +220,19 @@ optim::de_int(arma::vec& init_out_vals, std::function<double (const arma::vec& v
 
 optimlib_inline
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data)
+optim::de(Vec_t& init_out_vals, 
+          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+          void* opt_data)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,nullptr);
+    return de_int(init_out_vals, opt_objfn, opt_data, nullptr);
 }
 
 optimlib_inline
 bool
-optim::de(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
+optim::de(Vec_t& init_out_vals, 
+          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+          void* opt_data, 
+          algo_settings_t& settings)
 {
-    return de_int(init_out_vals,opt_objfn,opt_data,&settings);
+    return de_int(init_out_vals, opt_objfn, opt_data, &settings);
 }

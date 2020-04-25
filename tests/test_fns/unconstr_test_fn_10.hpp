@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -35,11 +35,11 @@
 
 inline
 double 
-unconstr_test_fn_10(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_10(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
-    const double pi = arma::datum::pi;
+    const double pi = OPTIM_PI;
 
     double obj_val = - std::abs( std::sin(x)*std::cos(y)*std::exp( std::abs(1.0 - std::sqrt(x*x + y*y)/pi) ) );
     

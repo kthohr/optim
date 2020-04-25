@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -32,7 +32,7 @@
 
 inline
 double
-unconstr_test_fn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     const double x_1 = vals_inp(0);
     const double x_2 = vals_inp(1);

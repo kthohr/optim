@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -25,26 +25,40 @@
 #ifndef _optim_gd_HPP
 #define _optim_gd_HPP
 
-bool gd_basic_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+bool gd_basic_int(Vec_t& init_out_vals, 
+                  std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+                  void* opt_data, 
+                  algo_settings_t* settings_inp);
 
-bool gd(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
-bool gd(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool gd(Vec_t& init_out_vals, 
+        std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+        void* opt_data);
+
+bool gd(Vec_t& init_out_vals, 
+        std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+        void* opt_data, 
+        algo_settings_t& settings);
 
 // internal update function
 
 inline
-arma::vec
-gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc,
-          std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> box_objfn, void* opt_data,
-          const uint_t iter, const uint_t gd_method, gd_settings_t& gd_settings,
-          arma::vec& adam_vec_m, arma::vec& adam_vec_v)
+Vec_t
+gd_update(const Vec_t& vals_inp, 
+          const Vec_t& grad, 
+          const Vec_t& grad_p, 
+          const Vec_t& direc,
+          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> box_objfn, 
+          void* opt_data,
+          const uint_t iter, 
+          const uint_t gd_method, 
+          gd_settings_t& gd_settings,
+          Vec_t& adam_vec_m, 
+          Vec_t& adam_vec_v)
 {
-    arma::vec direc_out; // direction
+    Vec_t direc_out; // direction
 
-    if (gd_settings.step_decay)
-    {
-        if (iter % gd_settings.step_decay_periods == 0)
-        {
+    if (gd_settings.step_decay) {
+        if ((iter % gd_settings.step_decay_periods) == 0) {
             gd_settings.step_size *= gd_settings.step_decay_val;
         }
     }
@@ -66,7 +80,7 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
 
         case 2: // Nesterov accelerated gradient
         {
-            arma::vec NAG_grad(vals_inp.n_elem);
+            Vec_t NAG_grad( OPTIM_MATOPS_SIZE(vals_inp) );
             box_objfn(vals_inp - gd_settings.momentum_par * direc, &NAG_grad, opt_data);
 
             // direc_out = gd_settings.step_size * (gd_settings.momentum_par * direc + NAG_grad);
@@ -76,30 +90,33 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
 
         case 3: // AdaGrad
         {
-            adam_vec_v += arma::pow(grad_p,2);
+            adam_vec_v += OPTIM_MATOPS_POW(grad_p,2);
 
-            direc_out = gd_settings.step_size * grad_p / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+            direc_out = OPTIM_MATOPS_ARRAY_DIV_ARRAY( gd_settings.step_size * grad_p, OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_SQRT(adam_vec_v), gd_settings.norm_term) );
             break;
         }
 
         case 4: // RMSProp
         {
-            adam_vec_v = gd_settings.ada_rho * adam_vec_v + (1.0 - gd_settings.ada_rho) * arma::pow(grad_p,2);
+            adam_vec_v = gd_settings.ada_rho * adam_vec_v + (1.0 - gd_settings.ada_rho) * OPTIM_MATOPS_POW(grad_p,2);
 
-            direc_out = gd_settings.step_size * grad_p / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+            direc_out = OPTIM_MATOPS_ARRAY_DIV_ARRAY( gd_settings.step_size * grad_p, OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_SQRT(adam_vec_v), gd_settings.norm_term) );
             break;
         }
 
         case 5: // Adadelta
         {
             if (iter == 1) {
-                adam_vec_m += gd_settings.step_size;
+                adam_vec_m = OPTIM_MATOPS_ARRAY_ADD_SCALAR(adam_vec_m, gd_settings.step_size);
             }
-            adam_vec_v = gd_settings.ada_rho * adam_vec_v + (1.0 - gd_settings.ada_rho) * arma::pow(grad_p,2);
 
-            direc_out = grad_p % (arma::sqrt(adam_vec_m) + gd_settings.norm_term) / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+            adam_vec_v = gd_settings.ada_rho * adam_vec_v + (1.0 - gd_settings.ada_rho) * OPTIM_MATOPS_POW(grad_p,2);
 
-            adam_vec_m = gd_settings.ada_rho * adam_vec_m + (1.0 - gd_settings.ada_rho) * arma::pow(direc_out,2);
+            Vec_t grad_direc = OPTIM_MATOPS_ARRAY_DIV_ARRAY((OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_SQRT(adam_vec_m), gd_settings.norm_term)), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_SQRT(adam_vec_v), gd_settings.norm_term)));
+
+            direc_out = OPTIM_MATOPS_HADAMARD_PROD(grad_p, grad_direc);
+
+            adam_vec_m = gd_settings.ada_rho * adam_vec_m + (1.0 - gd_settings.ada_rho) * OPTIM_MATOPS_POW(direc_out,2);
             break;
         }
 
@@ -107,22 +124,19 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
         {
             adam_vec_m = gd_settings.adam_beta_1 * adam_vec_m + (1.0 - gd_settings.adam_beta_1) * grad_p;
 
-            if (gd_settings.ada_max)
-            {
-                adam_vec_v = arma::max(gd_settings.adam_beta_2 * adam_vec_v, arma::abs(grad_p));
+            if (gd_settings.ada_max) {
+                adam_vec_v = OPTIM_MATOPS_MAX(gd_settings.adam_beta_2 * adam_vec_v, OPTIM_MATOPS_ABS(grad_p));
 
                 double adam_step_size = gd_settings.step_size / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
 
-                direc_out = adam_step_size * adam_vec_m / (adam_vec_v + gd_settings.norm_term);
-            }
-            else
-            {
+                direc_out = OPTIM_MATOPS_ARRAY_DIV_ARRAY( (adam_step_size * adam_vec_m), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(adam_vec_v, gd_settings.norm_term)) );
+            } else {
                 double adam_step_size = gd_settings.step_size * std::sqrt(1.0 - std::pow(gd_settings.adam_beta_2,iter)) \
                                      / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
 
-                adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * arma::pow(grad_p,2);
+                adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * OPTIM_MATOPS_POW(grad_p,2);
 
-                direc_out = adam_step_size * adam_vec_m / (arma::sqrt(adam_vec_v) + gd_settings.norm_term);
+                direc_out = OPTIM_MATOPS_ARRAY_DIV_ARRAY( (adam_step_size * adam_vec_m), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_SQRT(adam_vec_v), gd_settings.norm_term)) );
             }
 
             break;
@@ -132,26 +146,21 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
         {
             adam_vec_m = gd_settings.adam_beta_1 * adam_vec_m + (1.0 - gd_settings.adam_beta_1) * grad_p;
 
-            if (gd_settings.ada_max)
-            {
-                adam_vec_v = arma::max(gd_settings.adam_beta_2 * adam_vec_v, arma::abs(grad_p));
+            if (gd_settings.ada_max) {
+                adam_vec_v = OPTIM_MATOPS_MAX(gd_settings.adam_beta_2 * adam_vec_v, OPTIM_MATOPS_ABS(grad_p));
 
-                arma::vec m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
-                arma::vec grad_hat = grad_p / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                Vec_t m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                Vec_t grad_hat = grad_p / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
 
-                direc_out = gd_settings.step_size * ( gd_settings.adam_beta_1 * m_hat + (1.0 - gd_settings.adam_beta_1) * grad_hat ) \
-                            / (adam_vec_v + gd_settings.norm_term);
-            }
-            else
-            {
-                adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * arma::pow(grad_p,2);
+                direc_out = OPTIM_MATOPS_ARRAY_DIV_ARRAY( (gd_settings.step_size * ( gd_settings.adam_beta_1 * m_hat + (1.0 - gd_settings.adam_beta_1) * grad_hat )) , (OPTIM_MATOPS_ARRAY_ADD_SCALAR(adam_vec_v, gd_settings.norm_term)) );
+            } else {
+                adam_vec_v = gd_settings.adam_beta_2 * adam_vec_v + (1.0 - gd_settings.adam_beta_2) * OPTIM_MATOPS_POW(grad_p,2);
 
-                arma::vec m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
-                arma::vec v_hat = adam_vec_v / (1.0 - std::pow(gd_settings.adam_beta_2,iter));
-                arma::vec grad_hat = grad_p / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                Vec_t m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
+                Vec_t v_hat = adam_vec_v / (1.0 - std::pow(gd_settings.adam_beta_2,iter));
+                Vec_t grad_hat = grad_p / (1.0 - std::pow(gd_settings.adam_beta_1,iter));
 
-                direc_out = gd_settings.step_size * ( gd_settings.adam_beta_1 * m_hat + (1.0 - gd_settings.adam_beta_1) * grad_hat ) \
-                            / (arma::sqrt(v_hat) + gd_settings.norm_term);
+                direc_out = OPTIM_MATOPS_ARRAY_DIV_ARRAY( (gd_settings.step_size * ( gd_settings.adam_beta_1 * m_hat + (1.0 - gd_settings.adam_beta_1) * grad_hat )) , (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_SQRT(v_hat), gd_settings.norm_term)) );
             }
 
             break;
@@ -173,16 +182,17 @@ gd_update(const arma::vec& vals_inp, const arma::vec& grad, const arma::vec& gra
 
 inline
 void
-gradient_clipping(arma::vec& grad_, const gd_settings_t& settings_)
+gradient_clipping(Vec_t& grad_, const gd_settings_t& settings_)
 {
 
     double grad_norm;
+    
     if (settings_.clipping.max_norm) {
-        grad_norm = arma::norm(grad_, "inf");
+        grad_norm = OPTIM_MATOPS_LINFNORM(grad_);
     } else if (settings_.clipping.min_norm) {
-        grad_norm = arma::norm(grad_, "-inf");
+        grad_norm = OPTIM_MATOPS_LMINFNORM(grad_);
     } else {
-        grad_norm = arma::norm(grad_, settings_.clipping.norm_type);
+        grad_norm = OPTIM_MATOPS_LPNORM(grad_, settings_.clipping.norm_type);
     }
 
     //

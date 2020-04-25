@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -25,6 +25,8 @@
 
 namespace optim
 {
+    // Matrix operations
+    #include "misc/optim_matdefs.hpp"
     // structs
     #include "misc/optim_structs.hpp"
 

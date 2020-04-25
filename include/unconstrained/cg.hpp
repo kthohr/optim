@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -25,12 +25,26 @@
 #ifndef _optim_cg_HPP
 #define _optim_cg_HPP
 
-bool cg_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+bool cg_int(Vec_t& init_out_vals, 
+            std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+            void* opt_data, 
+            algo_settings_t* settings_inp);
 
-bool cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
-bool cg(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool cg(Vec_t& init_out_vals, 
+        std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+        void* opt_data);
+
+bool cg(Vec_t& init_out_vals, 
+        std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+        void* opt_data, 
+        algo_settings_t& settings);
 
 // internal update function
-double cg_update(const arma::vec& grad, const arma::vec& grad_p, const arma::vec& direc, const uint_t iter, const uint_t cg_method_inp, const double cg_restart_threshold);
+double cg_update(const Vec_t& grad, 
+                 const Vec_t& grad_p, 
+                 const Vec_t& direc, 
+                 const uint_t iter, 
+                 const uint_t cg_method_inp, 
+                 const double cg_restart_threshold);
 
 #endif

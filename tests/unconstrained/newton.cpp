@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -33,9 +33,9 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    arma::vec x_3 = arma::ones(test_3_dim,1);
+    Vec_t x_3 = OPTIM_MATOPS_ONE_VEC(test_3_dim);
 
-    bool success_3 = optim::newton(x_3,unconstr_test_fn_3_whess,nullptr);
+    bool success_3 = optim::newton(x_3, unconstr_test_fn_3_whess, nullptr);
 
     if (success_3) {
         std::cout << "\nnewton: test_3 completed successfully." << std::endl;
@@ -44,7 +44,7 @@ int main()
     }
 
     std::cout << "Distance from the actual solution to test_3:\n" \
-              << arma::norm(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
+              << OPTIM_MATOPS_L2NORM(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
 
     //
 

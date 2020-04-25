@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -31,7 +31,7 @@
 #define _optim_constr_test_fn_1_HPP
 
 double
-constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+constr_test_objfn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
@@ -46,22 +46,22 @@ constr_test_objfn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_da
     return obj_val;
 }
 
-arma::vec
-constr_test_constrfn_1(const arma::vec& vals_inp, arma::mat* jacob_out, void* opt_data)
+Vec_t
+constr_test_constrfn_1(const Vec_t& vals_inp, Mat_t* jacob_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
-    arma::vec constr_vals(1);
+    Vec_t constr_vals(1);
     constr_vals(0) = -2*x_1 - x_2 + 14.0;
-    //
+    
     if (jacob_out) {
-        jacob_out->set_size(1,2);
+        OPTIM_MATOPS_SET_SIZE_POINTER(jacob_out,1,2);
 
         (*jacob_out)(0,0) = -2.0;
         (*jacob_out)(0,1) = -1.0;
     }
-    //
+    
     return constr_vals;
 }
 

@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -34,9 +34,9 @@
 
 inline
 double
-unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_3(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
-    const double obj_val = arma::dot(vals_inp,vals_inp);
+    const double obj_val = OPTIM_MATOPS_DOT_PROD(vals_inp,vals_inp);
 
     //
 
@@ -51,10 +51,10 @@ unconstr_test_fn_3(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_dat
 
 inline
 double
-unconstr_test_fn_3_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
+unconstr_test_fn_3_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
-    const int n_vals = vals_inp.n_elem;
-    const double obj_val = arma::dot(vals_inp,vals_inp);
+    const int n_vals = OPTIM_MATOPS_SIZE(vals_inp);
+    const double obj_val = OPTIM_MATOPS_DOT_PROD(vals_inp,vals_inp);
 
     //
 
@@ -63,7 +63,7 @@ unconstr_test_fn_3_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::m
     }
 
     if (hess_out) {
-        *hess_out = 2.0*arma::eye(n_vals,n_vals);
+        *hess_out = 2.0 * OPTIM_MATOPS_EYE(n_vals);
     }
 
     //
