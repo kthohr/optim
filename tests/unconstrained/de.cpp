@@ -100,15 +100,15 @@ int main()
 
     optim::algo_settings_t settings_6;
 
-    settings_6.de_n_pop = 200;
+    settings_6.de_settings.n_pop = 200;
 
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
 
     Vec_t x_6 = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), 2);
 
-    settings_6.de_initial_lb = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6, -2.0);
-    settings_6.de_initial_ub = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6,  2.0);
+    settings_6.de_settings.initial_lb = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6, -2.0);
+    settings_6.de_settings.initial_ub = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6,  2.0);
 
     bool success_6 = optim::de(x_6,unconstr_test_fn_6,&test_6_data,settings_6);
 
@@ -158,13 +158,13 @@ int main()
 
     optim::algo_settings_t settings_9;
     
-    settings_9.de_initial_lb = OPTIM_MATOPS_ZERO_VEC(2);
-    settings_9.de_initial_lb(0) = -13;
-    settings_9.de_initial_lb(1) = -2;
+    settings_9.de_settings.initial_lb = OPTIM_MATOPS_ZERO_VEC(2);
+    settings_9.de_settings.initial_lb(0) = -13;
+    settings_9.de_settings.initial_lb(1) = -2;
 
-    settings_9.de_initial_ub = OPTIM_MATOPS_ZERO_VEC(2);
-    settings_9.de_initial_ub(0) = -9;
-    settings_9.de_initial_ub(1) = 2;
+    settings_9.de_settings.initial_ub = OPTIM_MATOPS_ZERO_VEC(2);
+    settings_9.de_settings.initial_ub(0) = -9;
+    settings_9.de_settings.initial_ub(1) = 2;
 
     settings_9.vals_bound = true;
 

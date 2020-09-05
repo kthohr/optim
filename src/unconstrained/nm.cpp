@@ -27,10 +27,11 @@
 // [OPTIM_BEGIN]
 optimlib_inline
 bool
-optim::nm_int(Vec_t& init_out_vals, 
-              std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-              void* opt_data, 
-              algo_settings_t* settings_inp)
+optim::internal::nm_impl(
+    Vec_t& init_out_vals, 
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp)
 {
     bool success = false;
 
@@ -45,17 +46,19 @@ optim::nm_int(Vec_t& init_out_vals,
         settings = *settings_inp;
     }
 
-    int verbose_print_level = settings.verbose_print_level;
+    const int print_level = settings.print_level;
     
     const uint_t conv_failure_switch = settings.conv_failure_switch;
-    const uint_t iter_max = settings.iter_max;
-    const double err_tol = settings.err_tol;
+    const size_t iter_max = settings.iter_max;
+    const double rel_objfn_change_tol = settings.rel_objfn_change_tol;
+    const double rel_sol_change_tol = settings.rel_sol_change_tol;
 
     // expansion / contraction parameters
-    const double par_alpha = settings.nm_par_alpha;
-    const double par_beta  = (settings.nm_adaptive) ? 0.75 - 1.0 / (2.0*n_vals) : settings.nm_par_beta;
-    const double par_gamma = (settings.nm_adaptive) ? 1.0 + 2.0 / n_vals        : settings.nm_par_gamma;
-    const double par_delta = (settings.nm_adaptive) ? 1.0 - 1.0 / n_vals        : settings.nm_par_delta;
+    
+    const double par_alpha = settings.nm_settings.par_alpha;
+    const double par_beta  = (settings.nm_settings.adaptive_pars) ? 0.75 - 1.0 / (2.0*n_vals) : settings.nm_settings.par_beta;
+    const double par_gamma = (settings.nm_settings.adaptive_pars) ? 1.0 + 2.0 / n_vals        : settings.nm_settings.par_gamma;
+    const double par_delta = (settings.nm_settings.adaptive_pars) ? 1.0 - 1.0 / n_vals        : settings.nm_settings.par_delta;
 
     const bool vals_bound = settings.vals_bound;
     
@@ -83,21 +86,22 @@ optim::nm_int(Vec_t& init_out_vals,
     // setup
 
     Vec_t simplex_fn_vals(n_vals+1);
+    Vec_t simplex_fn_vals_old(n_vals+1);
     Mat_t simplex_points(n_vals+1, n_vals);
+    Mat_t simplex_points_old(n_vals+1, n_vals);
     
     simplex_fn_vals(0) = opt_objfn(init_out_vals, nullptr, opt_data);
     simplex_points.row(0) = OPTIM_MATOPS_TRANSPOSE(init_out_vals);
 
-    // for (size_t i=1; i < n_vals + 1; i++) {
-    //     simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
-    //     simplex_fn_vals(i) = opt_objfn(simplex_points.row(i).t(),nullptr,opt_data);
-    // }
+    if (vals_bound) {
+        simplex_points.row(0) = OPTIM_MATOPS_TRANSPOSE( transform( OPTIM_MATOPS_TRANSPOSE(simplex_points.row(0)), bounds_type, lower_bounds, upper_bounds) );
+    }
 
     for (size_t i = 1; i < n_vals + 1; ++i) {
         if (init_out_vals(i-1) != 0.0) {
             simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( init_out_vals + 0.05*init_out_vals(i-1) * unit_vec(i-1,n_vals) );
         } else {
-            simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE(init_out_vals + 0.00025 * unit_vec(i-1,n_vals));
+            simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( init_out_vals + 0.00025 * unit_vec(i-1,n_vals) );
             // simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
         }
 
@@ -113,21 +117,27 @@ optim::nm_int(Vec_t& init_out_vals,
     //
     // begin loop
 
-    if (verbose_print_level > 0) {
+    if (print_level > 0) {
         std::cout << "\nNelder-Mead: beginning search...\n";
 
-        if (verbose_print_level == 2) {
+        if (print_level >= 3) {
             std::cout << "  - Initialization Phase:\n";
-            OPTIM_MATOPS_COUT << "    Objective function value at each vertex:\n" << OPTIM_MATOPS_TRANSPOSE(simplex_fn_vals) << "\n";
-            OPTIM_MATOPS_COUT << "    Simplex matrix:\n" << simplex_points << "\n";
+            std::cout << "    Objective function value at each vertex:\n";
+            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(simplex_fn_vals) << "\n";
+            std::cout << "    Simplex matrix:\n"; 
+            OPTIM_MATOPS_COUT << simplex_points << "\n";
         }
     }
 
-    uint_t iter = 0;
-    double err = 2*err_tol;
+    size_t iter = 0;
+    double rel_objfn_change = 2*std::abs(rel_objfn_change_tol);
+    double rel_sol_change = 2*std::abs(rel_sol_change_tol);
 
-    while (err > err_tol && iter < iter_max) {
-        iter++;
+    simplex_fn_vals_old = simplex_fn_vals;
+    simplex_points_old = simplex_points;
+
+    while (rel_objfn_change > rel_objfn_change_tol && rel_sol_change > rel_sol_change_tol && iter < iter_max) {
+        ++iter;
         bool next_iter = false;
         
         // step 1
@@ -224,32 +234,29 @@ optim::nm_int(Vec_t& init_out_vals,
             }
         }
 
-        //
-    
-        err = std::abs(min_val - OPTIM_MATOPS_MAX_VAL(simplex_fn_vals));
         min_val = OPTIM_MATOPS_MIN_VAL(simplex_fn_vals);
+
+        //
+
+        // double change_val_min = std::abs(min_val - OPTIM_MATOPS_MIN_VAL(simplex_fn_vals));
+        // double change_val_max = std::abs(min_val - OPTIM_MATOPS_MAX_VAL(simplex_fn_vals));
+    
+        // rel_objfn_change = std::max( change_val_min, change_val_max ) / (1.0e-08 + OPTIM_MATOPS_ABS_MAX_VAL(simplex_fn_vals));
+
+        rel_objfn_change = (OPTIM_MATOPS_ABS_MAX_VAL(simplex_fn_vals - simplex_fn_vals_old)) / (1.0e-08 + OPTIM_MATOPS_ABS_MAX_VAL(simplex_fn_vals_old));
+        simplex_fn_vals_old = simplex_fn_vals;
+
+        if (rel_sol_change_tol >= 0.0) { 
+            rel_sol_change = (OPTIM_MATOPS_ABS_MAX_VAL(simplex_points - simplex_points_old)) / (1.0e-08 + OPTIM_MATOPS_ABS_MAX_VAL(simplex_points_old));
+            simplex_points_old = simplex_points;
+        }
 
         // printing
 
-        if (verbose_print_level > 0) {
-            std::cout << "  - Iteration: " << iter << "\n";
-            std::cout << "    min_val:   " << min_val << "\n";
-
-            if (verbose_print_level >= 2) {
-                printf("\n");
-                OPTIM_MATOPS_COUT << "    Current optimal input values:\n";
-                OPTIM_MATOPS_COUT << simplex_points.row(index_min(simplex_fn_vals)) << "\n";
-            }
-
-            if (verbose_print_level >= 3) {
-                printf("\n");
-                OPTIM_MATOPS_COUT << "    Objective function value at each vertex:\n" << OPTIM_MATOPS_TRANSPOSE(simplex_fn_vals) << "\n";
-                OPTIM_MATOPS_COUT << "    Simplex matrix:\n" << simplex_points << "\n";
-            }
-        }
+        OPTIM_NM_TRACE(iter, min_val, rel_objfn_change, rel_sol_change, simplex_fn_vals, simplex_points);
     }
 
-    if (verbose_print_level > 0) {
+    if (print_level > 0) {
         std::cout << "Nelder-Mead: search completed.\n";
     }
 
@@ -261,7 +268,9 @@ optim::nm_int(Vec_t& init_out_vals,
         prop_out = inv_transform(prop_out, bounds_type, lower_bounds, upper_bounds);
     }
 
-    error_reporting(init_out_vals,prop_out,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
+    error_reporting(init_out_vals, prop_out, opt_objfn, opt_data,
+                    success, rel_objfn_change, rel_objfn_change_tol, iter, iter_max, 
+                    conv_failure_switch, settings_inp);
 
     //
     
@@ -274,7 +283,7 @@ optim::nm(Vec_t& init_out_vals,
           std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
           void* opt_data)
 {
-    return nm_int(init_out_vals,opt_objfn,opt_data,nullptr);
+    return internal::nm_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
@@ -284,5 +293,5 @@ optim::nm(Vec_t& init_out_vals,
           void* opt_data, 
           algo_settings_t& settings)
 {
-    return nm_int(init_out_vals,opt_objfn,opt_data,&settings);
+    return internal::nm_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

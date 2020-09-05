@@ -38,10 +38,9 @@ unconstr_test_fn_7(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
-    const double pi = OPTIM_PI;
 
-    double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + std::exp(1) + 20;
-    //
+    double obj_val = 20 + std::exp(1) - 20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2 * OPTIM_PI * x) + std::cos(2 * OPTIM_PI * y)) );
+    
     return obj_val;
 }
 

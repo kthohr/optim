@@ -42,7 +42,7 @@ unconstr_test_fn_9(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
     const double y = vals_inp(1);
 
     double obj_val = 100*std::sqrt(std::abs(y - 0.01*x*x)) + 0.01*std::abs(x + 10);
-    //
+    
     return obj_val;
 }
 

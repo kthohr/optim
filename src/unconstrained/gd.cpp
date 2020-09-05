@@ -27,10 +27,11 @@
 // [OPTIM_BEGIN]
 optimlib_inline
 bool
-optim::gd_basic_int(Vec_t& init_out_vals, 
-                    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-                    void* opt_data, 
-                    algo_settings_t* settings_inp)
+optim::internal::gd_basic_impl(
+    Vec_t& init_out_vals, 
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp)
 {
     // notation: 'p' stands for '+1'.
 
@@ -46,10 +47,13 @@ optim::gd_basic_int(Vec_t& init_out_vals,
     if (settings_inp) {
         settings = *settings_inp;
     }
+
+    const int print_level = settings.print_level;
     
     const uint_t conv_failure_switch = settings.conv_failure_switch;
-    const uint_t iter_max = settings.iter_max;
-    const double err_tol = settings.err_tol;
+    const size_t iter_max = settings.iter_max;
+    const double grad_err_tol = settings.grad_err_tol;
+    const double rel_sol_change_tol = settings.rel_sol_change_tol;
 
     gd_settings_t gd_settings = settings.gd_settings;
 
@@ -94,11 +98,24 @@ optim::gd_basic_int(Vec_t& init_out_vals,
     //
     // initialization
 
-    Vec_t x = init_out_vals;
-
-    if (! OPTIM_MATOPS_IS_FINITE(x) ) {
+    if (! OPTIM_MATOPS_IS_FINITE(init_out_vals) ) {
         printf("gd error: non-finite initial value(s).\n");
         return false;
+    }
+
+    Vec_t x = init_out_vals;
+    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);
+
+    Vec_t adam_vec_m;
+    Vec_t adam_vec_v;
+
+    if (settings.gd_settings.method == 3 || settings.gd_settings.method == 4) {
+        adam_vec_v = OPTIM_MATOPS_ZERO_VEC(n_vals);
+    }
+
+    if (settings.gd_settings.method == 5 || settings.gd_settings.method == 6 || settings.gd_settings.method == 7) {
+        adam_vec_m = OPTIM_MATOPS_ZERO_VEC(n_vals);
+        adam_vec_v = OPTIM_MATOPS_ZERO_VEC(n_vals);
     }
 
     if (vals_bound) { // should we transform the parameters?
@@ -108,73 +125,61 @@ optim::gd_basic_int(Vec_t& init_out_vals,
     Vec_t grad(n_vals); // gradient
     box_objfn(x,&grad,opt_data);
 
-    double err = OPTIM_MATOPS_L2NORM(grad);
-    if (err <= err_tol) {
+    double grad_err = OPTIM_MATOPS_L2NORM(grad);
+
+    OPTIM_GD_TRACE(-1, grad_err, 0.0, x, d, grad, adam_vec_m, adam_vec_v);
+
+    if (grad_err <= grad_err_tol) {
         return true;
-    }
-
-    //
-
-    Vec_t d = grad, d_p;
-    Vec_t x_p = x, grad_p = grad;
-
-    err = OPTIM_MATOPS_L2NORM(grad_p);
-    if (err <= err_tol) {
-        init_out_vals = x_p;
-        return true;
-    }
-
-    //
-
-    Vec_t adam_vec_m;
-    Vec_t adam_vec_v;
-
-    if (settings.gd_method == 3 || settings.gd_method == 4) {
-        adam_vec_v = OPTIM_MATOPS_ZERO_VEC(n_vals);
-    }
-
-    if (settings.gd_method == 5 || settings.gd_method == 6 || settings.gd_method == 7) {
-        adam_vec_m = OPTIM_MATOPS_ZERO_VEC(n_vals);
-        adam_vec_v = OPTIM_MATOPS_ZERO_VEC(n_vals);
     }
 
     //
     // begin loop
 
-    uint_t iter = 0;
+    Vec_t grad_p = grad;
+    double rel_sol_change = 1.0;
 
-    while (err > err_tol && iter < iter_max) {
+    size_t iter = 0;
+
+    while (grad_err > grad_err_tol && rel_sol_change > rel_sol_change_tol && iter < iter_max) {
         ++iter;
 
         //
 
-        d_p = gd_update(x,grad,grad_p,d,box_objfn,opt_data,iter,
-                        settings.gd_method,gd_settings,adam_vec_m,adam_vec_v);
+        Vec_t d_p = gd_update(x, grad, grad_p, d, box_objfn, opt_data, iter,
+                              gd_settings, adam_vec_m, adam_vec_v);
 
-        x_p = x - d_p;
+        Vec_t x_p = x - d_p;
         grad = grad_p;
 
         box_objfn(x_p, &grad_p, opt_data);
 
         if (gd_settings.clip_grad) {
-            gradient_clipping(grad_p,gd_settings);
+            gradient_clipping(grad_p, gd_settings);
         }
 
         //
 
-        err = OPTIM_MATOPS_L2NORM(grad_p);
+        grad_err = OPTIM_MATOPS_L2NORM(grad_p);
+        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY((x_p - x), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
 
         d = d_p;
         x = x_p;
+
+        //
+
+        OPTIM_GD_TRACE(iter-1, grad_err, rel_sol_change, x, d, grad_p, adam_vec_m, adam_vec_v)
     }
 
     //
 
     if (vals_bound) {
-        x_p = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
+        x = inv_transform(x, bounds_type, lower_bounds, upper_bounds);
     }
 
-    error_reporting(init_out_vals,x_p,opt_objfn,opt_data,success,err,err_tol,iter,iter_max,conv_failure_switch,settings_inp);
+    error_reporting(init_out_vals, x, opt_objfn, opt_data, 
+                    success, grad_err, grad_err_tol, iter, iter_max, 
+                    conv_failure_switch, settings_inp);
 
     //
 
@@ -187,7 +192,7 @@ optim::gd(Vec_t& init_out_vals,
           std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
           void* opt_data)
 {
-    return gd_basic_int(init_out_vals,opt_objfn,opt_data,nullptr);
+    return internal::gd_basic_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
@@ -197,5 +202,5 @@ optim::gd(Vec_t& init_out_vals,
           void* opt_data, 
           algo_settings_t& settings)
 {
-    return gd_basic_int(init_out_vals,opt_objfn,opt_data,&settings);
+    return internal::gd_basic_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

@@ -36,8 +36,8 @@ int main()
     optim::algo_settings_t settings_1;
 
     settings_1.iter_max = 2000;
-    settings_1.gd_method = 0;
-    settings_1.gd_settings.step_size = 0.1;
+    settings_1.gd_settings.method = 0;
+    settings_1.gd_settings.par_step_size = 0.1;
 
     Vec_t x_1 = OPTIM_MATOPS_ONE_VEC(2);
 
@@ -55,8 +55,10 @@ int main()
     //
     // test 2
 
-    settings_1.gd_settings.step_size = 0.001;
+    settings_1.gd_settings.par_step_size = 0.001;
+    settings_1.iter_max = 50000;
     // settings_1.gd_settings.step_decay = true;
+    // settings_1.print_level = 4;
 
     Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
@@ -74,7 +76,9 @@ int main()
     //
     // test 3
 
-    settings_1.gd_settings.step_size = 0.01;
+    settings_1.print_level = 0;
+    settings_1.iter_max = 2000;
+    settings_1.gd_settings.par_step_size = 0.01;
     settings_1.gd_settings.step_decay = false;
 
     int test_3_dim = 5;
@@ -94,6 +98,8 @@ int main()
     //
     // test 4
 
+    settings_1.iter_max = 10000;
+
     Vec_t x_4 = OPTIM_MATOPS_ONE_VEC(2);
 
     bool success_4 = optim::gd(x_4,unconstr_test_fn_4,nullptr,settings_1);
@@ -112,7 +118,7 @@ int main()
 
     optim::algo_settings_t settings_5;
     settings_5.iter_max = 10000;
-    settings_5.gd_method = 1;
+    settings_5.gd_settings.method = 1;
 
     Vec_t x_5 = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), 2);
 
@@ -133,57 +139,57 @@ int main()
     optim::algo_settings_t settings;
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 0;
-    settings.gd_settings.step_size = 0.1;
+    settings.gd_settings.method = 0;
+    settings.gd_settings.par_step_size = 0.1;
     
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "\ngd: solution to test_3 using gd_method = 0 (basic)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 1;
+    settings.gd_settings.method = 1;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 1 (momentum)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 2;
+    settings.gd_settings.method = 2;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 2 (NAG)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 3;
+    settings.gd_settings.method = 3;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 3 (AdaGrad)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 4;
+    settings.gd_settings.method = 4;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 4 (RMSProp)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 5;
+    settings.gd_settings.method = 5;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 5 (Adadelta)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 6;
+    settings.gd_settings.method = 6;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 6 (Adam)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 6;
+    settings.gd_settings.method = 6;
     settings.gd_settings.ada_max = true;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
@@ -193,33 +199,37 @@ int main()
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 6 with max (AdaMax)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 7;
+    settings.gd_settings.method = 7;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 7 (Nadam)\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ONE_VEC(2);
-    settings.gd_method = 7;
+    settings.gd_settings.method = 7;
     settings.gd_settings.ada_max = true;
 
     optim::gd(x_1,unconstr_test_fn_3,nullptr,settings);
-
-    settings.gd_settings.ada_max = false;
 
     OPTIM_MATOPS_COUT << "gd: solution to test_3 using gd_method = 7 with max (NadaMax)\n" << x_1 << "\n";
 
     //
 
-    optim::algo_settings_t settings_2;
+    optim::algo_settings_t settings_bound;
 
-    settings_2.vals_bound = true;
-    settings_2.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -4.5);
-    settings_2.upper_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  4.5);
+    // settings_bound.print_level = 4;
+    settings_bound.gd_settings.method = 3;
+    settings_bound.iter_max = 10000;
+
+    settings_bound.vals_bound = true;
+    settings_bound.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -1.0);
+    settings_bound.upper_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  4.5);
 
     x_4 = OPTIM_MATOPS_ONE_VEC(2);
+    x_4(0) = 3.5;
+    x_4(1) = 1.0;
     
-    success_4 = optim::gd(x_4,unconstr_test_fn_4,nullptr,settings_2);
+    success_4 = optim::gd(x_4,unconstr_test_fn_4,nullptr,settings_bound);
 
     if (success_4) {
         std::cout << "\ngd with box constraints: test_4 completed successfully." << std::endl;
@@ -230,7 +240,7 @@ int main()
     std::cout << "Distance from the actual solution to test_4:\n" \
               << OPTIM_MATOPS_L2NORM(x_4 - unconstr_test_sols::test_4()) << std::endl;
 
-    std::cout << "\n     ***** End DG tests. *****     \n" << std::endl;
+    std::cout << "\n     ***** End GD tests. *****     \n" << std::endl;
 
     return 0;
 }

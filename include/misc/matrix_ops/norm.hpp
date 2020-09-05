@@ -27,6 +27,7 @@
 //
 
 #ifdef OPTIM_ENABLE_ARMA_WRAPPERS
+    #define OPTIM_MATOPS_L1NORM(x) arma::norm(x,1)
     #define OPTIM_MATOPS_L2NORM(x) arma::norm(x,2)
     #define OPTIM_MATOPS_LPNORM(x,p) arma::norm(x,p)
     #define OPTIM_MATOPS_LINFNORM(x) arma::norm(x,"inf")
@@ -34,11 +35,11 @@
 #endif
 
 #ifdef OPTIM_ENABLE_EIGEN_WRAPPERS
+    #define OPTIM_MATOPS_L1NORM(x) (x).array().abs().sum()
     #define OPTIM_MATOPS_L2NORM(x) (x).norm()
     // #define OPTIM_MATOPS_LPNORM(x,p) x.lpNorm<p>()
     #define OPTIM_MATOPS_LPNORM(x,p) std::pow( (x).array().abs().pow(p).sum() , 1.0 / static_cast<double>(p) )
     #define OPTIM_MATOPS_LINFNORM(x) (x).lpNorm<Eigen::Infinity>()
-    // #define OPTIM_MATOPS_LMINFNORM(x) x.lpNorm<-Eigen::NegativeInfinity>()
     #define OPTIM_MATOPS_LMINFNORM(x) (x).cwiseAbs().minCoeff()
 #endif
 

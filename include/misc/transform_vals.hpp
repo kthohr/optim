@@ -96,7 +96,7 @@ inv_transform(const Vec_t& vals_trans_inp,
                         vals_out(i) = upper_bounds(i) - eps_dbl;
                     }
                 } else {
-                    vals_out(i) = ( lower_bounds(i) + eps_dbl + (upper_bounds(i) - eps_dbl)*std::exp(vals_trans_inp(i)) ) \
+                    vals_out(i) = ( lower_bounds(i) - eps_dbl + (upper_bounds(i) + eps_dbl)*std::exp(vals_trans_inp(i)) ) \
                                     / ( 1.0 + std::exp(vals_trans_inp(i)) );
 
                     if (!std::isfinite(vals_out(i))) {

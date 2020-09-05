@@ -51,7 +51,7 @@ int main()
     //
     // test 2
 
-    // settings.verbose_print_level = 3;
+    // settings.print_level = 3;
 
     Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
@@ -86,9 +86,16 @@ int main()
     //
     // test 4
 
-    Vec_t x_4 = OPTIM_MATOPS_ONE_VEC(2);
+    optim::algo_settings_t settings_4;
 
-    bool success_4 = optim::lbfgs(x_4, unconstr_test_fn_4, nullptr);
+    // settings_4.rel_sol_change_tol = -1.0;
+    // settings_4.print_level = 4;
+
+    Vec_t x_4 = OPTIM_MATOPS_ONE_VEC(2);
+    x_4(0) = 4.0;
+    x_4(1) = 0.0;
+
+    bool success_4 = optim::lbfgs(x_4, unconstr_test_fn_4, nullptr, settings_4);
 
     if (success_4) {
         std::cout << "\nlbfgs: test_4 completed successfully." << std::endl;

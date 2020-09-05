@@ -33,83 +33,12 @@ int main()
     //
     // test 1
 
+    optim::algo_settings_t settings_1;
+    // settings_1.print_level = 4;
+
     Vec_t x_1 = OPTIM_MATOPS_ZERO_VEC(2);
 
-    bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
-
-    if (success_1) {
-        std::cout << "broyden_df: test_1 completed successfully." << std::endl;
-    } else {
-        std::cout << "broyden_df: test_1 completed unsuccessfully." << std::endl;
-    }
-
-    OPTIM_MATOPS_COUT << "broyden_df: solution to test_1:\n" << x_1 << "\n";
-
-    //
-    // test 2
-
-    Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
-
-    bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr);
-
-    if (success_2) {
-        std::cout << "broyden_df: test_2 completed successfully." << std::endl;
-    } else {
-        std::cout << "broyden_df: test_2 completed unsuccessfully." << std::endl;
-    }
-
-    OPTIM_MATOPS_COUT << "broyden_df: solution to test_2:\n" << x_2 << "\n";
-
-    //
-    // coverage tests
-
-    optim::algo_settings_t settings;
-
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr);
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,settings);
-
-    //
-    // test 1
-
-    x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-
-    success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
-
-    if (success_1) {
-        std::cout << "broyden_df w jacobian: test_1 completed successfully." << std::endl;
-    } else {
-        std::cout << "broyden_df w jacobian: test_1 completed unsuccessfully." << std::endl;
-    }
-
-    OPTIM_MATOPS_COUT << "broyden_df w jacobian: solution to test_1:\n" << x_1 << "\n";
-
-    //
-    // test 2
-
-    x_2 = OPTIM_MATOPS_ZERO_VEC(2);
-
-    success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
-
-    if (success_2) {
-        std::cout << "broyden_df w jacobian: test_2 completed successfully." << std::endl;
-    } else {
-        std::cout << "broyden_df w jacobian: test_2 completed unsuccessfully." << std::endl;
-    }
-
-    OPTIM_MATOPS_COUT << "broyden_df w jacobian: solution to test_2:\n" << x_2 << "\n";
-
-    //
-    // coverage tests
-
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
-    optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr,settings);
-
-    //
-    // test 1
-
-    x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-
-    success_1 = optim::broyden(x_1,zeros_test_objfn_1,nullptr);
+    bool success_1 = optim::broyden(x_1, zeros_test_objfn_1, nullptr, settings_1);
 
     if (success_1) {
         std::cout << "broyden: test_1 completed successfully." << std::endl;
@@ -122,9 +51,9 @@ int main()
     //
     // test 2
 
-    x_2 = OPTIM_MATOPS_ZERO_VEC(2);
+    Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
 
-    success_2 = optim::broyden(x_2,zeros_test_objfn_2,nullptr);
+    bool success_2 = optim::broyden(x_2, zeros_test_objfn_2, nullptr);
 
     if (success_2) {
         std::cout << "broyden: test_2 completed successfully." << std::endl;
@@ -137,6 +66,8 @@ int main()
     //
     // coverage tests
 
+    optim::algo_settings_t settings;
+
     optim::broyden(x_1,zeros_test_objfn_1,nullptr);
     optim::broyden(x_1,zeros_test_objfn_1,nullptr,settings);
 
@@ -145,15 +76,15 @@ int main()
 
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
 
-    success_1 = optim::broyden(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
+    success_1 = optim::broyden(x_1, zeros_test_objfn_1, nullptr, zeros_test_jacob_1, nullptr);
 
     if (success_1) {
-        std::cout << "broyden w jacobian: test_1 completed successfully." << std::endl;
+        std::cout << "broyden with jacobian: test_1 completed successfully." << std::endl;
     } else {
-        std::cout << "broyden w jacobian: test_1 completed unsuccessfully." << std::endl;
+        std::cout << "broyden with jacobian: test_1 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "broyden w jacobian: solution to test_1:\n" << x_1 << "\n";
+    OPTIM_MATOPS_COUT << "broyden with jacobian: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
@@ -163,12 +94,12 @@ int main()
     success_2 = optim::broyden(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
 
     if (success_2) {
-        std::cout << "broyden w jacobian: test_2 completed successfully." << std::endl;
+        std::cout << "broyden with jacobian: test_2 completed successfully." << std::endl;
     } else {
-        std::cout << "broyden w jacobian: test_2 completed unsuccessfully." << std::endl;
+        std::cout << "broyden with jacobian: test_2 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "broyden w jacobian: solution to test_2:\n" << x_2 << "\n";
+    OPTIM_MATOPS_COUT << "broyden with jacobian: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests

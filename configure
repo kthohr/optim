@@ -8,11 +8,11 @@ function print_help
     echo "";
     echo -e "Main options:" >&2 ;
     echo "  -c    Code coverage build" ;
-    echo "        (default: no)" ;
+    echo "        (default: disabled)" ;
     echo "  -d    Developmental build" ;
-    echo "        (default: no)" ;
+    echo "        (default: disabled)" ;
     echo "  -g    Debugging build (optimization flags set to -O0 -g)" ;
-    echo "        (default: no)" ;
+    echo "        (default: disabled)" ;
     echo "  -h    Print help" ;
     echo "  -i    Install path (default: current directory)" ;
     echo "          Example: /usr/local" ;
@@ -23,7 +23,7 @@ function print_help
     echo "  -o    Compiler optimization options" ;
     echo "        (default: -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG)" ;
     echo "  -p    Enable OpenMP parallelization features" ;
-    echo "        (default: no)" ;
+    echo "        (default: disabled)" ;
     echo "" ;
     echo "Special options:" ;
     echo "  --header-only-version    Generate a header-only version of OptimLib" ;
@@ -89,12 +89,15 @@ if [[ "${OPTIM_GEN_NEW_HEADERS}" == "y" ]]; then
 
         for file_ in $file_names; do
             file_=${file_%.hpp}
+
             if [ "$IS_DARWIN" -eq "1" ]; then # syntax for inplace replacement on macOS is a bit different
                 sed -i '' -e "s|#endif|//\n|" $file_.hpp
             else
                 sed -i -e "s|#endif|//\n|" $file_.hpp
             fi
-            sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" >> "$file_".hpp
+
+            sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" -e "s|internal::||" >> "$file_".hpp
+
             echo -e "\n#endif" >> "$file_".hpp
         done
     done
@@ -138,9 +141,9 @@ if [[ "${OPTIM_LINEAR_ALG_LIB}" == "arma" ]]; then
     OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_ARMA_WRAPPERS -DARMA_NO_DEBUG"
     OPTIM_MATLIB_INCLUDE_PATH=$ARMA_INCLUDE_PATH
 elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "blaze" ]]; then
-    OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_BLAZE_WRAPPERS"
-    OPTIM_MATLIB_INCLUDE_PATH=$BLAZE_INCLUDE_PATH
-    CXX_STD="-std=c++14"
+    # OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_BLAZE_WRAPPERS"
+    # OPTIM_MATLIB_INCLUDE_PATH=$BLAZE_INCLUDE_PATH
+    # CXX_STD="-std=c++14"
 
     echo -e "  \x1B[31m- error: Blaze not yet supported. Exiting.\033[0m" >&2 ;
     echo ""

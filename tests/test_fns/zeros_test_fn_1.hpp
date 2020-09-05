@@ -37,11 +37,15 @@ zeros_test_objfn_1(const Vec_t& vals_inp, void* opt_data)
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
+    //
+
     Vec_t ret(2);
 
     ret(0) = std::exp(-std::exp(-(x_1+x_2))) - x_2*(1 + std::pow(x_1,2));
     ret(1) = x_1*std::cos(x_2) + x_2*std::sin(x_1) - 0.5;
+    
     //
+
     return ret;
 }
 
@@ -51,13 +55,17 @@ zeros_test_jacob_1(const Vec_t& vals_inp, void* opt_data)
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
+    //
+
     Mat_t ret(2,2);
 
     ret(0,0) = std::exp(-std::exp(-(x_1+x_2))-(x_1+x_2)) - 2*x_1*x_1;
     ret(0,1) = std::exp(-std::exp(-(x_1+x_2))-(x_1+x_2)) - x_1*x_1 - 1.0;
     ret(1,0) = std::cos(x_2) + x_2*std::cos(x_1);
     ret(1,1) = -x_1*std::sin(x_2) + std::cos(x_1);
+
     //
+    
     return ret;
 }
 

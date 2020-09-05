@@ -27,11 +27,11 @@
 // version
 
 #ifndef OPTIM_VERSION_MAJOR
-    #define OPTIM_VERSION_MAJOR 1
+    #define OPTIM_VERSION_MAJOR 2
 #endif
 
 #ifndef OPTIM_VERSION_MINOR
-    #define OPTIM_VERSION_MINOR 3
+    #define OPTIM_VERSION_MINOR 0
 #endif
 
 #ifndef OPTIM_VERSION_PATCH

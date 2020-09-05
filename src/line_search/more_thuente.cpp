@@ -21,7 +21,7 @@
 /*
  * Moré and Thuente line search
  *
- * Based on MINPACK fortran code and Dianne P. O'Leary's Matlab translation of MINPACK
+ * Based on MINPACK fortran code and Dianne P. O'Leary's Matlab-based translation of MINPACK
  */
 
 #include "optim.hpp"
@@ -29,24 +29,25 @@
 // [OPTIM_BEGIN]
 optimlib_inline
 double
-optim::line_search_mt(double step, 
-                      Vec_t& x, 
-                      Vec_t& grad, 
-                      const Vec_t& direc, 
-                      const double* wolfe_cons_1_inp, 
-                      const double* wolfe_cons_2_inp, 
-                      std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-                      void* opt_data)
+optim::internal::line_search_mt(
+    double step, 
+    Vec_t& x, 
+    Vec_t& grad, 
+    const Vec_t& direc, 
+    const double* wolfe_cons_1_inp, 
+    const double* wolfe_cons_2_inp, 
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
-    const uint_t iter_max = 100;
+    const size_t iter_max = 100;
 
     const double step_min = 0.0;
     const double step_max = 10.0;
     const double xtol = 1E-04;
 
     // Wolfe parameters
-    const double wolfe_cons_1 = (wolfe_cons_1_inp) ? *wolfe_cons_1_inp : 1E-03; // tolerence on the Armijo sufficient decrease condition; sometimes labelled 'mu'.
-    const double wolfe_cons_2 = (wolfe_cons_2_inp) ? *wolfe_cons_2_inp : 0.90;  // tolerence on the curvature condition; sometimes labelled 'eta'.
+    const double wolfe_cons_1 = (wolfe_cons_1_inp) ? *wolfe_cons_1_inp : 1E-03; // tolerance on the Armijo sufficient decrease condition; sometimes labelled 'mu'.
+    const double wolfe_cons_2 = (wolfe_cons_2_inp) ? *wolfe_cons_2_inp : 0.90;  // tolerance on the curvature condition; sometimes labelled 'eta'.
     
     //
 
@@ -67,7 +68,7 @@ optim::line_search_mt(double step,
 
     //
 
-    uint_t iter = 0;
+    size_t iter = 0;
 
     bool bracket = false, stage_1 = true;
 
@@ -82,13 +83,10 @@ optim::line_search_mt(double step,
 
         double st_min, st_max;
 
-        if (bracket) 
-        {
+        if (bracket) {
             st_min = std::min(st_best,st_other);
             st_max = std::max(st_best,st_other);
-        } 
-        else 
-        {
+        } else {
             st_min = st_best;
             st_max = step + extrap_delta*(step - st_best);
         }
@@ -185,18 +183,19 @@ optim::line_search_mt(double step,
 
 optimlib_inline
 optim::uint_t
-optim::mt_step(double& st_best, 
-               double& f_best, 
-               double& d_best, 
-               double& st_other, 
-               double& f_other, 
-               double& d_other, 
-               double& step, 
-               double& f_step, 
-               double& d_step, 
-               bool& bracket, 
-               double step_min, 
-               double step_max)
+optim::internal::mt_step(
+    double& st_best, 
+    double& f_best, 
+    double& d_best, 
+    double& st_other, 
+    double& f_other, 
+    double& d_other, 
+    double& step, 
+    double& f_step, 
+    double& d_step, 
+    bool& bracket, 
+    double step_min, 
+    double step_max)
 {
     bool bound = false;
     uint_t info = 0;
@@ -345,28 +344,18 @@ optim::mt_step(double& st_best,
      * Compute the new step and safeguard it.
      */
 
-    step_f = std::min(step_max,step_f);
-    step_f = std::max(step_min,step_f);
+    step_f = std::max(step_min, std::min(step_max,step_f));
     step = step_f;
     
     if (bracket && bound) {
         if (st_other > st_best) {
-            step = std::min(st_best + 0.66*(st_other - st_best),step);
+            step = std::min(st_best + 0.66*(st_other - st_best), step);
         } else {
-            step = std::max(st_best + 0.66*(st_other - st_best),step);
+            step = std::max(st_best + 0.66*(st_other - st_best), step);
         }
     }
 
     //
 
     return info;
-}
-
-optimlib_inline
-double
-optim::mt_sup_norm(const double a, 
-                   const double b, 
-                   const double c)
-{
-    return std::max( std::max(std::abs(a), std::abs(b)), std::abs(c) );
 }

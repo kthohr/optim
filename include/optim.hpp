@@ -27,8 +27,12 @@ namespace optim
 {
     // Matrix operations
     #include "misc/optim_matdefs.hpp"
+
     // structs
     #include "misc/optim_structs.hpp"
+
+    // trace
+    #include "misc/optim_trace.hpp"
 
     // misc files
     #include "misc/misc.hpp"
@@ -53,6 +57,7 @@ namespace optim
 
     // solving systems of nonlinear equations
     #include "zeros/broyden.hpp"
+    #include "zeros/broyden_df.hpp"
 }
 
 #endif

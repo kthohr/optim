@@ -43,7 +43,7 @@ jacobian_adjust(const Vec_t& vals_trans_inp,
                 break;
             case 4: // upper and lower bounds
                 // ret_mat(i,i) =  std::exp(vals_trans_inp(i))*(upper_bounds(i) - lower_bounds(i)) / std::pow(std::exp(vals_trans_inp(i)) + 1,2);
-                ret_mat(i,i) = std::exp(vals_trans_inp(i)) * (upper_bounds(i) - lower_bounds(i)) \
+                ret_mat(i,i) = std::exp(vals_trans_inp(i)) * (2*eps_dbl + upper_bounds(i) - lower_bounds(i)) \
                                 / (std::exp(2 * vals_trans_inp(i)) + 2*std::exp(vals_trans_inp(i)) + 1);
                 break;
         }

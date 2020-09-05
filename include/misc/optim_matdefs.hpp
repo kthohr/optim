@@ -19,6 +19,7 @@
   ################################################################################*/
 
 #include "matrix_ops/abs.hpp"
+#include "matrix_ops/abs_max.hpp"
 #include "matrix_ops/accu.hpp"
 #include "matrix_ops/access.hpp"
 #include "matrix_ops/array_add.hpp"

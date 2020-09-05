@@ -27,12 +27,12 @@ void
 error_reporting(Vec_t& out_vals, 
                 const Vec_t& x_p, 
                 std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-                void* opt_data,
+                void* opt_data, 
                 bool& success, 
                 const double err, 
                 const double err_tol, 
                 const int iter, 
-                const int iter_max, 
+                const size_t iter_max, 
                 const int conv_failure_switch, 
                 algo_settings_t* settings_inp)
 {
@@ -49,6 +49,11 @@ error_reporting(Vec_t& out_vals,
 
         if (err <= err_tol && iter <= iter_max) {
             success = true;
+        } else if (err > err_tol && iter < iter_max) {
+            printf("optim failure: iter_max not reached but algorithm stopped.\n");
+            printf("optim failure: returned best guess.\n");
+            
+            std::cout << "iterations: " << iter << ". error: " << err << std::endl;
         } else {
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: returned best guess.\n");
@@ -72,9 +77,9 @@ error_reporting(Vec_t& out_vals,
     }
     
     if (settings_inp) {
-        settings_inp->opt_value = opt_objfn(x_p,nullptr,opt_data);
-        settings_inp->opt_iter = iter;
-        settings_inp->opt_err  = err;
+        settings_inp->opt_fn_value     = opt_objfn(x_p,nullptr,opt_data);
+        settings_inp->opt_iter         = iter;
+        settings_inp->opt_error_value  = err;
     }
 }
 
@@ -82,8 +87,7 @@ inline
 void
 error_reporting(Vec_t& out_vals, 
                 const Vec_t& x_p, 
-                std::function<double (const Vec_t& vals_inp, 
-                Vec_t* grad_out, void* opt_data)> opt_objfn, 
+                std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
                 void* opt_data,
                 bool& success, 
                 const int conv_failure_switch, 
@@ -101,7 +105,7 @@ error_reporting(Vec_t& out_vals,
     }
     
     if (settings_inp) {
-        settings_inp->opt_value = opt_objfn(x_p, nullptr, opt_data);
+        settings_inp->opt_fn_value = opt_objfn(x_p, nullptr, opt_data);
     }
 }
 
@@ -115,7 +119,7 @@ error_reporting(Vec_t& out_vals,
                 const double err, 
                 const double err_tol, 
                 const int iter, 
-                const int iter_max, 
+                const size_t iter_max, 
                 const int conv_failure_switch, 
                 algo_settings_t* settings_inp)
 {
@@ -132,6 +136,11 @@ error_reporting(Vec_t& out_vals,
 
         if (err <= err_tol && iter <= iter_max) {
             success = true;
+        } else if (err > err_tol && iter < iter_max) {
+            printf("optim failure: iter_max not reached but algorithm stopped.\n");
+            printf("optim failure: returned best guess.\n");
+            
+            std::cout << "iterations: " << iter << ". error: " << err << std::endl;
         } else {
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: returned best guess.\n");
@@ -142,6 +151,12 @@ error_reporting(Vec_t& out_vals,
         if (err <= err_tol && iter <= iter_max) {
             out_vals = x_p;
             success = true;
+        } else if (err > err_tol && iter < iter_max) {
+            printf("optim failure: iter_max not reached but algorithm stopped.\n");
+            printf("optim failure: best guess:\n");
+
+            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            std::cout << "error: " << err << std::endl;
         } else {
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: best guess:\n");
@@ -155,9 +170,9 @@ error_reporting(Vec_t& out_vals,
     }
 
     if (settings_inp) {
-        settings_inp->zero_values = opt_objfn(x_p,opt_data);
-        settings_inp->opt_iter = iter;
-        settings_inp->opt_err  = err;
+        settings_inp->opt_root_fn_values = opt_objfn(x_p, opt_data);
+        settings_inp->opt_iter           = iter;
+        settings_inp->opt_error_value    = err;
     }
 }
 
@@ -173,7 +188,7 @@ error_reporting(Vec_t& out_vals,
                 const double err, 
                 const double err_tol, 
                 const int iter, 
-                const int iter_max, 
+                const size_t iter_max, 
                 const int conv_failure_switch, 
                 algo_settings_t* settings_inp)
 {

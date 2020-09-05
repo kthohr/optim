@@ -33,9 +33,12 @@ int main()
     //
     // test 1
 
+    optim::algo_settings_t settings_1;
+    // settings_1.print_level = 4;
+
     Vec_t x_1 = OPTIM_MATOPS_ONE_VEC(2);
 
-    bool success_1 = optim::pso_dv(x_1,unconstr_test_fn_1,nullptr);
+    bool success_1 = optim::pso_dv(x_1,unconstr_test_fn_1,nullptr,settings_1);
 
     if (success_1) {
         std::cout << "pso_dv: test_1 completed successfully." << std::endl;
@@ -100,15 +103,15 @@ int main()
 
     optim::algo_settings_t settings_6;
 
-    settings_6.pso_n_pop = 1000;
+    settings_6.pso_settings.n_pop = 1000;
 
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
 
     Vec_t x_6 = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), 2);
 
-    settings_6.pso_initial_lb = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6, -2.0);
-    settings_6.pso_initial_ub = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6,  2.0);
+    settings_6.pso_settings.initial_lb = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6, -2.0);
+    settings_6.pso_settings.initial_ub = OPTIM_MATOPS_ARRAY_ADD_SCALAR(x_6,  2.0);
 
     bool success_6 = optim::pso_dv(x_6,unconstr_test_fn_6, &test_6_data, settings_6);
 
@@ -158,13 +161,13 @@ int main()
 
     optim::algo_settings_t settings_9;
     
-    settings_9.pso_initial_lb = OPTIM_MATOPS_ZERO_VEC(2);
-    settings_9.pso_initial_lb(0) = -13;
-    settings_9.pso_initial_lb(1) = -2;
+    settings_9.pso_settings.initial_lb = OPTIM_MATOPS_ZERO_VEC(2);
+    settings_9.pso_settings.initial_lb(0) = -13;
+    settings_9.pso_settings.initial_lb(1) = -2;
 
-    settings_9.pso_initial_ub = OPTIM_MATOPS_ZERO_VEC(2);
-    settings_9.pso_initial_ub(0) = -9;
-    settings_9.pso_initial_ub(1) = 2;
+    settings_9.pso_settings.initial_ub = OPTIM_MATOPS_ZERO_VEC(2);
+    settings_9.pso_settings.initial_ub(0) = -9;
+    settings_9.pso_settings.initial_ub(1) = 2;
 
     settings_9.vals_bound = true;
 
@@ -179,7 +182,7 @@ int main()
     Vec_t x_9 = OPTIM_MATOPS_ZERO_VEC(2);
     x_9(0) = -11.0;
 
-    settings_9.pso_n_gen = 4000;
+    settings_9.pso_settings.n_gen = 4000;
 
     bool success_9 = optim::pso_dv(x_9,unconstr_test_fn_9,nullptr,settings_9);
 
@@ -197,7 +200,7 @@ int main()
 
     optim::algo_settings_t settings_10;
 
-    settings_10.pso_center_particle = false;
+    settings_10.pso_settings.center_particle = false;
 
     settings_10.vals_bound = true;
     settings_10.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -10.0);
@@ -205,11 +208,11 @@ int main()
 
     Vec_t x_10 = OPTIM_MATOPS_ZERO_VEC(2);
 
-    settings_10.pso_initial_lb = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -9.9);
-    settings_10.pso_initial_ub = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  9.9);
+    settings_10.pso_settings.initial_lb = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -9.9);
+    settings_10.pso_settings.initial_ub = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  9.9);
 
-    settings_10.pso_n_pop = 5000;
-    settings_10.pso_n_gen = 4000;
+    settings_10.pso_settings.n_pop = 5000;
+    settings_10.pso_settings.n_gen = 4000;
 
     bool success_10 = optim::pso_dv(x_10,unconstr_test_fn_10,nullptr,settings_10);
 
@@ -264,7 +267,7 @@ int main()
 
     //
 
-    std::cout << "\n     ***** End PSO tests. *****     \n" << std::endl;
+    std::cout << "\n     ***** End PSO-DV tests. *****     \n" << std::endl;
 
     return 0;
 }

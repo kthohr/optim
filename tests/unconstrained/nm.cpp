@@ -84,7 +84,10 @@ int main()
 
     Vec_t x_4 = OPTIM_MATOPS_ONE_VEC(2);
 
-    bool success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr);
+    optim::algo_settings_t settings_4;
+    // settings_4.print_level = 4;
+
+    bool success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr,settings_4);
 
     if (success_4) {
         std::cout << "\nnm: test_4 completed successfully." << std::endl;
@@ -183,15 +186,15 @@ int main()
 
     //
 
-    optim::algo_settings_t settings_2;
+    optim::algo_settings_t settings_cov;
 
-    settings_2.vals_bound = true;
-    settings_2.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -4.5);
-    settings_2.upper_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  4.5);
+    settings_cov.vals_bound = true;
+    settings_cov.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -4.5);
+    settings_cov.upper_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  4.5);
 
     x_4 = OPTIM_MATOPS_ONE_VEC(2);
     
-    success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr,settings_2);
+    success_4 = optim::nm(x_4,unconstr_test_fn_4,nullptr,settings_cov);
 
     if (success_4) {
         std::cout << "\nnm with box constraints: test_4 completed successfully." << std::endl;

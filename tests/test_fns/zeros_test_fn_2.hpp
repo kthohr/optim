@@ -19,10 +19,8 @@
   ################################################################################*/
 
 //
-// this example is from Matlab's help page
-// https://www.mathworks.com/help/optim/ug/fminunc.html
-//
-// f(x) = 3*x_1^2 + 2*x_1*x_2 + x_2^2 − 4*x_1 + 5*x_2
+// F(x) = [  2*x_1 - x_2   - exp(-x_1);
+//         - x_1   + 2*x_2 - exp(-x_2)]
 // 
 // solution is: (2.25,-4.75)
 //
@@ -36,11 +34,15 @@ zeros_test_objfn_2(const Vec_t& vals_inp, void* opt_data)
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
+    //
+
     Vec_t ret(2);
 
-    ret(0) = 2*x_1 - x_2 - std::exp(-x_1);
-    ret(1) = -x_1 + 2*x_2 - std::exp(-x_2);
+    ret(0) =   2*x_1 - x_2   - std::exp(-x_1);
+    ret(1) = - x_1   + 2*x_2 - std::exp(-x_2);
+    
     //
+    
     return ret;
 }
 
@@ -50,13 +52,17 @@ zeros_test_jacob_2(const Vec_t& vals_inp, void* opt_data)
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
+    //
+
     Mat_t ret(2,2);
 
     ret(0,0) = 2 + std::exp(-x_1);
     ret(0,1) = - 1.0;
     ret(1,0) = - 1.0;
     ret(1,1) = 2 + std::exp(-x_2);
+    
     //
+
     return ret;
 }
 

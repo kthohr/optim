@@ -33,7 +33,7 @@ void error_reporting(Vec_t& out_vals,
                      const double err, 
                      const double err_tol, 
                      const int iter, 
-                     const int iter_max, 
+                     const size_t iter_max, 
                      const int conv_failure_switch, 
                      algo_settings_t* settings_inp);
 
@@ -53,7 +53,7 @@ void error_reporting(Vec_t& out_vals,
                      const double err, 
                      const double err_tol, 
                      const int iter, 
-                     const int iter_max, 
+                     const size_t iter_max, 
                      const int conv_failure_switch, 
                      algo_settings_t* settings_inp);
 
@@ -67,7 +67,7 @@ void error_reporting(Vec_t& out_vals,
                      const double err, 
                      const double err_tol, 
                      const int iter, 
-                     const int iter_max, 
+                     const size_t iter_max, 
                      const int conv_failure_switch, 
                      algo_settings_t* settings_inp);
 

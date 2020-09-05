@@ -39,11 +39,8 @@ unconstr_test_fn_10(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
-    const double pi = OPTIM_PI;
 
-    double obj_val = - std::abs( std::sin(x)*std::cos(y)*std::exp( std::abs(1.0 - std::sqrt(x*x + y*y)/pi) ) );
-    
-    //
+    double obj_val = - std::abs( std::sin(x)*std::cos(y)*std::exp( std::abs( 1.0 - std::sqrt(x*x + y*y) / OPTIM_PI ) ) );
     
     return obj_val;
 }

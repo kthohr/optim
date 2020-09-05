@@ -5,12 +5,14 @@ OptimLib is a lightweight C++ library of numerical optimization methods for nonl
 Features:
 
 * A C++11 library of local and global optimization algorithms, as well as root finding techniques.
-* Derivative-free optimization using advanced, parallelized metaheuristics.
+* Derivative-free optimization using advanced, parallelized metaheuristic methods.
 * Constrained optimization routines to handle simple box constraints, as well as systems of nonlinear constraints.
-* Built on the [Armadillo C++ linear algebra library](http://arma.sourceforge.net/) for fast and efficient matrix-based computation.
-* OpenMP-accelerated accelerated algorithms for parallel computation. 
+* For fast and efficient matrix-based computation, OptimLib supports the following templated linear algebra libraries:
+  * [Armadillo](http://arma.sourceforge.net/)
+  * [Eigen](http://eigen.tuxfamily.org/index.php)
+* OpenMP-accelerated algorithms for parallel computation. 
 * Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
-* Available as a header-only library, or in shared library format.
+* Available as a header-only library, or as a compiled shared library.
 * Released under a permissive, non-GPL license.
 
 ### Contents:
@@ -22,9 +24,9 @@ Features:
 * [Examples](#examples)
 * [Author and License](#author)
 
-## Status
+## Algorithms
 
-The library is actively maintained, and is still being extended. A list of algorithms includes:
+A list of currently available algorithms includes:
 
 * Broyden's Method (for root finding)
 * Newton's method, BFGS, and L-BFGS
@@ -34,11 +36,11 @@ The library is actively maintained, and is still being extended. A list of algor
 * Differential Evolution (DE)
 * Particle Swarm Optimization (PSO)
 
-## General Syntax
+## API
 
-OptimLib functions have the following generic form:
+The OptimLib API follows a relatively simple convention, with most algorithms called in the following manner:
 ```
-algorithm_name(<initial and final values>, <objective function>, <objective function data>);
+algorithm_id(<initial/final values>, <objective function>, <objective function data>);
 ```
 The inputs, in order, are:
 * A writable vector of initial values to define the starting point of the algorithm. In the event of successful completion, the initial values will be overwritten by the solution vector.
@@ -46,8 +48,8 @@ The inputs, in order, are:
 * The final input is optional: it is any object that contains additional parameters necessary to evaluate the objective function.
 
 For example, the BFGS algorithm is called using
-``` cpp
-bool bfgs(Vec_t& init_out_vals, std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data);
+```cpp
+bfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 ```
 
 ## Installation Method 1: Shared Library
@@ -59,7 +61,7 @@ The library can be installed on Unix-alike systems via the standard `./configure
 git clone https://github.com/kthohr/optim ./optim
 # build and install
 cd ./optim
-./configure -i "/usr/local" -p
+./configure -i "/usr/local" -l arma -p
 make
 make install
 ```
@@ -127,7 +129,7 @@ Code:
 //
 // Ackley function
 
-double ackley_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
@@ -143,7 +145,7 @@ double ackley_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 int main()
 {
     // initial values:
-    Vec_t x = arma::ones(2,1) + 1.0; // (2,2)
+    arma::vec x = arma::ones(2,1) + 1.0; // (2,2)
 
     //
 
@@ -197,7 +199,7 @@ For a data-based example, consider maximum likelihood estimation of a logit mode
 // sigmoid function
 
 inline
-Mat_t sigm(const Mat_t& X)
+arma::mat sigm(const arma::mat& X)
 {
     return 1.0 / (1.0 + arma::exp(-X));
 }
@@ -206,20 +208,20 @@ Mat_t sigm(const Mat_t& X)
 
 struct ll_data_t
 {
-    Vec_t Y;
-    Mat_t X;
+    arma::vec Y;
+    arma::mat X;
 };
 
 // log-likelihood function with hessian
 
-double ll_fn_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
+double ll_fn_whess(const arma::vec& vals_inp, arma::vec* grad_out, arma::mat* hess_out, void* opt_data)
 {
     ll_data_t* objfn_data = reinterpret_cast<ll_data_t*>(opt_data);
 
-    Vec_t Y = objfn_data->Y;
-    Mat_t X = objfn_data->X;
+    arma::vec Y = objfn_data->Y;
+    arma::mat X = objfn_data->X;
 
-    Vec_t mu = sigm(X*vals_inp);
+    arma::vec mu = sigm(X*vals_inp);
 
     const double norm_term = static_cast<double>(Y.n_elem);
 
@@ -236,7 +238,7 @@ double ll_fn_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void
 
     if (hess_out)
     {
-        Mat_t S = arma::diagmat( mu%(1.0-mu) );
+        arma::mat S = arma::diagmat( mu%(1.0-mu) );
         *hess_out = X.t() * S * X / norm_term;
     }
 
@@ -247,7 +249,7 @@ double ll_fn_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void
 
 // log-likelihood function for Adam
 
-double ll_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+double ll_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
 {
     return ll_fn_whess(vals_inp,grad_out,nullptr,opt_data);
 }
@@ -259,12 +261,12 @@ int main()
     int n_dim = 5;     // dimension of parameter vector
     int n_samp = 4000; // sample length
 
-    Mat_t X = arma::randn(n_samp,n_dim);
-    Vec_t theta_0 = 1.0 + 3.0*arma::randu(n_dim,1);
+    arma::mat X = arma::randn(n_samp,n_dim);
+    arma::vec theta_0 = 1.0 + 3.0*arma::randu(n_dim,1);
 
-    Vec_t mu = sigm(X*theta_0);
+    arma::vec mu = sigm(X*theta_0);
 
-    Vec_t Y(n_samp);
+    arma::vec Y(n_samp);
 
     for (int i=0; i < n_samp; i++)
     {
@@ -277,7 +279,7 @@ int main()
     opt_data.Y = std::move(Y);
     opt_data.X = std::move(X);
 
-    Vec_t x = arma::ones(n_dim,1) + 1.0; // initial values
+    arma::vec x = arma::ones(n_dim,1) + 1.0; // initial values
 
     // run Adam-based optim
 

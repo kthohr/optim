@@ -36,10 +36,12 @@ int main()
     optim::algo_settings_t settings_1;
 
     settings_1.iter_max = 2000;
+    // settings_1.print_level = 4;
     settings_1.conv_failure_switch = 1;
-    settings_1.cg_method = 5;
+    settings_1.cg_settings.method = 5;
 
     Vec_t x_1 = OPTIM_MATOPS_ONE_VEC(2);
+    x_1(1) = - 1.0;
 
     bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,settings_1);
 
@@ -106,7 +108,7 @@ int main()
 
     optim::algo_settings_t settings_5;
     settings_5.iter_max = 10000;
-    settings_5.cg_method = 5;
+    settings_5.cg_settings.method = 5;
 
     Vec_t x_5 = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), 2);
 
@@ -124,57 +126,55 @@ int main()
     //
     // for coverage
 
-    optim::algo_settings_t settings;
+    optim::algo_settings_t settings_cov;
 
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-    settings.cg_method = 1;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    settings_cov.cg_settings.method = 1;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     OPTIM_MATOPS_COUT << "\ncg: solution to test_2 using cg_method = 1\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-    settings.cg_method = 2;
-
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    settings_cov.cg_settings.method = 2;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     OPTIM_MATOPS_COUT << "cg: solution to test_2 using cg_method = 2\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-    settings.cg_method = 3;
-
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    settings_cov.cg_settings.method = 3;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     OPTIM_MATOPS_COUT << "cg: solution to test_2 using cg_method = 3\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-    settings.cg_method = 4;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    settings_cov.cg_settings.method = 4;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     OPTIM_MATOPS_COUT << "cg: solution to test_2 using cg_method = 4\n" << x_1 << "\n";
 
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-    settings.cg_method = 5;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    settings_cov.cg_settings.method = 5;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     OPTIM_MATOPS_COUT << "cg: solution to test_2 using cg_method = 5\n" << x_1 << "\n";
     
     x_1 = OPTIM_MATOPS_ZERO_VEC(2);
-    settings.cg_method = 6;
-    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings);
+    settings_cov.cg_settings.method = 6;
+    optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     OPTIM_MATOPS_COUT << "cg: solution to test_2 using cg_method = 6\n" << x_1 << "\n";
 
     //
 
-    optim::algo_settings_t settings_2;
+    optim::algo_settings_t settings_extra;
 
-    settings_2.vals_bound = true;
-    settings_2.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -4.5);
-    settings_2.upper_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  4.5);
+    settings_extra.vals_bound = true;
+    settings_extra.lower_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), -4.5);
+    settings_extra.upper_bounds = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2),  4.5);
 
     x_4 = OPTIM_MATOPS_ONE_VEC(2);
     
-    success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr,settings_2);
+    success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr,settings_extra);
 
     if (success_4) {
         std::cout << "\ncg with box constraints: test_4 completed successfully." << std::endl;

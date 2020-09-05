@@ -17,7 +17,7 @@
   ##   limitations under the License.
   ##
   ################################################################################*/
- 
+
 /*
  * Determine the upper-lower bounds combo type
  */

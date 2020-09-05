@@ -27,10 +27,11 @@
 // [OPTIM_BEGIN]
 optimlib_inline
 bool
-optim::de_prmm_int(Vec_t& init_out_vals, 
-                   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-                   void* opt_data, 
-                   algo_settings_t* settings_inp)
+optim::internal::de_prmm_impl(
+    Vec_t& init_out_vals, 
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp)
 {
     bool success = false;
 
@@ -45,34 +46,37 @@ optim::de_prmm_int(Vec_t& init_out_vals,
         settings = *settings_inp;
     }
 
+    const int print_level = settings.print_level;
+
     const uint_t conv_failure_switch = settings.conv_failure_switch;
-    const double err_tol = settings.err_tol;
+    const double rel_objfn_change_tol = settings.rel_objfn_change_tol;
 
-    size_t n_pop = settings.de_n_pop;
-    // const size_t check_freq = settings.de_check_freq;
+    size_t n_pop = settings.de_settings.n_pop;
+    // const size_t check_freq = settings.de_settings.check_freq;
 
-    const double par_initial_F = settings.de_par_F;
-    const double par_initial_CR = settings.de_par_CR;
+    const double par_initial_F = settings.de_settings.par_F;
+    const double par_initial_CR = settings.de_settings.par_CR;
 
-    const Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.de_initial_lb) == n_vals ) ? settings.de_initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
-    const Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.de_initial_ub) == n_vals ) ? settings.de_initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
+    const Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.de_settings.initial_lb) == n_vals ) ? settings.de_settings.initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
+    const Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.de_settings.initial_ub) == n_vals ) ? settings.de_settings.initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
 
-    const double F_l = settings.de_par_F_l;
-    const double F_u = settings.de_par_F_u;
-    const double tau_F  = settings.de_par_tau_F;
-    const double tau_CR = settings.de_par_tau_CR;
+    const double F_l = settings.de_settings.par_F_l;
+    const double F_u = settings.de_settings.par_F_u;
+    const double tau_F  = settings.de_settings.par_tau_F;
+    const double tau_CR = settings.de_settings.par_tau_CR;
 
     Vec_t F_vec(n_pop), CR_vec(n_pop);
     F_vec.fill(par_initial_F);
     CR_vec.fill(par_initial_CR);
 
-    const uint_t max_fn_eval = settings.de_max_fn_eval;
-    const uint_t pmax = settings.de_pmax;
-    const size_t n_pop_best = settings.de_n_pop_best;
+    const uint_t max_fn_eval = settings.de_settings.max_fn_eval;
+    const uint_t pmax = settings.de_settings.pmax;
+    const size_t n_pop_best = settings.de_settings.n_pop_best;
 
-    const double d_eps = 0.5;
+    const double d_eps = settings.de_settings.par_d_eps;
 
     size_t n_gen = std::ceil(max_fn_eval / (pmax*n_pop));
+    const size_t check_freq = settings.de_settings.check_freq;
 
     const bool vals_bound = settings.vals_bound;
     
@@ -80,6 +84,8 @@ optim::de_prmm_int(Vec_t& init_out_vals,
     const Vec_t upper_bounds = settings.upper_bounds;
 
     const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+
+    const bool return_population_mat = settings.de_settings.return_population_mat;
 
     // lambda function for box constraints
 
@@ -105,7 +111,7 @@ optim::de_prmm_int(Vec_t& init_out_vals,
 #ifdef OPTIM_USE_OMP
     #pragma omp parallel for
 #endif
-    for (size_t i=0; i < n_pop; ++i) {
+    for (size_t i = 0; i < n_pop; ++i) {
         X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( OPTIM_MATOPS_HADAMARD_PROD( (par_initial_lb + (par_initial_ub - par_initial_lb)), OPTIM_MATOPS_RANDU_VEC(n_vals) ) );
 
         double prop_objfn_val = opt_objfn( OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), nullptr, opt_data);
@@ -124,11 +130,11 @@ optim::de_prmm_int(Vec_t& init_out_vals,
     size_t min_objfn_val_index = index_min(objfn_vals);
     double min_objfn_val = objfn_vals(min_objfn_val_index);
 
-    double best_objfn_val_running = min_objfn_val;
-    // double best_objfn_val_check   = best_objfn_val_running;
+    double min_objfn_val_running = min_objfn_val;
+    double min_objfn_val_check   = min_objfn_val_running;
 
-    double best_val_main = best_objfn_val_running;
-    double best_val_best = best_objfn_val_running;
+    double best_val_main = min_objfn_val_running;
+    double best_val_best = min_objfn_val_running;
 
     RowVec_t best_sol_running = X_next.row( min_objfn_val_index );
     RowVec_t best_vec_main = best_sol_running;
@@ -139,11 +145,11 @@ optim::de_prmm_int(Vec_t& init_out_vals,
     //
 
     uint_t n_reset = 1;
-    uint_t iter = 0;
-    double err = 2*err_tol;
+    size_t iter = 0;
+    double rel_objfn_change = 2*rel_objfn_change_tol;
 
-    while (err > err_tol && iter < n_gen + 1) {
-        iter++;
+    while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen + 1) {
+        ++iter;
 
         //
         // population reduction step
@@ -316,7 +322,7 @@ optim::de_prmm_int(Vec_t& init_out_vals,
         best_vec_best = X_next.row( min_objfn_val_index );
 
         if (best_val_best < best_val_main) {
-            double the_sum = 0;
+            double the_sum = 0.0;
 
             for (size_t j = 0; j < n_vals; ++j) {
                 double min_val = OPTIM_MATOPS_MIN_VAL(X.col(j));
@@ -335,25 +341,37 @@ optim::de_prmm_int(Vec_t& init_out_vals,
             best_vec_best = best_vec_main;
         }
 
-        //
         // assign running global minimum
 
         min_objfn_val_index = index_min( OPTIM_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - 1) );
         double best_val_tmp = objfn_vals(min_objfn_val_index);
 
-        if (best_val_tmp < best_objfn_val_running) {
-            best_objfn_val_running = best_val_tmp;
+        if (best_val_tmp < min_objfn_val_running) {
+            min_objfn_val_running = best_val_tmp;
             best_sol_running = X_next.row( min_objfn_val_index );
         }
 
-        // if (iter%check_freq == 0) {
-        //     // err = std::abs(objfn_vals.min() - best_objfn_val) / (std::abs(best_objfn_val) + 1E-08);
-        //     err = std::abs(best_objfn_val_running - best_objfn_val_check);
-        //     // best_objfn_val_check = objfn_vals.min();
-        //     if (best_objfn_val_running < best_objfn_val_check) {
-        //         best_objfn_val_check = best_objfn_val_running;
-        //     }
-        // }
+        if (iter % check_freq == 0) {   
+            rel_objfn_change = std::abs(min_objfn_val_running - min_objfn_val_check) / (1.0e-08 + std::abs(min_objfn_val_running));
+            
+            if (min_objfn_val_running < min_objfn_val_check) {
+                min_objfn_val_check = min_objfn_val_running;
+            }
+        }
+
+        OPTIM_DEPRMM_TRACE(iter, rel_objfn_change, min_objfn_val_running, min_objfn_val_check, best_sol_running, X_next);
+    }
+
+    //
+
+    if (return_population_mat) {
+        if (vals_bound) {
+            for (size_t i = 0; i < n_pop; ++i) {
+                X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( inv_transform(OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            }
+        }
+
+        settings_inp->de_settings.population_mat = X_next;
     }
 
     //
@@ -362,7 +380,9 @@ optim::de_prmm_int(Vec_t& init_out_vals,
         best_sol_running = OPTIM_MATOPS_TRANSPOSE( inv_transform(OPTIM_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
     }
 
-    error_reporting(init_out_vals, OPTIM_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, success, err, err_tol, iter, n_gen, conv_failure_switch, settings_inp);
+    error_reporting(init_out_vals, OPTIM_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
+                    success, rel_objfn_change, rel_objfn_change_tol, iter, n_gen, 
+                    conv_failure_switch, settings_inp);
 
     //
 
@@ -371,19 +391,21 @@ optim::de_prmm_int(Vec_t& init_out_vals,
 
 optimlib_inline
 bool
-optim::de_prmm(Vec_t& init_out_vals, 
-               std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-               void* opt_data)
+optim::de_prmm(
+    Vec_t& init_out_vals, 
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
-    return de_prmm_int(init_out_vals,opt_objfn,opt_data,nullptr);
+    return internal::de_prmm_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
 bool
-optim::de_prmm(Vec_t& init_out_vals, 
-               std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
-               void* opt_data, 
-               algo_settings_t& settings)
+optim::de_prmm(
+    Vec_t& init_out_vals, 
+    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
-    return de_prmm_int(init_out_vals,opt_objfn,opt_data,&settings);
+    return internal::de_prmm_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }
