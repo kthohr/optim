@@ -59,6 +59,7 @@ The library can be installed on Unix-alike systems via the standard `./configure
 ```bash
 # clone optim into the current directory
 git clone https://github.com/kthohr/optim ./optim
+
 # build and install
 cd ./optim
 ./configure -i "/usr/local" -l arma -p
@@ -73,6 +74,7 @@ Configuration options (see `./configure -h`):
 &nbsp; &nbsp; &nbsp; **Primary**
 * `-h` print help
 * `-i` installation path; default: the build directory
+* `-l` specify the choice of linear algebra library; `arma` or `eigen`
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features (*recommended*)
@@ -86,13 +88,15 @@ Configuration options (see `./configure -h`):
 * `--header-only-version` generate a header-only version of OptimLib (see [below](#installation-method-2-header-only-library))
 <!-- * `-R` RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo) -->
 
-### Armadillo
+### Linear Algebra Library
 
-OptimLib is built on the Armadillo C++ linear algebra library. The `configure` script will search for Armadillo in the usual places: `/usr/include`, `/usr/local/include`, `/opt/include`, `/opt/local/include`. If the Armadillo header files are installed elsewhere, set the following environment variable *before* running `configure`:
+OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. 
+
+Set (one) of the following environment variables *before* running `configure`:
 ``` bash
 export ARMA_INCLUDE_PATH=/path/to/armadillo
+export EIGEN_INCLUDE_PATH=/path/to/eigen
 ```
-Otherwise the build script will proceed to download any required files from the Armadillo GitLab repository.
 
 ## Installation Method 2: Header-only Library
 
