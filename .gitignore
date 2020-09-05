@@ -17,6 +17,9 @@ Makefile
 *.gcov
 *.dSYM
 
+docs/build
+docs/xml
+
 header_only_version
 include/armadillo*
 tests/constrained/configure

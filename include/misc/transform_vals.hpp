@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -23,17 +23,18 @@
  */
 
 inline
-arma::vec
-transform(const arma::vec& vals_inp, const arma::uvec& bounds_type, const arma::vec& lower_bounds, const arma::vec& upper_bounds)
+Vec_t
+transform(const Vec_t& vals_inp, 
+          const VecInt_t& bounds_type, 
+          const Vec_t& lower_bounds, 
+          const Vec_t& upper_bounds)
 {
-    const size_t n_vals = bounds_type.n_elem;
+    const size_t n_vals = OPTIM_MATOPS_SIZE(bounds_type);
 
-    arma::vec vals_trans_out(n_vals);
+    Vec_t vals_trans_out(n_vals);
 
-    for (size_t i=0; i < n_vals; i++)
-    {
-        switch (bounds_type(i))
-        {
+    for (size_t i = 0; i < n_vals; ++i) {
+        switch (bounds_type(i)) {
             case 1: // no bounds
                 vals_trans_out(i) = vals_inp(i);
                 break;
@@ -55,63 +56,50 @@ transform(const arma::vec& vals_inp, const arma::uvec& bounds_type, const arma::
 }
 
 inline
-arma::vec
-inv_transform(const arma::vec& vals_trans_inp, const arma::uvec& bounds_type, const arma::vec& lower_bounds, const arma::vec& upper_bounds)
+Vec_t
+inv_transform(const Vec_t& vals_trans_inp, 
+              const VecInt_t& bounds_type, 
+              const Vec_t& lower_bounds, 
+              const Vec_t& upper_bounds)
 {
-    const size_t n_vals = bounds_type.n_elem;
+    const size_t n_vals = OPTIM_MATOPS_SIZE(bounds_type);
 
-    arma::vec vals_out(n_vals);
+    Vec_t vals_out(n_vals);
 
-    for (size_t i=0; i < n_vals; i++)
-    {
-        switch (bounds_type(i))
-        {
+    for (size_t i = 0; i < n_vals; ++i) {
+        switch (bounds_type(i)) {
             case 1: // no bounds
                 vals_out(i) = vals_trans_inp(i);
                 break;
             case 2: // lower bound only
-                if (!std::isfinite(vals_trans_inp(i)))
-                {
+                if (!std::isfinite(vals_trans_inp(i))) {
                     vals_out(i) = lower_bounds(i) + eps_dbl;
-                }
-                else
-                {
+                } else {
                     vals_out(i) = lower_bounds(i) + eps_dbl + std::exp(vals_trans_inp(i));
                 }
                 break;
             case 3: // upper bound only
-                if (!std::isfinite(vals_trans_inp(i)))
-                {
+                if (!std::isfinite(vals_trans_inp(i))) {
                     vals_out(i) = upper_bounds(i) - eps_dbl;
-                }
-                else
-                {
+                } else {
                     vals_out(i) = upper_bounds(i) - eps_dbl - std::exp(-vals_trans_inp(i));
                 }
                 break;
             case 4: // upper and lower bounds
-                if (!std::isfinite(vals_trans_inp(i)))
-                {
-                    if (std::isnan(vals_trans_inp(i)))
-                    {
+                if (!std::isfinite(vals_trans_inp(i))) {
+                    if (std::isnan(vals_trans_inp(i))) {
                         vals_out(i) = (upper_bounds(i) - lower_bounds(i)) / 2.0;
                     }
-                    else if (vals_trans_inp(i) < 0.0)
-                    {
+                    else if (vals_trans_inp(i) < 0.0) {
                         vals_out(i) = lower_bounds(i) + eps_dbl;
-                    }
-                    else
-                    {
+                    } else {
                         vals_out(i) = upper_bounds(i) - eps_dbl;
                     }
-                }
-                else
-                {
-                    vals_out(i) = ( lower_bounds(i) + eps_dbl + (upper_bounds(i) - eps_dbl)*std::exp(vals_trans_inp(i)) ) \
+                } else {
+                    vals_out(i) = ( lower_bounds(i) - eps_dbl + (upper_bounds(i) + eps_dbl)*std::exp(vals_trans_inp(i)) ) \
                                     / ( 1.0 + std::exp(vals_trans_inp(i)) );
 
-                    if (!std::isfinite(vals_out(i)))
-                    {
+                    if (!std::isfinite(vals_out(i))) {
                         vals_out(i) = upper_bounds(i) - eps_dbl;
                     }
                 }

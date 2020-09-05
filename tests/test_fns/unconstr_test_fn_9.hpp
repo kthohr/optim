@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -34,16 +34,15 @@
 #ifndef _optim_test_fn_9_HPP
 #define _optim_test_fn_9_HPP
 
-double unconstr_test_fn_9(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double 
-unconstr_test_fn_9(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_9(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
 
     double obj_val = 100*std::sqrt(std::abs(y - 0.01*x*x)) + 0.01*std::abs(x + 10);
-    //
+    
     return obj_val;
 }
 

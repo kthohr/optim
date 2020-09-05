@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -19,9 +19,6 @@
   ################################################################################*/
 
 //
-// this example is from Matlab's help page
-// https://www.mathworks.com/help/optim/ug/fminunc.html
-//
 // Rosenbrock's function:
 // f(x) = 100*(x_2 - x_1^2)^2 + (1-x_1)^2
 // 
@@ -31,22 +28,39 @@
 #ifndef _optim_test_fn_2_HPP
 #define _optim_test_fn_2_HPP
 
-double unconstr_test_fn_2(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
-unconstr_test_fn_2(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_2_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
-    double x_1 = vals_inp(0);
-    double x_2 = vals_inp(1);
+    const double x_1 = vals_inp(0);
+    const double x_2 = vals_inp(1);
 
-    double obj_val = 100*std::pow(x_2 - std::pow(x_1,2),2) + std::pow(1-x_1,2);
+    const double x1sq = x_1 * x_1;
+
     //
+
+    double obj_val = 100*std::pow(x_2 - x1sq,2) + std::pow(1-x_1,2);
+    
     if (grad_out) {
-        (*grad_out)(0) = -400*(x_2 - std::pow(x_1,2))*x_1 - 2*(1-x_1);
-        (*grad_out)(1) = 200*(x_2 - std::pow(x_1,2));
+        (*grad_out)(0) = -400*(x_2 - x1sq)*x_1 - 2*(1-x_1);
+        (*grad_out)(1) = 200*(x_2 - x1sq);
     }
-    //
+
+    if (hess_out) {
+        (*hess_out)(0,0) = 1200 * x1sq - 400 * x_2 + 2;
+        (*hess_out)(0,1) = - 400 * x_1;
+        (*hess_out)(1,0) = - 400 * x_1;
+        (*hess_out)(1,1) = 200;
+    }
+    
     return obj_val;
+}
+
+inline
+double
+unconstr_test_fn_2(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+{
+    return unconstr_test_fn_2_whess(vals_inp, grad_out, nullptr, opt_data);
 }
 
 #endif

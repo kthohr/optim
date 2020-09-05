@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -30,22 +30,37 @@
 #ifndef _optim_test_fn_1_HPP
 #define _optim_test_fn_1_HPP
 
-double unconstr_test_fn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
-unconstr_test_fn_1(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_1_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
-    double x_1 = vals_inp(0);
-    double x_2 = vals_inp(1);
+    const double x_1 = vals_inp(0);
+    const double x_2 = vals_inp(1);
 
-    double obj_val = 3*std::pow(x_1,2) + 2*x_1*x_2 + std::pow(x_2,2) - 4*x_1 + 5*x_2;
+    double obj_val = 3*x_1*x_1 + 2*x_1*x_2 + x_2*x_2 - 4*x_1 + 5*x_2;
 
     if (grad_out) {
         (*grad_out)(0) = 6*x_1 + 2*x_2 - 4;
         (*grad_out)(1) = 2*x_1 + 2*x_2 + 5;
     }
+
+    if (hess_out) {
+        (*hess_out)(0,0) = 6.0;
+        (*hess_out)(0,1) = 2.0;
+        (*hess_out)(1,0) = 2.0;
+        (*hess_out)(1,1) = 2.0;
+    }
+
     //
+    
     return obj_val;
+}
+
+inline
+double
+unconstr_test_fn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+{
+    return unconstr_test_fn_1_whess(vals_inp, grad_out, nullptr, opt_data);
 }
 
 #endif

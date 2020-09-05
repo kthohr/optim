@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -25,11 +25,93 @@
 #ifndef _optim_lbfgs_HPP
 #define _optim_lbfgs_HPP
 
-bool lbfgs_int(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+/**
+ * @brief The Limited Memory Variant of the BFGS Optimization Algorithm
+ *
+ * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
+ * @param opt_objfn the function to be minimized, taking three arguments:
+ *   - \c vals_inp a vector of inputs;
+ *   - \c grad_out a vector to store the gradient; and
+ *   - \c opt_data additional data passed to the user-provided function.
+ * @param opt_data additional data passed to the user-provided function.
+ *
+ * @return a boolean value indicating successful completion of the optimization algorithm.
+ */
 
-bool lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data);
-bool lbfgs(arma::vec& init_out_vals, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool
+lbfgs(Vec_t& init_out_vals, 
+      std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+      void* opt_data);
 
-arma::vec lbfgs_recur(arma::vec q, const arma::mat& s_mat, const arma::mat& y_mat, const uint_t M);
+/**
+ * @brief The Limited Memory Variant of the BFGS Optimization Algorithm
+ *
+ * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
+ * @param opt_objfn the function to be minimized, taking three arguments:
+ *   - \c vals_inp a vector of inputs;
+ *   - \c grad_out a vector to store the gradient; and
+ *   - \c opt_data additional data passed to the user-provided function.
+ * @param opt_data additional data passed to the user-provided function.
+ * @param settings parameters controlling the optimization routine.
+ *
+ * @return a boolean value indicating successful completion of the optimization algorithm.
+ */
+
+bool
+lbfgs(Vec_t& init_out_vals, 
+      std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+      void* opt_data, 
+      algo_settings_t& settings);
+
+//
+// internal
+
+namespace internal
+{
+
+bool
+lbfgs_impl(Vec_t& init_out_vals, 
+           std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+           void* opt_data, 
+           algo_settings_t* settings_inp);
+
+// algorithm 7.4 of Nocedal and Wright (2006)
+inline
+Vec_t
+lbfgs_recur(Vec_t q, 
+            const Mat_t& s_mat, 
+            const Mat_t& y_mat, 
+            const uint_t M)
+{
+    Vec_t alpha_vec(M);
+
+    // forwards
+
+    // double rho = 1.0;
+
+    for (size_t i = 0; i < M; ++i) {
+        double rho = 1.0 / OPTIM_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
+        alpha_vec(i) = rho * OPTIM_MATOPS_DOT_PROD(s_mat.col(i),q);
+
+        q -= alpha_vec(i)*y_mat.col(i);
+    }
+
+    Vec_t r = q * ( OPTIM_MATOPS_DOT_PROD(s_mat.col(0),y_mat.col(0)) / OPTIM_MATOPS_DOT_PROD(y_mat.col(0),y_mat.col(0)) );
+
+    // backwards
+
+    // double beta = 1.0;
+
+    for (int i = M - 1; i >= 0; i--) {
+        double rho = 1.0 / OPTIM_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
+        double beta = rho * OPTIM_MATOPS_DOT_PROD(y_mat.col(i),r);
+
+        r += (alpha_vec(i) - beta)*s_mat.col(i);
+    }
+
+    return r;
+}
+
+}
 
 #endif

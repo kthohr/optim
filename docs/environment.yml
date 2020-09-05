@@ -1,0 +1,9 @@
+# problem: katex is not available on conda, yet
+
+name: optimlib-docs
+
+channels:
+  - conda-forge
+
+dependencies:
+  - breathe

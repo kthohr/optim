@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -20,14 +20,18 @@
 
 #pragma once
 
+#include <algorithm>
+#include <numeric>
+#include <vector>
+
 // version
 
 #ifndef OPTIM_VERSION_MAJOR
-    #define OPTIM_VERSION_MAJOR 1
+    #define OPTIM_VERSION_MAJOR 2
 #endif
 
 #ifndef OPTIM_VERSION_MINOR
-    #define OPTIM_VERSION_MINOR 2
+    #define OPTIM_VERSION_MINOR 0
 #endif
 
 #ifndef OPTIM_VERSION_PATCH
@@ -48,37 +52,73 @@
     #define OPTIM_DONE_USE_OPENMP
 #endif
 
-#ifdef OPTIM_USE_OPENMP
+// #ifdef OPTIM_USE_OPENMP
     // #include "omp.h" //  OpenMP
-    #ifndef ARMA_USE_OPENMP
-        #define ARMA_USE_OPENMP
-    #endif
-#endif
+// #endif
 
 #ifdef OPTIM_DONT_USE_OPENMP
     #ifdef OPTIM_USE_OPENMP
         #undef OPTIM_USE_OPENMP
     #endif
-
-    #ifndef ARMA_DONT_USE_OPENMP
-        #define ARMA_DONT_USE_OPENMP
-    #endif
 #endif
 
 //
 
-#ifdef USE_RCPP_ARMADILLO
-    #include <RcppArmadillo.h>
-#else
-    #ifndef ARMA_DONT_USE_WRAPPER
-        #define ARMA_DONT_USE_WRAPPER
-    #endif
-    #include "armadillo"
-#endif
-
 #ifndef optimlib_inline
     #define optimlib_inline 
 #endif
+
+#ifdef OPTIM_ENABLE_ARMA_WRAPPERS
+    #ifdef USE_RCPP_ARMADILLO
+        #include <RcppArmadillo.h>
+    #else
+        #ifndef ARMA_DONT_USE_WRAPPER
+            #define ARMA_DONT_USE_WRAPPER
+        #endif
+        #include "armadillo"
+    #endif
+
+    #ifdef OPTIM_USE_OPENMP
+        #ifndef ARMA_USE_OPENMP
+            #define ARMA_USE_OPENMP
+        #endif
+    #endif
+
+    #ifdef OPTIM_DONT_USE_OPENMP
+        #ifndef ARMA_DONT_USE_OPENMP
+            #define ARMA_DONT_USE_OPENMP
+        #endif
+    #endif
+
+    namespace optim
+    {
+        using Mat_t = arma::mat;
+        using Vec_t = arma::vec;
+        using RowVec_t = arma::rowvec;
+        using VecInt_t = arma::uvec;
+    }
+#endif
+
+//
+
+#ifdef OPTIM_ENABLE_EIGEN_WRAPPERS
+    #include <iostream>
+    #include <random>
+    #include <Eigen/Dense>
+
+    template<typename eT, int iTr, int iTc>
+    using EigenMat = Eigen::Matrix<eT,iTr,iTc>;
+
+    namespace optim
+    {
+        using Mat_t = Eigen::MatrixXd;
+        using Vec_t = Eigen::VectorXd;
+        using RowVec_t = Eigen::Matrix<double,1,Eigen::Dynamic>;
+        using VecInt_t = Eigen::VectorXi;
+    }
+#endif
+
+//
 
 namespace optim
 {

@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -27,43 +27,114 @@
 
 // without jacobian
 
-bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
+/**
+ * @brief Broyden's method for solving systems of nonlinear equations, without Jacobian
+ *
+ * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
+ * @param opt_objfn the function to be minimized, taking three arguments:
+ *   - \c vals_inp a vector of inputs; and
+ *   - \c opt_data additional data passed to the user-provided function.
+ * @param opt_data additional data passed to the user-provided function.
+ *
+ * @return a boolean value indicating successful completion of the optimization algorithm.
+ */
 
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
+bool
+broyden(Vec_t& init_out_vals, 
+        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+        void* opt_data);
 
+/**
+ * @brief Broyden's method for solving systems of nonlinear equations, without Jacobian
+ *
+ * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
+ * @param opt_objfn the function to be minimized, taking three arguments:
+ *   - \c vals_inp a vector of inputs; and
+ *   - \c opt_data additional data passed to the user-provided function.
+ * @param opt_data additional data passed to the user-provided function.
+ * @param settings parameters controlling the optimization routine.
+ *
+ * @return a boolean value indicating successful completion of the optimization algorithm.
+ */
+
+bool
+broyden(Vec_t& init_out_vals, 
+        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+        void* opt_data, 
+        algo_settings_t& settings);
+
+//
 // with jacobian
 
-bool broyden_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                 std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t* settings_inp);
+/**
+ * @brief Broyden's method for solving systems of nonlinear equations, with Jacobian
+ *
+ * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
+ * @param opt_objfn the function to be minimized, taking three arguments:
+ *   - \c vals_inp a vector of inputs; and
+ *   - \c opt_data additional data passed to the user-provided function.
+ * @param opt_data additional data passed to the user-provided function.
+ * @param jacob_objfn a function to calculate the Jacobian matrix, taking two arguments:
+ *   - \c vals_inp a vector of inputs; and
+ *   - \c jacob_data additional data passed to the Jacobian function.
+ * @param jacob_data additional data passed to the Jacobian function.
+ *
+ * @return a boolean value indicating successful completion of the optimization algorithm.
+ */
 
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-             std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data);
+bool
+broyden(Vec_t& init_out_vals, 
+        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+        void* opt_data,
+        std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+        void* jacob_data);
 
-bool broyden(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-             std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t& settings);
+/**
+ * @brief Broyden's method for solving systems of nonlinear equations, with Jacobian
+ *
+ * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
+ * @param opt_objfn the function to be minimized, taking three arguments:
+ *   - \c vals_inp a vector of inputs; and
+ *   - \c opt_data additional data passed to the user-provided function.
+ * @param opt_data additional data passed to the user-provided function.
+ * @param jacob_objfn a function to calculate the Jacobian matrix, taking two arguments:
+ *   - \c vals_inp a vector of inputs; and
+ *   - \c jacob_data additional data passed to the Jacobian function.
+ * @param jacob_data additional data passed to the Jacobian function.
+ * @param settings parameters controlling the optimization routine.
+ *
+ * @return a boolean value indicating successful completion of the optimization algorithm.
+ */
 
-// derivative-free method
+bool
+broyden(Vec_t& init_out_vals, 
+        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+        void* opt_data,
+        std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+        void* jacob_data, 
+        algo_settings_t& settings);
 
-bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t* settings_inp);
-
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings);
-
-// derivative-free method with jacobian
-
-bool broyden_df_int(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                    std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t* settings_inp);
-
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data);
-
-bool broyden_df(arma::vec& init_out_vals, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data,
-                std::function<arma::mat (const arma::vec& vals_inp, void* jacob_data)> jacob_objfn, void* jacob_data, algo_settings_t& settings);
-
+//
 // internal functions
 
-double df_eta(uint_t k);
-double df_proc_1(const arma::vec& x_vals, const arma::vec& direc, double sigma_1, uint_t k, std::function<arma::vec (const arma::vec& vals_inp, void* opt_data)> opt_objfn, void* opt_data);
+namespace internal
+{
+
+bool
+broyden_impl(Vec_t& init_out_vals, 
+            std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+            void* opt_data, 
+            algo_settings_t* settings_inp);
+
+
+bool
+broyden_impl(Vec_t& init_out_vals, 
+            std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+            void* opt_data,
+            std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+            void* jacob_data, 
+            algo_settings_t* settings_inp);
+
+}
 
 #endif

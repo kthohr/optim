@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -27,28 +27,43 @@
 // f(x) = (x_1 + 2*x_2 - 7)^2 + (2*x_1 + x_2 - 5)^2
 // s.t. -10 <= x_1, x_2 <= 10
 // 
-// solution is: (1,3)
+// solution: f(1,3) = 0
 //
 
 #ifndef _optim_test_fn_5_HPP
 #define _optim_test_fn_5_HPP
 
-double unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
-unconstr_test_fn_5(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_5_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
-    double obj_val = std::pow(x_1 + 2*x_2 - 7.0,2) + std::pow(2*x_1 + x_2 - 5.0,2);
-    //
+    double obj_val = std::pow(x_1 + 2*x_2 - 7.0, 2) + std::pow(2*x_1 + x_2 - 5.0, 2);
+    
     if (grad_out) {
-        (*grad_out)(0) = 2*(x_1 + 2*x_2 - 7.0) + 2*(2*x_1 + x_2 - 5.0)*2;
-        (*grad_out)(1) = 2*(x_1 + 2*x_2 - 7.0)*2 + 2*(2*x_1 + x_2 - 5.0);
+        // (*grad_out)(0) = 2*(x_1 + 2*x_2 - 7.0) + 2*(2*x_1 + x_2 - 5.0)*2;
+        (*grad_out)(0) = 10*x_1 + 8*x_2 - 34;
+        // (*grad_out)(1) = 2*(x_1 + 2*x_2 - 7.0)*2 + 2*(2*x_1 + x_2 - 5.0);
+        (*grad_out)(1) = 8*x_1 + 10*x_2 - 38;
     }
-    //
+
+    if (hess_out) {
+        (*hess_out)(0,0) = 10.0;
+        (*hess_out)(0,1) = 8.0;
+        (*hess_out)(1,0) = 8.0;
+        (*hess_out)(1,1) = 10.0;
+    }
+    
     return obj_val;
+}
+
+inline
+double
+unconstr_test_fn_5(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+{
+    return unconstr_test_fn_5_whess(vals_inp, grad_out, nullptr, opt_data);
 }
 
 #endif

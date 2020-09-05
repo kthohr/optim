@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -37,17 +37,16 @@ struct unconstr_test_fn_6_data {
     double A;
 };
 
-double unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
-unconstr_test_fn_6(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_6(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
-    const int n = vals_inp.n_elem;
+    const int n = OPTIM_MATOPS_SIZE(vals_inp);
 
     unconstr_test_fn_6_data* objfn_data = reinterpret_cast<unconstr_test_fn_6_data*>(opt_data);
     const double A = objfn_data->A;
 
-    double obj_val = A*n + arma::accu( arma::pow(vals_inp,2) - A*arma::cos(2*arma::datum::pi*vals_inp) );
+    double obj_val = A*n + OPTIM_MATOPS_ACCU( OPTIM_MATOPS_POW(vals_inp,2) - A*OPTIM_MATOPS_COS(2 * OPTIM_PI * vals_inp) );
     //
     // if (grad_out) {
     //     *grad_out = 2*vals_inp + A*2*arma::datum::pi*arma::sin(2*arma::datum::pi*vals_inp);

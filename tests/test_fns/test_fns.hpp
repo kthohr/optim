@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -20,6 +20,11 @@
 
 #ifndef OPTIMLIB_TEST_INCLUDES
 #define OPTIMLIB_TEST_INCLUDES
+
+using optim::Vec_t;
+using optim::Mat_t;
+
+#define OPTIM_PI 3.14159265358979
 
 #include "unconstr_test_fn_1.hpp"
 #include "unconstr_test_fn_2.hpp"

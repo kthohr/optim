@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -32,17 +32,16 @@
 #ifndef _optim_test_fn_8_HPP
 #define _optim_test_fn_8_HPP
 
-double unconstr_test_fn_8(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data);
-
+inline
 double
-unconstr_test_fn_8(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+unconstr_test_fn_8(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
-    const double pi = arma::datum::pi;
+    const double pi = OPTIM_PI;
 
-    double obj_val = std::pow( std::sin(3*pi*x), 2) + std::pow(x-1,2)*(1 + std::pow( std::sin(3*pi*y), 2)) + std::pow(y-1,2)*(1 + std::pow( std::sin(2*pi*x), 2));
-    //
+    double obj_val = std::pow( std::sin(3*pi*x), 2) + std::pow(x-1,2)*(1 + std::pow( std::sin(3 * OPTIM_PI * y), 2)) + std::pow(y-1,2)*(1 + std::pow( std::sin(2 * OPTIM_PI * x), 2));
+    
     return obj_val;
 }
 

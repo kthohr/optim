@@ -4,27 +4,33 @@
 function print_help
 { 
     echo "" ;
-    echo -e "\x1B[32mOptimLib Configuration Options:\033[0m" >&2 ;
-    echo "-c    Coverage build" ;
-    echo "-d    Development build" ;
-    echo "-g    Debugging build (optimization flags set to -O0 -g)" ;
-    echo "-h    Print help" ;
-    echo "-i    Install path (default: current directory)" ;
-    echo "        Example: /usr/local" ;
-    echo "-m    Specify the BLAS and Lapack libraries to link against" ; 
-    echo "        Examples: -m \"-lopenblas\" or -m \"-framework Accelerate\"" ;
-    echo "-o    Compiler optimization options; defaults to:" ;
-    echo "        -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG" ;
-    echo "-p    Enable OpenMP parallelization features" ;
-    #echo "-r    RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo)" ;
-    #echo "        Example: -r \"/usr/local/R/lib/R/include /usr/local/R/lib/R/library/Rcpp/include /usr/local/R/lib/R/library/RcppArmadillo/include\"" ;
+    echo -e "\x1B[32mOptimLib Configuration\033[0m" >&2 ;
+    echo "";
+    echo -e "Main options:" >&2 ;
+    echo "  -c    Code coverage build" ;
+    echo "        (default: disabled)" ;
+    echo "  -d    Developmental build" ;
+    echo "        (default: disabled)" ;
+    echo "  -g    Debugging build (optimization flags set to -O0 -g)" ;
+    echo "        (default: disabled)" ;
+    echo "  -h    Print help" ;
+    echo "  -i    Install path (default: current directory)" ;
+    echo "          Example: /usr/local" ;
+    echo "  -l    Choice of linear algebra library" ;
+    echo "        Examples: -l arma or -l eigen" ;
+    echo "  -m    Specify the BLAS and Lapack libraries to link against" ; 
+    echo "          Examples: -m \"-lopenblas\" or -m \"-framework Accelerate\"" ;
+    echo "  -o    Compiler optimization options" ;
+    echo "        (default: -O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG)" ;
+    echo "  -p    Enable OpenMP parallelization features" ;
+    echo "        (default: disabled)" ;
     echo "" ;
-    echo "Special:" ;
-    echo "--header-only-version    Generate a header-only version of OptimLib" ;
+    echo "Special options:" ;
+    echo "  --header-only-version    Generate a header-only version of OptimLib" ;
     echo "" ;
 }
 
-while getopts hcdgi:m:o:pr:-: option; do
+while getopts hcdgi:l:m:o:pr:-: option; do
     case "${option}" in
         -)
             case "${OPTARG}" in
@@ -37,6 +43,7 @@ while getopts hcdgi:m:o:pr:-: option; do
         d) OPTIM_DEV_BUILD="y";;
         g) OPTIM_DEBUG_BUILD="y";;
         i) OPTIM_INSTALL_PATH=${OPTARG};;
+        l) OPTIM_LINEAR_ALG_LIB=${OPTARG};;
         m) OPTIM_MATRIX_OPS=${OPTARG};;
         o) OPTIM_OPT=${OPTARG};;
         p) OPTIM_PARALLEL="y";;
@@ -82,12 +89,15 @@ if [[ "${OPTIM_GEN_NEW_HEADERS}" == "y" ]]; then
 
         for file_ in $file_names; do
             file_=${file_%.hpp}
-            if [ "$IS_DARWIN" -eq "1" ]; then # macOS inplace replacement syntax changes a lot
+
+            if [ "$IS_DARWIN" -eq "1" ]; then # syntax for inplace replacement on macOS is a bit different
                 sed -i '' -e "s|#endif|//\n|" $file_.hpp
             else
                 sed -i -e "s|#endif|//\n|" $file_.hpp
             fi
-            sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" >> "$file_".hpp
+
+            sed -e '1,/\[OPTIM_BEGIN\]/ d' $WDIR/src/"$dir_"/"$file_".cpp | sed -e "s|optimlib_inline|inline|" -e "s|optim::||" -e "s|internal::||" >> "$file_".hpp
+
             echo -e "\n#endif" >> "$file_".hpp
         done
     done
@@ -98,40 +108,53 @@ fi
 #
 
 echo ""
-echo -e "\x1B[32mOptimLib Configuration...\033[0m" >&2 ;
+echo -e "\x1B[32mOptimLib Configuration\033[0m" >&2 ;
 echo ""
 
 # look for Armadillo
-if [[ "${OPTIM_R_BUILD}" != "" ]]; then
-    ARMA_INCLUDE_PATH="."
-    for word in $OPTIM_R_BUILD
-    do
-        ARMA_INCLUDE_PATH="$ARMA_INCLUDE_PATH -I$word"
-    done
-fi
+if [[ "${OPTIM_LINEAR_ALG_LIB}" == "arma" ]]; then
+    if [ -z ${ARMA_INCLUDE_PATH+x} ]; then 
+        
+        declare -a ARMA_DIRS=("${WDIR}/../../include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
+        ARMA_INCLUDE_PATH=
 
-if [ -z ${ARMA_INCLUDE_PATH+x} ]; then
-    
-    declare -a ARMA_DIRS=("${WDIR}/include" "/usr/include" "/usr/local/include" "/opt/include" "/opt/local/include")
-    ARMA_INCLUDE_PATH=
+        for i in "${ARMA_DIRS[@]}"; do
+            if [ -f "$i"/armadillo ]; then 
+                ARMA_INCLUDE_PATH="$i"
+                break
+            fi
+        done
 
-    for i in "${ARMA_DIRS[@]}"; do
-        if [ -f "$i"/armadillo ]; then 
-            ARMA_INCLUDE_PATH="$i"
-            break
+        if [[ $ARMA_INCLUDE_PATH == "" ]]; then
+            echo -e "  \x1B[31m- error: cannot find the Armadillo library header files. Exiting.\033[0m" >&2 ;
+            echo ""
+            exit 1
         fi
-    done
 
-    if [[ $ARMA_INCLUDE_PATH == "" ]]; then
-        echo -e "\x1B[31m  - note: cannot find Armadillo files. Cloning from GitLab\033[0m" >&2 ;
-        echo ""
-
-        mkdir ${WDIR}/arma_tmp
-        git clone --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
-        mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
-        rm -rf ${WDIR}/arma_tmp
-        ARMA_INCLUDE_PATH="./include"
+        # mkdir ${WDIR}/arma_tmp
+        # git clone --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
+        # mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
+        # rm -rf ${WDIR}/arma_tmp
+        # ARMA_INCLUDE_PATH="./include"
     fi
+
+    OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_ARMA_WRAPPERS -DARMA_NO_DEBUG"
+    OPTIM_MATLIB_INCLUDE_PATH=$ARMA_INCLUDE_PATH
+elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "blaze" ]]; then
+    # OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_BLAZE_WRAPPERS"
+    # OPTIM_MATLIB_INCLUDE_PATH=$BLAZE_INCLUDE_PATH
+    # CXX_STD="-std=c++14"
+
+    echo -e "  \x1B[31m- error: Blaze not yet supported. Exiting.\033[0m" >&2 ;
+    echo ""
+    exit 1
+elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "eigen" ]]; then
+    OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_EIGEN_WRAPPERS"
+    OPTIM_MATLIB_INCLUDE_PATH=$EIGEN_INCLUDE_PATH
+else
+    echo -e "  \x1B[31m- error: unrecognized linear algebra library.\033[0m" >&2 ;
+    echo ""
+    exit 1
 fi
 
 # set build and optimization flags
@@ -146,7 +169,7 @@ elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-O0 -g"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG -DARMA_NO_DEBUG"
+        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG"
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
@@ -207,6 +230,8 @@ fi
 #
 # final print:
 
+echo "Summary:"
+
 echo "  - OS:            ${OSTYPE}"
 echo "  - C++ compiler:  ${CXX}"
 
@@ -224,8 +249,9 @@ fi
 
 echo ""
 
-echo "  - ARMA_INCLUDE_PATH set to:"
-echo "    ${ARMA_INCLUDE_PATH}"
+echo "  - OPTIM_LINEAR_ALG_LIB set to: ${OPTIM_LINEAR_ALG_LIB}"
+echo "  - OPTIM_MATLIB_INCLUDE_PATH set to:"
+echo "    ${OPTIM_MATLIB_INCLUDE_PATH}"
 echo "  - BLAS and Lapack libraries set to:"
 echo "    ${OPTIM_BLAS_LAPACK}"
 
@@ -264,7 +290,8 @@ echo -e "\x1B[32mConfiguration completed. Creating Makefile... \c\033[0m" >&2 ;
 sed -e "s|@CC@|${CC}|" \
     -e "s|@CXX@|${CXX}|" \
     -e "s|@FC@|${FC}|" \
-    -e "s|@ARMA_INCLUDE_PATH@|${ARMA_INCLUDE_PATH}|" \
+    -e "s|@OPTIM_MATLIB_FLAGS@|${OPTIM_MATLIB_FLAGS}|" \
+    -e "s|@OPTIM_MATLIB_INCLUDE_PATH@|${OPTIM_MATLIB_INCLUDE_PATH}|" \
     -e "s|@OPTIM_BLAS_LAPACK@|${OPTIM_BLAS_LAPACK}|" \
     -e "s|@OPTIM_WARN_FLAGS@|${OPTIM_WARN_FLAGS}|" \
     -e "s|@OPTIM_OPT_FLAGS@|${OPTIM_OPT_FLAGS}|" \

@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -19,10 +19,8 @@
   ################################################################################*/
 
 //
-// this example is from Matlab's help page
-// https://www.mathworks.com/help/optim/ug/fminunc.html
-//
-// f(x) = 3*x_1^2 + 2*x_1*x_2 + x_2^2 − 4*x_1 + 5*x_2
+// F(x) = [  2*x_1 - x_2   - exp(-x_1);
+//         - x_1   + 2*x_2 - exp(-x_2)]
 // 
 // solution is: (2.25,-4.75)
 //
@@ -30,33 +28,41 @@
 #ifndef _optim_zeros_test_fn_2_HPP
 #define _optim_zeros_test_fn_2_HPP
 
-arma::vec
-zeros_test_objfn_2(const arma::vec& vals_inp, void* opt_data)
+Vec_t
+zeros_test_objfn_2(const Vec_t& vals_inp, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
-    arma::vec ret(2);
-
-    ret(0) = 2*x_1 - x_2 - std::exp(-x_1);
-    ret(1) = -x_1 + 2*x_2 - std::exp(-x_2);
     //
+
+    Vec_t ret(2);
+
+    ret(0) =   2*x_1 - x_2   - std::exp(-x_1);
+    ret(1) = - x_1   + 2*x_2 - std::exp(-x_2);
+    
+    //
+    
     return ret;
 }
 
-arma::mat
-zeros_test_jacob_2(const arma::vec& vals_inp, void* opt_data)
+Mat_t
+zeros_test_jacob_2(const Vec_t& vals_inp, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
-    arma::mat ret(2,2);
+    //
+
+    Mat_t ret(2,2);
 
     ret(0,0) = 2 + std::exp(-x_1);
     ret(0,1) = - 1.0;
     ret(1,0) = - 1.0;
     ret(1,1) = 2 + std::exp(-x_2);
+    
     //
+
     return ret;
 }
 

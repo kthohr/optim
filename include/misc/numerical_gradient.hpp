@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -23,23 +23,25 @@
  */
 
 inline
-arma::vec
-numerical_gradient(const arma::vec& vals_inp, const double* step_size_inp, std::function<double (const arma::vec& vals_inp, arma::vec* grad_out, void* objfn_data)> objfn, void* objfn_data)
+Vec_t
+numerical_gradient(const Vec_t& vals_inp, 
+                   const double* step_size_inp, 
+                   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* objfn_data)> objfn, 
+                   void* objfn_data)
 {
-    const size_t n_vals = vals_inp.n_elem;
+    const size_t n_vals = OPTIM_MATOPS_SIZE(vals_inp);
 
     const double step_size = (step_size_inp) ? *step_size_inp : 1e-04;
     const double mach_eps = std::numeric_limits<double>::epsilon();
 
-    const arma::vec step_vec = arma::max(arma::abs(vals_inp), std::sqrt(step_size)*arma::ones(n_vals,1)) * std::pow(mach_eps,1.0/6.0);
+    const Vec_t step_vec = OPTIM_MATOPS_MAX( OPTIM_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps,1.0/6.0) * OPTIM_MATOPS_ONE_VEC(n_vals) );
     
-    arma::vec x_orig = vals_inp, x_term_1, x_term_2;
-    arma::vec grad_vec = arma::zeros(n_vals,1);
+    Vec_t x_orig = vals_inp, x_term_1, x_term_2;
+    Vec_t grad_vec = OPTIM_MATOPS_ZERO_VEC(n_vals);
 
     //
     
-    for (size_t i=0; i < n_vals; i++) 
-    {
+    for (size_t i = 0; i < n_vals; ++i) {
         x_term_1 = x_orig;
         x_term_2 = x_orig;
 

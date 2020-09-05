@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2018 Keith O'Hara
+  ##   Copyright (C) 2016-2020 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -23,10 +23,11 @@
  */
 
 inline
-arma::vec
-unit_vec(const size_t j, const size_t n)
+Vec_t
+unit_vec(const size_t j, 
+         const size_t n)
 {
-    arma::vec ret = arma::zeros(n,1);
+    Vec_t ret = OPTIM_MATOPS_ZERO_VEC(n);
     ret(j) = 1;
 
     return ret;
