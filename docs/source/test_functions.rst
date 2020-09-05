@@ -314,12 +314,6 @@ The minimum value is attained at :math:`(1, 1)`.
 
     \nabla_x f(x) = \begin{bmatrix} -400(x_2 - x_1^2)(x_1) - 2(1-x_1) \\ 200(x_2 - x_1^2) \end{bmatrix}
 
-- The Hessian is given by
-
-.. math::
-
-    \nabla_x f(x) = \begin{bmatrix} -400(x_2 - x_1^2)(x_1) - 2(1-x_1) \\ 200(x_2 - x_1^2) \end{bmatrix}
-
 A plot of the function is given below.
 
 .. image:: images/rosenbrock_fn_3d.png
