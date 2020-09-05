@@ -5,3 +5,4 @@ requirements_file: .readthedocs.requirements.txt
 
 python:
   version: 3.6
+  
