@@ -1,0 +1,7 @@
+requirements_file: .readthedocs.requirements.txt
+
+# conda:
+#     file: docs/environment.yml
+
+python:
+  version: 3.6
