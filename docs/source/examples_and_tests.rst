@@ -85,12 +85,11 @@ The code below uses Differential Evolution to search for the minimum of the :ref
         return 0;
     }
 
-This can be compiled using:
+This example can be compiled using:
 
 .. code:: bash
 
     g++ -Wall -std=c++11 -O3 -march=native -ffp-contract=fast -I/path/to/armadillo -I/path/to/optim/include optim_de_ex.cpp -o optim_de_ex.out -L/path/to/optim/lib -loptim
-    ./optim_de_ex.out
 
 
 ----

@@ -69,6 +69,7 @@ Contents
    installation
    examples_and_tests
    settings
+   autodiff
 
 .. toctree::
    :caption: Algorithms
