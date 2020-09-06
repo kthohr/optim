@@ -23,11 +23,11 @@
 //
 
 #ifdef OPTIM_ENABLE_ARMA_WRAPPERS
-    #define OPTIM_MATOPS_SIZE(x) (x).n_elem
+    #define OPTIM_MATOPS_SIZE(x) static_cast<size_t>((x).n_elem)
 #endif
 
 #ifdef OPTIM_ENABLE_EIGEN_WRAPPERS
-    #define OPTIM_MATOPS_SIZE(x) (x).size()
+    #define OPTIM_MATOPS_SIZE(x) static_cast<size_t>((x).size())
 #endif
 
 //
