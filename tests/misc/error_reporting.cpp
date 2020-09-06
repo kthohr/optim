@@ -24,22 +24,25 @@
 
 #include "optim.hpp"
 
-double optim_simple_fn_1(const optim::Vec_t& vals_inp, optim::Vec_t* grad_out, void* opt_data)
+double 
+optim_simple_fn_1(const optim::Vec_t& vals_inp, optim::Vec_t* grad_out, void* opt_data)
 {
     return 1.0;
 }
 
-optim::Vec_t optim_simple_fn_2(const optim::Vec_t& vals_inp, void* opt_data)
+optim::Vec_t 
+optim_simple_fn_2(const optim::Vec_t& vals_inp, void* opt_data)
 {
-    int n = vals_inp.n_elem;
-    return arma::zeros(n,1);
+    int n = OPTIM_MATOPS_SIZE(vals_inp);
+    optim::Vec_t ret_vec = OPTIM_MATOPS_ZERO_VEC(n);
+    return ret_vec;
 }
 
 int main()
 {
     
-    optim::Vec_t out_vals = arma::ones(2,1);
-    optim::Vec_t x_p = arma::ones(2,1);
+    optim::Vec_t out_vals = OPTIM_MATOPS_ONE_VEC(2);
+    optim::Vec_t x_p = OPTIM_MATOPS_ONE_VEC(2);
 
     bool success = false;
 

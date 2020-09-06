@@ -37,18 +37,18 @@ int main()
     optim::Vec_t lb(n_vals);
     lb(0) = 0;
     lb(1) = 0;
-    lb(2) = -arma::datum::inf;
-    lb(3) = -arma::datum::inf;
+    lb(2) = -std::numeric_limits<double>::infinity();
+    lb(3) = -std::numeric_limits<double>::infinity();
 
     optim::Vec_t ub(n_vals);
     ub(0) = 2;
-    ub(1) = arma::datum::inf;
+    ub(1) = std::numeric_limits<double>::infinity();
     ub(2) = 2;
-    ub(3) = arma::datum::inf;
+    ub(3) = std::numeric_limits<double>::infinity();
 
     optim::VecInt_t bounds_type = optim::determine_bounds_type(vals_bound,n_vals,lb,ub);
 
-    optim::Vec_t initial_vals = arma::ones(n_vals,1);
+    optim::Vec_t initial_vals = OPTIM_MATOPS_ONE_VEC(n_vals);
 
     optim::Vec_t vals_trans = optim::transform(initial_vals,bounds_type,lb,ub);
 

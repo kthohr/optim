@@ -86,7 +86,9 @@ int main()
     // settings.err_tol = 1.0e-12;
     // settings.print_level = 4;
 
-    Vec_t x_5 = OPTIM_MATOPS_ZERO_VEC(2) + 2.0;
+    Vec_t x_5 = OPTIM_MATOPS_ZERO_VEC(2);
+    x_5(0) = 2.0;
+    x_5(1) = 2.0;
 
     bool success_5 = optim::newton(x_5, unconstr_test_fn_5_whess, nullptr);
 
