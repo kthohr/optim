@@ -11,7 +11,7 @@ Installation
 
 The library can be installed on Unix-alike systems via the standard ``./configure && make`` method.
 
-The primary configuration options can be displayed using:
+The primary configuration options can be displayed by calling ``./configure -h``, which results in:
 
 .. code:: bash
 

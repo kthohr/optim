@@ -14,7 +14,7 @@ Examples and Tests
 API
 ---
 
-The OptimLib API follows a relatively simple convention, with most algorithms called in the following manner:
+The OptimLib API follows a relatively simple convention, with most algorithms begin called in the following manner:
 
 .. code::
     
@@ -22,9 +22,9 @@ The OptimLib API follows a relatively simple convention, with most algorithms ca
 
 The inputs, in order, are:
 
-- A writable vector of initial values to define the starting point of the algorithm. In the event of successful completion, the initial values will be overwritten by the solution vector.
-- The 'objective function' is the user-defined function to be minimized (or zeroed-out in the case of root finding methods).
-- The final input is optional: it is any object that contains additional parameters necessary to evaluate the objective function.
+- A writable vector of initial values to define the starting point of the algorithm, where, in the event of successful completion of the algorithm, the initial values will be overwritten by the latest candidate solution vector.
+- The ``objective function`` is a user-defined function to be minimized, or zeroed-out in the case of root finding methods.
+- The final input is optional; it is any object that contains additional parameters necessary to evaluate the objective function.
 
 For example, the BFGS algorithm is called using
 
