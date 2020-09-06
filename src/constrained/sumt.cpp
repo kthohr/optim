@@ -111,7 +111,7 @@ optim::internal::sumt_impl(
 
     // begin loop
     
-    int iter = 0;
+    size_t iter = 0;
     double rel_sol_change = 2*rel_sol_change_tol;
 
     while (rel_sol_change > rel_sol_change_tol && iter < iter_max) {
