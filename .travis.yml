@@ -15,7 +15,7 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && FC=gfortran-5"
-        - STATS_TEST_USE_ARMA="y"
+        - OPTIM_TEST_USE_ARMA="y"
       compiler: gcc
     
     - os: linux
@@ -29,7 +29,7 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6 && FC=gfortran-6"
-        - STATS_TEST_USE_ARMA="y"
+        - OPTIM_TEST_USE_ARMA="y"
       compiler: gcc
 
     - os: linux
@@ -43,7 +43,7 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && FC=gfortran-7"
-        - STATS_TEST_USE_ARMA="y"
+        - OPTIM_TEST_USE_ARMA="y"
       compiler: gcc
     
     - os: linux
@@ -57,7 +57,7 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && FC=gfortran-7"
-        - STATS_TEST_USE_EIGEN="y"
+        - OPTIM_TEST_USE_EIGEN="y"
       compiler: gcc
 
     - os: linux
@@ -71,14 +71,14 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && FC=gfortran-8"
-        - STATS_TEST_USE_ARMA="y"
+        - OPTIM_TEST_USE_ARMA="y"
       compiler: gcc
 
     - os: osx
       osx_image: xcode9
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
-        - STATS_TEST_USE_ARMA="y"
+        - OPTIM_TEST_USE_ARMA="y"
       compiler: clang
 
 before_install:
