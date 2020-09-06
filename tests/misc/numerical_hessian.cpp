@@ -32,45 +32,45 @@ int main()
 
     //
     // test 1
-    Vec_t x_1 = arma::ones(2,1);
+    optim::Vec_t x_1 = arma::ones(2,1);
 
-    Mat_t hess_mat_1 = optim::numerical_hessian(x_1,nullptr,unconstr_test_fn_1,nullptr);
+    optim::Mat_t hess_mat_1 = optim::numerical_hessian(x_1,nullptr,unconstr_test_fn_1,nullptr);
 
     arma::cout << "hessian 1:\n" << hess_mat_1 << arma::endl;
 
     //
     // test 2
 
-    Vec_t x_2 = arma::ones(2,1);
+    optim::Vec_t x_2 = arma::ones(2,1);
 
-    Mat_t hess_mat_2 = optim::numerical_hessian(x_2,nullptr,unconstr_test_fn_2,nullptr);
+    optim::Mat_t hess_mat_2 = optim::numerical_hessian(x_2,nullptr,unconstr_test_fn_2,nullptr);
 
     arma::cout << "hessian 2:\n" << hess_mat_2 << arma::endl;
 
     //
     // test 3
 
-    Vec_t x_3 = arma::ones(2,1);
+    optim::Vec_t x_3 = arma::ones(2,1);
 
-    Mat_t hess_mat_3 = optim::numerical_hessian(x_3,nullptr,unconstr_test_fn_3,nullptr);
+    optim::Mat_t hess_mat_3 = optim::numerical_hessian(x_3,nullptr,unconstr_test_fn_3,nullptr);
 
     arma::cout << "hessian 3:\n" << hess_mat_3 << arma::endl;
 
     //
     // test 4
 
-    Vec_t x_4 = arma::ones(2,1);
+    optim::Vec_t x_4 = arma::ones(2,1);
 
-    Mat_t hess_mat_4 = optim::numerical_hessian(x_4,nullptr,unconstr_test_fn_4,nullptr);
+    optim::Mat_t hess_mat_4 = optim::numerical_hessian(x_4,nullptr,unconstr_test_fn_4,nullptr);
 
     arma::cout << "hessian 4:\n" << hess_mat_4 << arma::endl;
 
     //
     // test 5
 
-    Vec_t x_5 = arma::ones(2,1);
+    optim::Vec_t x_5 = arma::ones(2,1);
 
-    Mat_t hess_mat_5 = optim::numerical_hessian(x_5,nullptr,unconstr_test_fn_5,nullptr);
+    optim::Mat_t hess_mat_5 = optim::numerical_hessian(x_5,nullptr,unconstr_test_fn_5,nullptr);
 
     arma::cout << "hessian 5:\n" << hess_mat_5 << arma::endl;
 

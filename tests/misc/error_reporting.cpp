@@ -24,12 +24,12 @@
 
 #include "optim.hpp"
 
-double optim_simple_fn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+double optim_simple_fn_1(const optim::Vec_t& vals_inp, optim::Vec_t* grad_out, void* opt_data)
 {
     return 1.0;
 }
 
-Vec_t optim_simple_fn_2(const Vec_t& vals_inp, void* opt_data)
+optim::Vec_t optim_simple_fn_2(const optim::Vec_t& vals_inp, void* opt_data)
 {
     int n = vals_inp.n_elem;
     return arma::zeros(n,1);
@@ -38,8 +38,8 @@ Vec_t optim_simple_fn_2(const Vec_t& vals_inp, void* opt_data)
 int main()
 {
     
-    Vec_t out_vals = arma::ones(2,1);
-    Vec_t x_p = arma::ones(2,1);
+    optim::Vec_t out_vals = arma::ones(2,1);
+    optim::Vec_t x_p = arma::ones(2,1);
 
     bool success = false;
 
@@ -47,9 +47,9 @@ int main()
     double err_2 = 1.5;
     double err_tol = 1.0;
 
-    int iter_1 = 1;
-    int iter_2 = 3;
-    int iter_max = 2;
+    size_t iter_1 = 1;
+    size_t iter_2 = 3;
+    size_t iter_max = 2;
 
     optim::algo_settings_t settings;
 
