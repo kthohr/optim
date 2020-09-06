@@ -15,6 +15,7 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && FC=gfortran-5"
+        - STATS_TEST_USE_ARMA="y"
       compiler: gcc
     
     - os: linux
@@ -28,6 +29,7 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6 && FC=gfortran-6"
+        - STATS_TEST_USE_ARMA="y"
       compiler: gcc
 
     - os: linux
@@ -41,6 +43,21 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && FC=gfortran-7"
+        - STATS_TEST_USE_ARMA="y"
+      compiler: gcc
+    
+    - os: linux
+      dist: trusty
+      addons:
+        apt:
+          packages:
+            - g++-7
+            - gfortran-7
+          sources: &sources
+            - ubuntu-toolchain-r-test
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && FC=gfortran-7"
+        - STATS_TEST_USE_EIGEN="y"
       compiler: gcc
 
     - os: linux
@@ -54,12 +71,14 @@ matrix:
             - ubuntu-toolchain-r-test
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && FC=gfortran-8"
+        - STATS_TEST_USE_ARMA="y"
       compiler: gcc
 
     - os: osx
       osx_image: xcode9
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
+        - STATS_TEST_USE_ARMA="y"
       compiler: clang
 
 before_install:
@@ -79,7 +98,27 @@ install:
       fi
 
 script:
-  - ./configure -c
+  - |
+    WDIR=${PWD}
+    if [[ "${OPTIM_TEST_USE_ARMA}" == "y" ]]; then 
+      mkdir ${WDIR}/arma_tmp
+      git clone --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
+      mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
+      rm -rf ${WDIR}/arma_tmp
+      export ARMA_INCLUDE_PATH="./include"
+      ./configure -c -l arma
+    elif [[ "${OPTIM_TEST_USE_EIGEN}" == "y" ]]; then 
+      mkdir ${WDIR}/eigen_tmp
+      git clone --single-branch https://gitlab.com/libeigen/eigen.git ${WDIR}/eigen_tmp > /dev/null 2>&1
+      mv ${WDIR}/eigen_tmp/* ${WDIR}/include
+      rm -rf ${WDIR}/eigen_tmp
+      export EIGEN_INCLUDE_PATH="./include"
+      ./configure -c -l eigen
+    else
+      echo -e "  \x1B[31m- error: unrecognized linear algebra library.\033[0m" >&2 ;
+      echo ""
+      exit 1
+    fi
   - make
   - cd ./tests
   - ./setup && ./test_setup/run_cov
