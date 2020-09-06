@@ -74,7 +74,7 @@ This example can be compiled using:
 
 .. code:: bash
 
-    g++ -Wall -std=c++17 -O3 -march=native -ffp-contract=fast -I/path/to/eigen -I/path/to/optim/include optim_autodiff_ex.cpp -o optim_autodiff_ex.out -L/path/to/optim/lib -loptim
+    g++ -Wall -std=c++17 -O3 -march=native -ffp-contract=fast -I/path/to/eigen -I/path/to/autodiff -I/path/to/optim/include optim_autodiff_ex.cpp -o optim_autodiff_ex.out -L/path/to/optim/lib -loptim
 
 
 ----
