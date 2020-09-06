@@ -19,19 +19,19 @@
   ################################################################################*/
 
 /*
- * print out
+ * print end line
  */
 
-#ifndef OPTIM_MATOPS_COUT
+#ifndef OPTIM_MATOPS_ENDL
 
 //
 
 #ifdef OPTIM_ENABLE_ARMA_WRAPPERS
-    #define OPTIM_MATOPS_COUT arma::cout
+    #define OPTIM_MATOPS_ENDL arma::endl
 #endif
 
 #ifdef OPTIM_ENABLE_EIGEN_WRAPPERS
-    #define OPTIM_MATOPS_COUT std::cout
+    #define OPTIM_MATOPS_ENDL std::endl
 #endif
 
 //

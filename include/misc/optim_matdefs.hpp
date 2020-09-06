@@ -30,6 +30,7 @@
 #include "matrix_ops/diagmat.hpp"
 #include "matrix_ops/diagvec.hpp"
 #include "matrix_ops/dot.hpp"
+#include "matrix_ops/endl.hpp"
 #include "matrix_ops/eval.hpp"
 #include "matrix_ops/exp.hpp"
 #include "matrix_ops/eye.hpp"
