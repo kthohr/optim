@@ -46,7 +46,7 @@ The code below uses Differential Evolution to search for the minimum of the :ref
 
     // Ackley function
 
-    double ackley_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+    double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
     {
         const double x = vals_inp(0);
         const double y = vals_inp(1);
@@ -62,7 +62,7 @@ The code below uses Differential Evolution to search for the minimum of the :ref
     int main()
     {
         // initial values:
-        Vec_t x = arma::ones(2,1) + 1.0; // (2,2)
+        arma::vec x = arma::ones(2,1) + 1.0; // (2,2)
 
         //
 
