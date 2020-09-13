@@ -42,9 +42,7 @@ The primary configuration options can be displayed by calling ``./configure -h``
     --header-only-version    Generate a header-only version of OptimLib
 
 
-In addition, OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. 
-
-Set (one) of the following environment variables *before* running `configure`:
+In addition, OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. Set (one) of the following environment variables *before* running `configure`:
 
 .. code:: bash
     
