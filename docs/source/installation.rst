@@ -42,13 +42,21 @@ The primary configuration options can be displayed by calling ``./configure -h``
     --header-only-version    Generate a header-only version of OptimLib
 
 
+In addition, OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. 
+
+Set (one) of the following environment variables *before* running `configure`:
+
+.. code:: bash
+    
+    export ARMA_INCLUDE_PATH=/path/to/armadillo
+    export EIGEN_INCLUDE_PATH=/path/to/eigen
+
 For example, to set the install path to ``/usr/local``, use Armadillo as the linear algebra library, and enable OpenMP features, we would use:
 
 .. code:: bash
 
     ./configure -i "/usr/local" -l arma -p
     make
-
 
 ----
 
