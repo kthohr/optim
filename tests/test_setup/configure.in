@@ -73,20 +73,14 @@ if [[ "${OPTIM_LINEAR_ALG_LIB}" == "arma" ]]; then
             echo ""
             exit 1
         fi
-
-        # mkdir ${WDIR}/arma_tmp
-        # git clone --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
-        # mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
-        # rm -rf ${WDIR}/arma_tmp
-        # ARMA_INCLUDE_PATH="./include"
     fi
 
     OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_ARMA_WRAPPERS -DARMA_NO_DEBUG"
     OPTIM_MATLIB_INCLUDE_PATH=$ARMA_INCLUDE_PATH
 elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "blaze" ]]; then
-    OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_BLAZE_WRAPPERS"
-    OPTIM_MATLIB_INCLUDE_PATH=$BLAZE_INCLUDE_PATH
-    CXX_STD="-std=c++14"
+    # OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_BLAZE_WRAPPERS"
+    # OPTIM_MATLIB_INCLUDE_PATH=$BLAZE_INCLUDE_PATH
+    # CXX_STD="-std=c++14"
 
     echo -e "  \x1B[31m- error: Blaze not yet supported. Exiting.\033[0m" >&2 ;
     echo ""
