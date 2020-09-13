@@ -145,8 +145,8 @@ optim::internal::nm_impl(
         // VecInt_t sort_vec = arma::sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
         VecInt_t sort_vec = get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
 
-        simplex_fn_vals = simplex_fn_vals(sort_vec);
-        simplex_points = OPTIM_MATOPS_ROWS(simplex_points, sort_vec);
+        simplex_fn_vals = OPTIM_MATOPS_EVAL(simplex_fn_vals(sort_vec));
+        simplex_points = OPTIM_MATOPS_EVAL(OPTIM_MATOPS_ROWS(simplex_points, sort_vec));
 
         // step 2
 
