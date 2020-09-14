@@ -139,6 +139,7 @@ This is a well-known test function with many local minima. Newton-type methods (
 Code:
 
 ``` cpp
+#define OPTIM_ENABLE_ARMA_WRAPPERS
 #include "optim.hpp"
 
 //
@@ -209,6 +210,7 @@ Check the `/tests` directory for additional examples, and http://www.kthohr.com/
 For a data-based example, consider maximum likelihood estimation of a logit model, common in statistics and machine learning. In this case we have closed-form expressions for the gradient and hessian. We will employ a popular gradient descent method, Adam (Adaptive Moment Estimation), and compare to a pure Newton-based algorithm.
 
 ``` cpp
+#define OPTIM_ENABLE_ARMA_WRAPPERS
 #include "optim.hpp"
 
 // sigmoid function

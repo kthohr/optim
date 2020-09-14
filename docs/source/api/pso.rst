@@ -139,6 +139,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_ARMA_WRAPPERS
         #include "optim.hpp"
         
         #define OPTIM_PI 3.14159265358979
@@ -176,6 +177,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_EIGEN_WRAPPERS
         #include "optim.hpp"
         
         #define OPTIM_PI 3.14159265358979
@@ -220,6 +222,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_ARMA_WRAPPERS
         #include "optim.hpp"
 
         #define OPTIM_PI 3.14159265358979
@@ -266,6 +269,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_EIGEN_WRAPPERS
         #include "optim.hpp"
 
         #define OPTIM_PI 3.14159265358979

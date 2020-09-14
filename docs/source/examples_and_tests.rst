@@ -42,6 +42,7 @@ The code below uses Differential Evolution to search for the minimum of the :ref
 
 .. code:: cpp
 
+    #define OPTIM_ENABLE_ARMA_WRAPPERS
     #include "optim.hpp"
 
     // Ackley function

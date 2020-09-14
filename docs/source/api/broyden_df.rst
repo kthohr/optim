@@ -161,6 +161,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_ARMA_WRAPPERS
         #include "optim.hpp"
         
         inline
@@ -241,6 +242,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_EIGEN_WRAPPERS
         #include "optim.hpp"
 
         inline
@@ -333,6 +335,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_ARMA_WRAPPERS
         #include "optim.hpp"
         
         inline
@@ -413,6 +416,7 @@ Code to run this example is given below.
 
     .. code:: cpp
 
+        #define OPTIM_ENABLE_EIGEN_WRAPPERS
         #include "optim.hpp"
 
         inline
