@@ -158,7 +158,7 @@ optim::internal::cg_impl(
 
         Vec_t d_p = - grad_p + beta*d;
 
-        t_init = t * (OPTIM_MATOPS_DOT_PROD(grad,d) / OPTIM_MATOPS_DOT_PROD(grad_p,d_p));
+        t_init = 1.0;
 
         grad = grad_p;
 
