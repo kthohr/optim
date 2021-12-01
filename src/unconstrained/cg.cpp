@@ -128,7 +128,7 @@ optim::internal::cg_impl(
 
     //
 
-    double t_init = 1.0; // initial value for line search
+    double t_init = 1.0 / grad_err; // initial value for line search
 
     d = - grad;
     Vec_t x_p = x, grad_p = grad;
@@ -158,11 +158,11 @@ optim::internal::cg_impl(
 
         Vec_t d_p = - grad_p + beta*d;
 
-        t_init = 1.0;
+        t_init = t * (OPTIM_MATOPS_DOT_PROD(grad,d) / OPTIM_MATOPS_DOT_PROD(grad_p,d_p));
 
         grad = grad_p;
 
-        t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
+        t = line_search_mt(t_init, x_p, grad_p, d_p, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
         //
 
