@@ -20,7 +20,7 @@ For a general problem
 
 .. math::
 
-   \min_x f(x) \text{ subject to } g_k (x) \geq 0, \ \ k \in \{1, \ldots, K \}
+   \min_x f(x) \text{ subject to } g_k (x) \leq 0, \ \ k \in \{1, \ldots, K \}
 
 The Sequential Unconstrained Minimization Technique solves:
 
