@@ -65,7 +65,9 @@ fi
 # get working directory
 WDIR=${PWD}
 
-# compiler checks
+# compiler and system checks
+ARCH=$(uname -m)
+IS_ARM=$(echo $ARCH | grep -i -c "arm")
 IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
 GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
 CLANG_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "clang")
@@ -186,7 +188,14 @@ elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-O0 -g"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast -flto -DNDEBUG"
+        OPTIM_OPT_FLAGS="-O3 -ffp-contract=fast -flto -DNDEBUG"
+
+        if [ "$IS_ARM" -eq "1" ]; then
+            OPTIM_OPT_FLAGS="-mcpu=native ${OPTIM_OPT_FLAGS}"
+        else
+            # assumes x86
+            OPTIM_OPT_FLAGS="-march=native ${OPTIM_OPT_FLAGS}"
+        fi
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
@@ -250,6 +259,7 @@ fi
 echo "Summary:"
 
 echo "  - OS:            ${OSTYPE}"
+echo "  - Arch:          ${ARCH}"
 echo "  - C++ compiler:  ${CXX}"
 
 if [[ "${OPTIM_DEV_BUILD}" == "y" ]]; then
