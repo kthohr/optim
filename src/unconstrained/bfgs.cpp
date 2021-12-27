@@ -163,8 +163,7 @@ optim::internal::bfgs_impl(
     if (grad_err <= grad_err_tol) {
     	if (vals_bound) {
     	    init_out_vals = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
-    	}
-    	else {
+    	} else {
             init_out_vals = x_p;
         }
         return true;

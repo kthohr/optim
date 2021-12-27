@@ -141,7 +141,11 @@ optim::internal::cg_impl(
     OPTIM_CG_TRACE(0, grad_err, rel_sol_change, x, d, grad, 0.0);
 
     if (grad_err <= grad_err_tol) {
-        init_out_vals = x_p;
+        if (vals_bound) {
+    	    init_out_vals = inv_transform(x_p, bounds_type, lower_bounds, upper_bounds);
+    	} else {
+            init_out_vals = x_p;
+        }
         return true;
     }
 
