@@ -92,4 +92,17 @@ jobs:
       - name: Tests
         shell: bash
         working-directory: tests
-        run: ./setup && ./test_setup/run_cov
+        run: |
+          export CC=${{ matrix.config.cc }}
+          export CXX=${{ matrix.config.cxx }}
+          export FC=${{ matrix.config.fc }}
+          if [[ "${{ matrix.config.linalg }}" == "arma" ]]; then 
+            export OPTIM_TEST_USE_ARMA="y"
+          elif [[ "${{ matrix.config.linalg }}" == "eigen" ]]; then 
+            export OPTIM_TEST_USE_EIGEN="y"
+          else
+            echo -e "  \x1B[31m- error: unrecognized linear algebra library.\033[0m" >&2 ;
+            echo ""
+            exit 1
+          fi
+          ./setup && ./test_setup/run_cov
