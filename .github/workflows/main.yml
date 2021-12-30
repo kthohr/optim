@@ -21,7 +21,8 @@ jobs:
             build_type: "Release",
             cc: "gcc",
             cxx: "g++",
-            fc: "gfortran"
+            fc: "gfortran",
+            linalg: "arma"
           }
         - {
             name: "ubuntu_latest_gcc_9",
@@ -29,14 +30,16 @@ jobs:
             build_type: "Release",
             cc: "gcc-9",
             cxx: "g++-9",
-            fc: "gfortran-9"
+            fc: "gfortran-9",
+            linalg: "arma"
           }
         - {
             name: "macos_latest_clang",
             os: macos-latest,
             build_type: "Release",
             cc: "clang",
-            cxx: "clang++"
+            cxx: "clang++",
+            linalg: "arma"
           }
 
     steps:
@@ -61,14 +64,16 @@ jobs:
           export CXX=${{ matrix.config.cxx }}
           export FC=${{ matrix.config.fc }}
           WDIR=${PWD}
-          if [[ "${OPTIM_TEST_USE_ARMA}" == "y" ]]; then 
+          if [[ "${{ matrix.config.linalg }}" == "arma" ]]; then 
+            export OPTIM_TEST_USE_ARMA="y"
             mkdir ${WDIR}/arma_tmp
             git clone --single-branch https://gitlab.com/conradsnicta/armadillo-code.git ${WDIR}/arma_tmp > /dev/null 2>&1
             mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
             rm -rf ${WDIR}/arma_tmp
             export ARMA_INCLUDE_PATH="./include"
             ./configure -c -l arma
-          elif [[ "${OPTIM_TEST_USE_EIGEN}" == "y" ]]; then 
+          elif [[ "${{ matrix.config.linalg }}" == "eigen" ]]; then 
+            export OPTIM_TEST_USE_EIGEN="y"
             mkdir ${WDIR}/eigen_tmp
             git clone --single-branch https://gitlab.com/libeigen/eigen.git ${WDIR}/eigen_tmp > /dev/null 2>&1
             mv ${WDIR}/eigen_tmp/* ${WDIR}/include
