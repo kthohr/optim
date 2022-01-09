@@ -21,7 +21,7 @@ Features:
 
   - `Armadillo <http://arma.sourceforge.net/>`_ 
 
-  - `Eigen <http://eigen.tuxfamily.org/index.php>`_ 
+  - `Eigen <http://eigen.tuxfamily.org/index.php>`_ (version >= 3.4.0)
 
 - OpenMP-accelerated algorithms for parallel computation. 
 

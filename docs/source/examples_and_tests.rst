@@ -14,13 +14,13 @@ Examples and Tests
 API
 ---
 
-The OptimLib API follows a relatively simple convention, with most algorithms begin called in the following manner:
+The OptimLib API follows a relatively simple convention, with most algorithms called using the following syntax:
 
 .. code::
     
     algorithm_id(<initial/final values>, <objective function>, <objective function data>);
 
-The inputs, in order, are:
+The function inputs, in order, are:
 
 - A writable vector of initial values to define the starting point of the algorithm, where, in the event of successful completion of the algorithm, the initial values will be overwritten by the latest candidate solution vector.
 - The ``objective function`` is a user-defined function to be minimized, or zeroed-out in the case of root finding methods.
