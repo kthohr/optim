@@ -74,8 +74,7 @@ optim::internal::pso_impl(
     const double par_initial_c_soc = settings.pso_settings.par_initial_c_soc;
     const double par_final_c_soc = settings.pso_settings.par_final_c_soc;
 
-    const Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.pso_settings.initial_lb) == n_vals ) ? settings.pso_settings.initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
-    const Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.pso_settings.initial_ub) == n_vals ) ? settings.pso_settings.initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
+    const bool return_position_mat = settings.pso_settings.return_position_mat;
 
     const bool vals_bound = settings.vals_bound;
     
@@ -84,7 +83,10 @@ optim::internal::pso_impl(
 
     const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
-    const bool return_position_mat = settings.pso_settings.return_position_mat;
+    Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.pso_settings.initial_lb) == n_vals ) ? settings.pso_settings.initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
+    Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.pso_settings.initial_ub) == n_vals ) ? settings.pso_settings.initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
+
+    sampling_bounds_check(vals_bound, n_vals, bounds_type, lower_bounds, upper_bounds, par_initial_lb, par_initial_ub);
 
     // lambda function for box constraints
 
@@ -114,7 +116,7 @@ optim::internal::pso_impl(
         if (center_particle && i == n_pop - 1) {
             P.row(i) = OPTIM_MATOPS_COLWISE_SUM( OPTIM_MATOPS_MIDDLE_ROWS(P, 0,n_pop-2) ) / static_cast<double>(n_pop-1); // center vector
         } else {
-            P.row(i) = OPTIM_MATOPS_TRANSPOSE( OPTIM_MATOPS_HADAMARD_PROD( (par_initial_lb + (par_initial_ub - par_initial_lb)), OPTIM_MATOPS_RANDU_VEC(n_vals) ) ); // arma::randu(1,n_vals)
+            P.row(i) = OPTIM_MATOPS_TRANSPOSE( par_initial_lb + OPTIM_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), OPTIM_MATOPS_RANDU_VEC(n_vals) ) );
         }
 
         double prop_objfn_val = opt_objfn(OPTIM_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
