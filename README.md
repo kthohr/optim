@@ -1,4 +1,4 @@
-# OptimLib &nbsp; [![Build Status](https://travis-ci.org/kthohr/optim.svg?branch=master)](https://travis-ci.org/kthohr/optim) [![Coverage Status](https://codecov.io/github/kthohr/optim/coverage.svg?branch=master)](https://codecov.io/github/kthohr/optim?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9fea40836c4c4d5fa3a29b5675b58f6e)](https://www.codacy.com/app/kthohr/optim?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kthohr/optim&amp;utm_campaign=Badge_Grade) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](./LICENSE) [![Documentation Status](https://readthedocs.org/projects/optimlib/badge/?version=latest)](https://optimlib.readthedocs.io/en/latest/?badge=latest)
+# OptimLib &nbsp; [![Build Status](https://github.com/kthohr/optim/actions/workflows/main.yml/badge.svg)](https://github.com/kthohr/optim/actions/workflows/main.yml) [![Coverage Status](https://codecov.io/github/kthohr/optim/coverage.svg?branch=master)](https://codecov.io/github/kthohr/optim?branch=master) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](./LICENSE) [![Documentation Status](https://readthedocs.org/projects/optimlib/badge/?version=latest)](https://optimlib.readthedocs.io/en/latest/?badge=latest)
 
 OptimLib is a lightweight C++ library of numerical optimization methods for nonlinear functions.
 
@@ -9,7 +9,7 @@ Features:
 * Constrained optimization routines to handle simple box constraints, as well as systems of nonlinear constraints.
 * For fast and efficient matrix-based computation, OptimLib supports the following templated linear algebra libraries:
   * [Armadillo](http://arma.sourceforge.net/)
-  * [Eigen](http://eigen.tuxfamily.org/index.php)
+  * [Eigen](http://eigen.tuxfamily.org/index.php) (version >= 3.4.0)
 * OpenMP-accelerated algorithms for parallel computation. 
 * Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 * Available as a header-only library, or as a compiled shared library.
