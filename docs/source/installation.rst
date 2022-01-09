@@ -42,7 +42,7 @@ The primary configuration options can be displayed by calling ``./configure -h``
     --header-only-version    Generate a header-only version of OptimLib
 
 
-In addition, OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. Set (one) of the following environment variables *before* running `configure`:
+OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. Set (one) of the following environment variables *before* running ``configure``:
 
 .. code:: bash
     
@@ -60,13 +60,15 @@ For example, to set the install path to ``/usr/local``, use Armadillo as the lin
 
 The following options should be declared **before** including the OptimLib header files. 
 
-- OpenMP functionality is enabled by default if the ``_OPENMP`` macro is detected (e.g., by invoking ``-fopenmp`` with GCC or Clang). To explicitly enable OpenMP features use:
+- OpenMP functionality is enabled by default if the ``_OPENMP`` macro is detected (e.g., by invoking ``-fopenmp`` with GCC or Clang). 
+
+  - To explicitly enable OpenMP features, use:
 
 .. code:: cpp
 
     #define OPTIM_USE_OPENMP
 
-- To disable OpenMP functionality:
+  - To explicitly disable OpenMP functionality, use:
 
 .. code:: cpp
 
