@@ -54,9 +54,9 @@ The updating rule for Broyden's method is described below. Let :math:`x^{(i)}` d
         \end{aligned}
 
 
-The algorithm stops when one of the following conditions are ``true``:
+The algorithm stops when at least one of the following conditions are met:
 
-  1. when :math:`\| F \|` is less than ``rel_objfn_change_tol``.
+  1. :math:`\| F \|` is less than ``rel_objfn_change_tol``.
 
   2. the relative change between :math:`x^{(i+1)}` and :math:`x^{(i)}` is less than ``rel_sol_change_tol``;
 

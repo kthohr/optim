@@ -28,7 +28,7 @@ The Sequential Unconstrained Minimization Technique solves:
 
    \min_x \left\{ f(x) + c(i) \times \frac{1}{2} \sum_{k=1}^K \left( \max \{ 0, g_k(x) \} \right)^2 \right\}
 
-The algorithm stops when is less than err_tol, or the total number of 'generations' exceeds a desired (or default) value.
+The algorithm stops when the error is less than ``err_tol``, or the total number of 'generations' exceeds a desired (or default) value.
 
 ----
 

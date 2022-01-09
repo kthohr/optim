@@ -93,7 +93,7 @@ The updating rule for Nelder-Mead is described below. Let :math:`x^{(i)}` denote
    where :math:`\delta` is set by ``par_delta``. Go to Step 1.
 
 
-The algorithm stops when one of the following conditions are ``true``:
+The algorithm stops when at least one of the following conditions are met:
 
   1. the relative change in the simplex of function values, defined as:
 

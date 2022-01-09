@@ -45,7 +45,7 @@ The updating rule for Newton's method is described below. Let :math:`x^{(i)}` de
     x^{(i+1)} = x^{(i)} + \alpha^{(i)} d^{(i)}
 
 
-The algorithm stops when one of the following conditions are ``true``:
+The algorithm stops when at least one of the following conditions are met:
 
   1. the norm of the gradient vector, :math:`\| \nabla f \|`, is less than ``grad_err_tol``;
 

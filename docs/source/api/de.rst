@@ -69,9 +69,10 @@ Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input val
 
         X^{(i+1)} (j,:) = \begin{cases} X_c^*(j,:) & \text{ if } f(X_c^*(j,:)) < f(X^{(i)}(j,:)) \\ X^{(i)} (j,:) & \text{ else } \end{cases}
 
-The algorithm stops when one of the following conditions are ``true``:
+The algorithm stops when at least one of the following conditions are met:
 
   1. the relative improvement in the objective function from the best candidate solution is less than ``rel_objfn_change_tol`` between ``de_settings.check_freq`` number of generations;
+  
   2. the total number of generations exceeds ``de_settings.n_gen``.
 
 ----

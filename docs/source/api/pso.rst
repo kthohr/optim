@@ -62,9 +62,10 @@ Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input val
       g_b = \begin{cases} X^{(i+1)}(j^{(*)},:) & \text{ if } f(X^{(i+1)}(j^{(*)},:)) < f(g_b) \\ g_b & \text{ else } \end{cases}
 
 
-The algorithm stops when one of the following conditions are ``true``:
+The algorithm stops when at least one of the following conditions are met:
 
   1. the relative improvement in the objective function is less than ``rel_objfn_change_tol`` between ``pso_settings.check_freq`` number of generations;
+  
   2. the total number of generations exceeds ``pso_settings.n_gen``.
 
 ----

@@ -53,13 +53,13 @@ where :math:`\nu` is set via ``cg_settings.restart_threshold``.
     x^{(i+1)} = x^{(i)} + \alpha^{(i)} \times d^{(i)}
 
 
-The algorithm stops when one of the following conditions are ``true``:
+The algorithm stops when at least one of the following conditions are met:
 
-1. the norm of the gradient vector, :math:`\| \nabla f \|`, is less than ``grad_err_tol``;
+  1. the norm of the gradient vector, :math:`\| \nabla f \|`, is less than ``grad_err_tol``;
 
-2. the relative change between :math:`x^{(i+1)}` and :math:`x^{(i)}` is less than ``rel_sol_change_tol``;
+  2. the relative change between :math:`x^{(i+1)}` and :math:`x^{(i)}` is less than ``rel_sol_change_tol``;
 
-3. the total number of iterations exceeds ``iter_max``.
+  3. the total number of iterations exceeds ``iter_max``.
 
 ----
 
