@@ -2,7 +2,7 @@
 # modified version of:
 # https://gist.github.com/NickNaso/0d478f1481686d5bcc868cac06620a60
 
-name: Build Matrix
+name: CI
 
 on: [push, pull_request, release]
 
