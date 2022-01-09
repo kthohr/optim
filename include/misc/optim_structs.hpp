@@ -103,6 +103,9 @@ struct nm_settings_t
     double par_beta  = 0.5; // contraction parameter
     double par_gamma = 2.0; // expansion parameter
     double par_delta = 0.5; // shrinkage parameter
+
+    bool custom_initial_simplex = false;
+    Mat_t initial_simplex_points;
 };
 
 // DE

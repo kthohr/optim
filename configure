@@ -52,14 +52,8 @@ while getopts hcdgi:l:m:o:pr:-: option; do
     esac
 done
 
-if [ -z ${CC+x} ]; then 
-    CC=gcc
-fi
 if [ -z ${CXX+x} ]; then 
     CXX=g++
-fi
-if [ -z ${FC+x} ]; then 
-    FC=gfortran
 fi
 
 # get working directory
@@ -137,12 +131,13 @@ if [[ "${OPTIM_LINEAR_ALG_LIB}" == "arma" ]]; then
         fi
     fi
 
+    OPTIM_CXX_STD="-std=c++11"
     OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_ARMA_WRAPPERS -DARMA_NO_DEBUG"
     OPTIM_MATLIB_INCLUDE_PATH=$ARMA_INCLUDE_PATH
 elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "blaze" ]]; then
+    # OPTIM_CXX_STD="-std=c++14"
     # OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_BLAZE_WRAPPERS"
     # OPTIM_MATLIB_INCLUDE_PATH=$BLAZE_INCLUDE_PATH
-    # CXX_STD="-std=c++14"
 
     echo -e "  \x1B[31m- error: Blaze not yet supported. Exiting.\033[0m" >&2 ;
     echo ""
@@ -168,6 +163,7 @@ elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "eigen" ]]; then
         fi
     fi
 
+    OPTIM_CXX_STD="-std=c++14"
     OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_EIGEN_WRAPPERS"
     OPTIM_MATLIB_INCLUDE_PATH=$EIGEN_INCLUDE_PATH
 else
@@ -314,9 +310,8 @@ fi
 echo ""
 echo -e "\x1B[32mConfiguration completed. Creating Makefile... \c\033[0m" >&2 ;
 
-sed -e "s|@CC@|${CC}|" \
-    -e "s|@CXX@|${CXX}|" \
-    -e "s|@FC@|${FC}|" \
+sed -e "s|@CXX@|${CXX}|" \
+    -e "s|@OPTIM_CXX_STD@|${OPTIM_CXX_STD}|" \
     -e "s|@OPTIM_MATLIB_FLAGS@|${OPTIM_MATLIB_FLAGS}|" \
     -e "s|@OPTIM_MATLIB_INCLUDE_PATH@|${OPTIM_MATLIB_INCLUDE_PATH}|" \
     -e "s|@OPTIM_BLAS_LAPACK@|${OPTIM_BLAS_LAPACK}|" \

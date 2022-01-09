@@ -35,8 +35,6 @@ optim::internal::nm_impl(
 {
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
-
     //
     // NM settings
 
@@ -45,6 +43,8 @@ optim::internal::nm_impl(
     if (settings_inp) {
         settings = *settings_inp;
     }
+
+    const size_t n_vals = (settings.nm_settings.custom_initial_simplex) ? OPTIM_MATOPS_NCOL(settings.nm_settings.initial_simplex_points) : OPTIM_MATOPS_SIZE(init_out_vals);
 
     const int print_level = settings.print_level;
     
@@ -89,26 +89,33 @@ optim::internal::nm_impl(
     Vec_t simplex_fn_vals_old(n_vals+1);
     Mat_t simplex_points(n_vals+1, n_vals);
     Mat_t simplex_points_old(n_vals+1, n_vals);
-    
-    simplex_fn_vals(0) = opt_objfn(init_out_vals, nullptr, opt_data);
-    simplex_points.row(0) = OPTIM_MATOPS_TRANSPOSE(init_out_vals);
+
+    if (settings.nm_settings.custom_initial_simplex) {
+        simplex_points = settings.nm_settings.initial_simplex_points;
+        simplex_fn_vals(0) = opt_objfn(OPTIM_MATOPS_TRANSPOSE(simplex_points.row(0)), nullptr, opt_data);
+    } else {
+        simplex_fn_vals(0) = opt_objfn(init_out_vals, nullptr, opt_data);
+        simplex_points.row(0) = OPTIM_MATOPS_TRANSPOSE(init_out_vals);
+    }
 
     if (vals_bound) {
-        simplex_points.row(0) = OPTIM_MATOPS_TRANSPOSE( transform( OPTIM_MATOPS_TRANSPOSE(simplex_points.row(0)), bounds_type, lower_bounds, upper_bounds) );
+        simplex_points.row(0) = OPTIM_MATOPS_TRANSPOSE( transform(OPTIM_MATOPS_TRANSPOSE(simplex_points.row(0)), bounds_type, lower_bounds, upper_bounds) );
     }
 
     for (size_t i = 1; i < n_vals + 1; ++i) {
-        if (init_out_vals(i-1) != 0.0) {
-            simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( init_out_vals + 0.05*init_out_vals(i-1) * unit_vec(i-1,n_vals) );
-        } else {
-            simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( init_out_vals + 0.00025 * unit_vec(i-1,n_vals) );
-            // simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
+        if (!settings.nm_settings.custom_initial_simplex) {
+            if (init_out_vals(i-1) != 0.0) {
+                simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( init_out_vals + 0.05*init_out_vals(i-1) * unit_vec(i-1,n_vals) );
+            } else {
+                simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( init_out_vals + 0.00025 * unit_vec(i-1,n_vals) );
+                // simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
+            }
         }
 
         simplex_fn_vals(i) = opt_objfn(OPTIM_MATOPS_TRANSPOSE(simplex_points.row(i)),nullptr,opt_data);
 
         if (vals_bound) {
-            simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( transform( OPTIM_MATOPS_TRANSPOSE(simplex_points.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            simplex_points.row(i) = OPTIM_MATOPS_TRANSPOSE( transform(OPTIM_MATOPS_TRANSPOSE(simplex_points.row(i)), bounds_type, lower_bounds, upper_bounds) );
         }
     }
 

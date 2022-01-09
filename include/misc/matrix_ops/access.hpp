@@ -31,8 +31,8 @@
 #endif
 
 #ifdef OPTIM_ENABLE_EIGEN_WRAPPERS
-    #define OPTIM_MATOPS_COLS(x, v) (x)(Eigen::all,v) // v is a vector
-    #define OPTIM_MATOPS_ROWS(x, v) (x)(v,Eigen::all) // v is a vector
+    #define OPTIM_MATOPS_COLS(x, v) (x)(EIGEN_INDEX_ALL,v) // v is a vector
+    #define OPTIM_MATOPS_ROWS(x, v) (x)(v,EIGEN_INDEX_ALL) // v is a vector
     // acces columns j through k
     #define OPTIM_MATOPS_MIDDLE_COLS(x, j, k) (x).middleCols(j,k-j+1)
     #define OPTIM_MATOPS_MIDDLE_ROWS(x, j, k) (x).middleRows(j,k-j+1)

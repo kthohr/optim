@@ -31,11 +31,11 @@
 #endif
 
 #ifndef OPTIM_VERSION_MINOR
-    #define OPTIM_VERSION_MINOR 0
+    #define OPTIM_VERSION_MINOR 1
 #endif
 
 #ifndef OPTIM_VERSION_PATCH
-    #define OPTIM_VERSION_PATCH 1
+    #define OPTIM_VERSION_PATCH 0
 #endif
 
 //
@@ -105,6 +105,14 @@
     #include <iostream>
     #include <random>
     #include <Eigen/Dense>
+
+    #if EIGEN_VERSION_AT_LEAST(3,4,50)
+        #define EIGEN_INDEX_ALL Eigen::indexing::all
+    #elif EIGEN_VERSION_AT_LEAST(3,4,0)
+        #define EIGEN_INDEX_ALL Eigen::all
+    #else
+        #error Eigen must be version 3.4.0 or above
+    #endif
 
     template<typename eT, int iTr, int iTc>
     using EigenMat = Eigen::Matrix<eT,iTr,iTc>;

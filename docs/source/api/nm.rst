@@ -154,6 +154,22 @@ The basic control parameters are:
 
   - ``Vec_t upper_bounds``: defines the upper bounds of the search space.
 
+- ``struct nm_settings_t``, which defines several parameters that control the behavior of the simplex.
+
+  - ``bool adaptive_pars = true``: scale the contraction, expansion, and shrinkage parameters using the dimension of the optimization problem.
+
+  - ``double par_alpha = 1.0``: reflection parameter.
+
+  - ``double par_beta = 0.5``: contraction parameter.
+
+  - ``double par_gamma = 2.0``: expansion parameter.
+
+  - ``double par_delta = 0.5``: shrinkage parameter.
+
+  - ``bool custom_initial_simplex = false``: whether to use user-defined values for the initial simplex matrix.
+
+  - ``Mat_t initial_simplex_points``: user-defined values for the initial simplex (optional). Dimensions: :math:`(n + 1) \times n`.
+
 In addition to these:
 
 - ``int print_level``: Set the level of detail for printing updates on optimization progress.

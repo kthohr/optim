@@ -46,6 +46,8 @@ echo ""
 
 # compiler checks
 
+ARCH=$(uname -m)
+IS_ARM=$(echo $ARCH | grep -i -c "arm")
 IS_DARWIN=$($CXX -dumpmachine 2>&1 | grep -i -c "darwin")
 GCC_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "gcc")
 CLANG_COMPILER=$($CXX --version 2>&1 | grep -i -c -E "clang")
@@ -78,6 +80,7 @@ if [[ "${OPTIM_LINEAR_ALG_LIB}" == "arma" ]]; then
         fi
     fi
 
+    OPTIM_CXX_STD="-std=c++11"
     OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_ARMA_WRAPPERS -DARMA_NO_DEBUG"
     OPTIM_MATLIB_INCLUDE_PATH=$ARMA_INCLUDE_PATH
 elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "blaze" ]]; then
@@ -109,6 +112,7 @@ elif [[ "${OPTIM_LINEAR_ALG_LIB}" == "eigen" ]]; then
         fi
     fi
 
+    OPTIM_CXX_STD="-std=c++14"
     OPTIM_MATLIB_FLAGS="-DOPTIM_ENABLE_EIGEN_WRAPPERS"
     OPTIM_MATLIB_INCLUDE_PATH=$EIGEN_INCLUDE_PATH
 else
@@ -129,7 +133,14 @@ elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-g -O0"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        OPTIM_OPT_FLAGS="-O3 -march=native -ffp-contract=fast"
+        OPTIM_OPT_FLAGS="-O3 -ffp-contract=fast -flto -DNDEBUG"
+
+        if [ "$IS_ARM" -eq "1" ]; then
+            OPTIM_OPT_FLAGS="-mcpu=native ${OPTIM_OPT_FLAGS}"
+        else
+            # assumes x86
+            OPTIM_OPT_FLAGS="-march=native ${OPTIM_OPT_FLAGS}"
+        fi
     else
         OPTIM_OPT_FLAGS="${OPTIM_OPT}"
     fi
@@ -180,6 +191,7 @@ fi
 # final print:
 
 echo "  - OS:            ${OSTYPE}"
+echo "  - Arch:          ${ARCH}"
 echo "  - C++ compiler:  ${CXX}"
 
 if [[ "${OPTIM_DEV_BUILD}" == "y" ]]; then
@@ -227,6 +239,7 @@ echo ""
 echo -e "\x1B[32mConfiguration completed. Creating Makefile... \c\033[0m" >&2 ;
 
 sed -e "s|@CXX@|${CXX}|" \
+    -e "s|@OPTIM_CXX_STD@|${OPTIM_CXX_STD}|" \
     -e "s|@OPTIM_MATLIB_FLAGS@|${OPTIM_MATLIB_FLAGS}|" \
     -e "s|@OPTIM_MATLIB_INCLUDE_PATH@|${OPTIM_MATLIB_INCLUDE_PATH}|" \
     -e "s|@OPTIM_BLAS_LAPACK@|${OPTIM_BLAS_LAPACK}|" \

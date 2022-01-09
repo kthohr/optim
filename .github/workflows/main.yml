@@ -16,7 +16,7 @@ jobs:
       matrix:
         config: 
         - {
-            name: "ubuntu_latest_gcc",
+            name: "ubuntu_latest_gcc_arma",
             os: ubuntu-latest,
             build_type: "Release",
             cc: "gcc",
@@ -25,7 +25,16 @@ jobs:
             linalg: "arma"
           }
         - {
-            name: "ubuntu_latest_gcc_9",
+            name: "ubuntu_latest_gcc_eigen",
+            os: ubuntu-latest,
+            build_type: "Release",
+            cc: "gcc",
+            cxx: "g++",
+            fc: "gfortran",
+            linalg: "eigen"
+          }
+        - {
+            name: "ubuntu_latest_gcc9_arma",
             os: ubuntu-latest,
             build_type: "Release",
             cc: "gcc-9",
@@ -34,12 +43,29 @@ jobs:
             linalg: "arma"
           }
         - {
-            name: "macos_latest_clang",
+            name: "ubuntu_latest_gcc9_eigen",
+            os: ubuntu-latest,
+            build_type: "Release",
+            cc: "gcc-9",
+            cxx: "g++-9",
+            fc: "gfortran-9",
+            linalg: "eigen"
+          }
+        - {
+            name: "macos_latest_clang_arma",
             os: macos-latest,
             build_type: "Release",
             cc: "clang",
             cxx: "clang++",
             linalg: "arma"
+          }
+        - {
+            name: "macos_latest_clang_eigen",
+            os: macos-latest,
+            build_type: "Release",
+            cc: "clang",
+            cxx: "clang++",
+            linalg: "eigen"
           }
 
     steps:
@@ -85,6 +111,7 @@ jobs:
             echo ""
             exit 1
           fi
+      
       - name: Build
         shell: bash
         run: make
