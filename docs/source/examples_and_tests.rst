@@ -86,7 +86,7 @@ The code below uses Differential Evolution to search for the minimum of the :ref
         return 0;
     }
 
-This example can be compiled using:
+On x86-based computers, this example can be compiled using:
 
 .. code:: bash
 
