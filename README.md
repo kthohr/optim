@@ -71,9 +71,14 @@ The library can be installed on Unix-alike systems via the standard `./configure
 # clone optim into the current directory
 git clone https://github.com/kthohr/optim ./optim
 
-# build and install
+# change directory
 cd ./optim
-./configure -i "/usr/local" -l arma -p
+
+# clone necessary submodules
+git submodule update --init
+
+# build and install with Eigen
+./configure -i "/usr/local" -l eigen -p
 make
 make install
 ```
