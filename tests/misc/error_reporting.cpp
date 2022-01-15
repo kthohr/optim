@@ -33,16 +33,16 @@ optim_simple_fn_1(const optim::Vec_t& vals_inp, optim::Vec_t* grad_out, void* op
 optim::Vec_t 
 optim_simple_fn_2(const optim::Vec_t& vals_inp, void* opt_data)
 {
-    int n = OPTIM_MATOPS_SIZE(vals_inp);
-    optim::Vec_t ret_vec = OPTIM_MATOPS_ZERO_VEC(n);
+    int n = BMO_MATOPS_SIZE(vals_inp);
+    optim::Vec_t ret_vec = BMO_MATOPS_ZERO_VEC(n);
     return ret_vec;
 }
 
 int main()
 {
     
-    optim::Vec_t out_vals = OPTIM_MATOPS_ONE_VEC(2);
-    optim::Vec_t x_p = OPTIM_MATOPS_ONE_VEC(2);
+    optim::Vec_t out_vals = BMO_MATOPS_ONE_VEC(2);
+    optim::Vec_t x_p = BMO_MATOPS_ONE_VEC(2);
 
     bool success = false;
 

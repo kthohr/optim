@@ -87,7 +87,7 @@ cg_update(const Vec_t& grad,
           const double cg_restart_threshold)
 {
     // threshold test
-    double ratio_value = std::abs( OPTIM_MATOPS_DOT_PROD(grad_p,grad) ) / OPTIM_MATOPS_DOT_PROD(grad_p,grad_p);
+    double ratio_value = std::abs( BMO_MATOPS_DOT_PROD(grad_p,grad) ) / BMO_MATOPS_DOT_PROD(grad_p,grad_p);
 
     if ( ratio_value > cg_restart_threshold ) {
         return 0.0;
@@ -98,23 +98,23 @@ cg_update(const Vec_t& grad,
         {
             case 1: // Fletcher-Reeves (FR)
             {
-                beta = OPTIM_MATOPS_DOT_PROD(grad_p,grad_p) / OPTIM_MATOPS_DOT_PROD(grad,grad);
+                beta = BMO_MATOPS_DOT_PROD(grad_p,grad_p) / BMO_MATOPS_DOT_PROD(grad,grad);
                 break;
             }
 
             case 2: // Polak-Ribiere (PR) + 
             {
-                beta = OPTIM_MATOPS_DOT_PROD(grad_p, grad_p - grad) / OPTIM_MATOPS_DOT_PROD(grad,grad); // max(.,0.0) moved to end
+                beta = BMO_MATOPS_DOT_PROD(grad_p, grad_p - grad) / BMO_MATOPS_DOT_PROD(grad,grad); // max(.,0.0) moved to end
                 break;
             }
 
             case 3: // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
             {
                 if (iter > 1) {
-                    const double beta_denom = OPTIM_MATOPS_DOT_PROD(grad, grad);
+                    const double beta_denom = BMO_MATOPS_DOT_PROD(grad, grad);
                     
-                    const double beta_FR = OPTIM_MATOPS_DOT_PROD(grad_p, grad_p) / beta_denom;
-                    const double beta_PR = OPTIM_MATOPS_DOT_PROD(grad_p, grad_p - grad) / beta_denom;
+                    const double beta_FR = BMO_MATOPS_DOT_PROD(grad_p, grad_p) / beta_denom;
+                    const double beta_PR = BMO_MATOPS_DOT_PROD(grad_p, grad_p - grad) / beta_denom;
                     
                     if (beta_PR < - beta_FR) {
                         beta = -beta_FR;
@@ -125,20 +125,20 @@ cg_update(const Vec_t& grad,
                     }
                 } else {
                     // default to PR+
-                    beta = OPTIM_MATOPS_DOT_PROD(grad_p,grad_p - grad) / OPTIM_MATOPS_DOT_PROD(grad,grad); // max(.,0.0) moved to end
+                    beta = BMO_MATOPS_DOT_PROD(grad_p,grad_p - grad) / BMO_MATOPS_DOT_PROD(grad,grad); // max(.,0.0) moved to end
                 }
                 break;
             }
 
             case 4: // Hestenes-Stiefel
             {
-                beta = OPTIM_MATOPS_DOT_PROD(grad_p,grad_p - grad) / OPTIM_MATOPS_DOT_PROD(grad_p - grad,direc);
+                beta = BMO_MATOPS_DOT_PROD(grad_p,grad_p - grad) / BMO_MATOPS_DOT_PROD(grad_p - grad,direc);
                 break;
             }
 
             case 5: // Dai-Yuan
             {
-                beta = OPTIM_MATOPS_DOT_PROD(grad_p,grad_p) / OPTIM_MATOPS_DOT_PROD(grad_p - grad,direc);
+                beta = BMO_MATOPS_DOT_PROD(grad_p,grad_p) / BMO_MATOPS_DOT_PROD(grad_p - grad,direc);
                 break;
             }
 
@@ -146,10 +146,10 @@ cg_update(const Vec_t& grad,
             {
                 Vec_t y = grad_p - grad;
 
-                Vec_t term_1 = y - 2*direc*(OPTIM_MATOPS_DOT_PROD(y,y) / OPTIM_MATOPS_DOT_PROD(y,direc));
-                Vec_t term_2 = grad_p / OPTIM_MATOPS_DOT_PROD(y,direc);
+                Vec_t term_1 = y - 2*direc*(BMO_MATOPS_DOT_PROD(y,y) / BMO_MATOPS_DOT_PROD(y,direc));
+                Vec_t term_2 = grad_p / BMO_MATOPS_DOT_PROD(y,direc);
 
-                beta = OPTIM_MATOPS_DOT_PROD(term_1,term_2);
+                beta = BMO_MATOPS_DOT_PROD(term_1,term_2);
                 break;
             }
             

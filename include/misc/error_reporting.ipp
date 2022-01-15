@@ -68,7 +68,7 @@ error_reporting(Vec_t& out_vals,
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: best guess:\n");
 
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
             std::cout << "iterations: " << iter << ". error: " << err << std::endl;
         }
     } else {
@@ -155,13 +155,13 @@ error_reporting(Vec_t& out_vals,
             printf("optim failure: iter_max not reached but algorithm stopped.\n");
             printf("optim failure: best guess:\n");
 
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
             std::cout << "error: " << err << std::endl;
         } else {
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: best guess:\n");
 
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
             std::cout << "error: " << err << std::endl;
         }
     } else {

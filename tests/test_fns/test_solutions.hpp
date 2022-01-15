@@ -38,14 +38,14 @@ Vec_t test_1()
 
 Vec_t test_2()
 {
-    return OPTIM_MATOPS_ONE_VEC(2);
+    return BMO_MATOPS_ONE_VEC(2);
 }
 
 //
 
 Vec_t test_3(const int n)
 {
-    return OPTIM_MATOPS_ZERO_VEC(n);
+    return BMO_MATOPS_ZERO_VEC(n);
 }
 
 //
@@ -76,21 +76,21 @@ Vec_t test_5()
 
 Vec_t test_6()
 {
-    return OPTIM_MATOPS_ZERO_VEC(2);
+    return BMO_MATOPS_ZERO_VEC(2);
 }
 
 //
 
 Vec_t test_7()
 {
-    return OPTIM_MATOPS_ZERO_VEC(2);
+    return BMO_MATOPS_ZERO_VEC(2);
 }
 
 //
 
 Vec_t test_8()
 {
-    return OPTIM_MATOPS_ONE_VEC(2);
+    return BMO_MATOPS_ONE_VEC(2);
 }
 
 //

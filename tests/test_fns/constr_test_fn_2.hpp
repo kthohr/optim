@@ -58,7 +58,7 @@ constr_test_constrfn_2(const Vec_t& vals_inp, Mat_t* jacob_out, void* opt_data)
     constr_vals(1) = x_1 + x_2 - 9.0;
     
     if (jacob_out) {
-        OPTIM_MATOPS_SET_SIZE_POINTER(jacob_out,2,2);
+        BMO_MATOPS_SET_SIZE_POINTER(jacob_out,2,2);
 
         (*jacob_out)(0,0) = -2.0;
         (*jacob_out)(0,1) = -1.0;

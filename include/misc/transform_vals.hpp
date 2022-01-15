@@ -29,7 +29,7 @@ transform(const Vec_t& vals_inp,
           const Vec_t& lower_bounds, 
           const Vec_t& upper_bounds)
 {
-    const size_t n_vals = OPTIM_MATOPS_SIZE(bounds_type);
+    const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
     Vec_t vals_trans_out(n_vals);
 
@@ -62,7 +62,7 @@ inv_transform(const Vec_t& vals_trans_inp,
               const Vec_t& lower_bounds, 
               const Vec_t& upper_bounds)
 {
-    const size_t n_vals = OPTIM_MATOPS_SIZE(bounds_type);
+    const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
     Vec_t vals_out(n_vals);
 

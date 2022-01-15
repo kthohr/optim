@@ -25,9 +25,8 @@
 
 namespace optim
 {
-    // Matrix operations
-    #include "misc/optim_matdefs.hpp"
-
+    #include "BaseMatrixOps/include/BaseMatrixOps.hpp"
+    
     // structs
     #include "misc/optim_structs.hpp"
 

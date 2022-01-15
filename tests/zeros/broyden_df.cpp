@@ -36,7 +36,7 @@ int main()
     optim::algo_settings_t settings_1;
     // settings_1.print_level = 4;
 
-    Vec_t x_1 = OPTIM_MATOPS_ZERO_VEC(2);
+    Vec_t x_1 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,settings_1);
 
@@ -46,12 +46,12 @@ int main()
         std::cout << "broyden_df: test_1 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "broyden_df: solution to test_1:\n" << x_1 << "\n";
+    BMO_MATOPS_COUT << "broyden_df: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
 
-    Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
+    Vec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr);
 
@@ -61,7 +61,7 @@ int main()
         std::cout << "broyden_df: test_2 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "broyden_df: solution to test_2:\n" << x_2 << "\n";
+    BMO_MATOPS_COUT << "broyden_df: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests
@@ -74,7 +74,7 @@ int main()
     //
     // test 1
 
-    x_1 = OPTIM_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_VEC(2);
 
     success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,zeros_test_jacob_1,nullptr);
 
@@ -84,12 +84,12 @@ int main()
         std::cout << "broyden_df w jacobian: test_1 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "broyden_df w jacobian: solution to test_1:\n" << x_1 << "\n";
+    BMO_MATOPS_COUT << "broyden_df w jacobian: solution to test_1:\n" << x_1 << "\n";
 
     //
     // test 2
 
-    x_2 = OPTIM_MATOPS_ZERO_VEC(2);
+    x_2 = BMO_MATOPS_ZERO_VEC(2);
 
     success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr,zeros_test_jacob_2,nullptr);
 
@@ -99,7 +99,7 @@ int main()
         std::cout << "broyden_df w jacobian: test_2 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "broyden_df w jacobian: solution to test_2:\n" << x_2 << "\n";
+    BMO_MATOPS_COUT << "broyden_df w jacobian: solution to test_2:\n" << x_2 << "\n";
 
     //
     // coverage tests

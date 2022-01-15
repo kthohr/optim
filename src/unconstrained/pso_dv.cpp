@@ -35,7 +35,7 @@ optim::internal::pso_dv_impl(
 {
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     //
     // PSO settings
@@ -73,8 +73,8 @@ optim::internal::pso_dv_impl(
 
     const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
-    Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.pso_settings.initial_lb) == n_vals ) ? settings.pso_settings.initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
-    Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.pso_settings.initial_ub) == n_vals ) ? settings.pso_settings.initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
+    Vec_t par_initial_lb = ( BMO_MATOPS_SIZE(settings.pso_settings.initial_lb) == n_vals ) ? settings.pso_settings.initial_lb : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
+    Vec_t par_initial_ub = ( BMO_MATOPS_SIZE(settings.pso_settings.initial_ub) == n_vals ) ? settings.pso_settings.initial_ub : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
 
     sampling_bounds_check(vals_bound, n_vals, bounds_type, lower_bounds, upper_bounds, par_initial_lb, par_initial_ub);
 
@@ -106,9 +106,9 @@ optim::internal::pso_dv_impl(
     #pragma omp parallel for
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
-        P.row(i) = OPTIM_MATOPS_TRANSPOSE( par_initial_lb + OPTIM_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), OPTIM_MATOPS_RANDU_VEC(n_vals) ) );
+        P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), BMO_MATOPS_RANDU_VEC(n_vals) ) );
 
-        double prop_objfn_val = opt_objfn(OPTIM_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
+        double prop_objfn_val = opt_objfn(BMO_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
 
         if (std::isnan(prop_objfn_val)) {
             prop_objfn_val = inf;
@@ -117,7 +117,7 @@ optim::internal::pso_dv_impl(
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            P.row(i) = OPTIM_MATOPS_TRANSPOSE( transform(OPTIM_MATOPS_TRANSPOSE(P.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            P.row(i) = BMO_MATOPS_TRANSPOSE( transform(BMO_MATOPS_TRANSPOSE(P.row(i)), bounds_type, lower_bounds, upper_bounds) );
         }
     }
 
@@ -125,14 +125,14 @@ optim::internal::pso_dv_impl(
 
     Mat_t best_vecs = P;
 
-    Mat_t V = OPTIM_MATOPS_ZERO_MAT(n_pop,n_vals);
+    Mat_t V = BMO_MATOPS_ZERO_MAT(n_pop,n_vals);
 
-    double min_objfn_val_running = OPTIM_MATOPS_MIN_VAL(objfn_vals);
+    double min_objfn_val_running = BMO_MATOPS_MIN_VAL(objfn_vals);
     double min_objfn_val_check = min_objfn_val_running;
 
     RowVec_t best_sol_running = P.row( index_min(objfn_vals) );
 
-    Vec_t stag_vec = OPTIM_MATOPS_ZERO_VEC(n_pop); // arma::zeros(n_pop,1);
+    Vec_t stag_vec = BMO_MATOPS_ZERO_VEC(n_pop); // arma::zeros(n_pop,1);
 
     //
     // begin loop
@@ -143,8 +143,8 @@ optim::internal::pso_dv_impl(
     while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen) {
         ++iter;
 
-        RowVec_t P_max = OPTIM_MATOPS_COLWISE_MAX(P);
-        RowVec_t P_min = OPTIM_MATOPS_COLWISE_MIN(P);
+        RowVec_t P_max = BMO_MATOPS_COLWISE_MAX(P);
+        RowVec_t P_min = BMO_MATOPS_COLWISE_MIN(P);
 
 #ifdef OPTIM_USE_OMP
         #pragma omp parallel for 
@@ -153,29 +153,29 @@ optim::internal::pso_dv_impl(
             uint_t c_1, c_2;
 
             do { // 'r_2' in paper's notation
-                c_1 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_1 == i);
 
             do { // 'r_3' in paper's notation
-                c_2 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
             } while(c_2 == i || c_2 == c_1);
 
             //
 
-            Vec_t rand_CR = OPTIM_MATOPS_RANDU_VEC(n_vals);
+            Vec_t rand_CR = BMO_MATOPS_RANDU_VEC(n_vals);
 
             RowVec_t delta_vec = P.row(c_1) - P.row(c_2);
 
             for (size_t k = 0; k < n_vals; ++k) {
                 if (rand_CR(k) <= par_CR) {
-                    double rand_u = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDU_VEC(1) );
+                    double rand_u = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDU_VEC(1) );
 
                     V(i,k) = par_w*V(i,k) + par_beta*delta_vec(k) + par_c_2*rand_u*(best_sol_running(k) - P(i,k));
                 }
             }
 
             RowVec_t TR = P.row(i) + V.row(i);
-            double TR_objfn_val = box_objfn( OPTIM_MATOPS_TRANSPOSE(TR), nullptr, opt_data);
+            double TR_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(TR), nullptr, opt_data);
 
             if (TR_objfn_val < objfn_vals(i)) {
                 P.row(i) = TR;
@@ -185,10 +185,10 @@ optim::internal::pso_dv_impl(
             }
 
             if (stag_vec(i) >= stag_limit) {
-                P.row(i) = P_min + OPTIM_MATOPS_HADAMARD_PROD( OPTIM_MATOPS_RANDU_ROWVEC(n_vals), (P_max - P_min));
+                P.row(i) = P_min + BMO_MATOPS_HADAMARD_PROD( BMO_MATOPS_RANDU_ROWVEC(n_vals), (P_max - P_min));
                 stag_vec(i) = 0;
 
-                objfn_vals(i) = box_objfn( OPTIM_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
+                objfn_vals(i) = box_objfn( BMO_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
             }
                 
             // if (objfn_vals(i) < best_vals(i)) {
@@ -226,10 +226,10 @@ optim::internal::pso_dv_impl(
     //
 
     if (vals_bound) {
-        best_sol_running = OPTIM_MATOPS_TRANSPOSE( inv_transform( OPTIM_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
+        best_sol_running = BMO_MATOPS_TRANSPOSE( inv_transform( BMO_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
     }
 
-    error_reporting(init_out_vals, OPTIM_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
+    error_reporting(init_out_vals, BMO_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
                     success, rel_objfn_change, rel_objfn_change_tol, iter, n_gen, 
                     conv_failure_switch, settings_inp);
 

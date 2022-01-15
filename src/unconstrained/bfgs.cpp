@@ -37,7 +37,7 @@ optim::internal::bfgs_impl(
 
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     //
     // BFGS settings
@@ -82,10 +82,10 @@ optim::internal::bfgs_impl(
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
                 // Mat_t jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
-                Vec_t jacob_vec = OPTIM_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp, bounds_type, lower_bounds, upper_bounds) );
+                Vec_t jacob_vec = BMO_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp, bounds_type, lower_bounds, upper_bounds) );
 
                 // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
-                *grad_out = OPTIM_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
+                *grad_out = BMO_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
             } else {
                 ret = opt_objfn(vals_inv_trans,nullptr,opt_data);
             }
@@ -100,7 +100,7 @@ optim::internal::bfgs_impl(
 
     Vec_t x = init_out_vals;
 
-    if (! OPTIM_MATOPS_IS_FINITE(x) ) {
+    if (! BMO_MATOPS_IS_FINITE(x) ) {
         printf("bfgs error: non-finite initial value(s).\n");
         return false;
     }
@@ -109,17 +109,17 @@ optim::internal::bfgs_impl(
         x = transform(x, bounds_type, lower_bounds, upper_bounds);
     }
 
-    const Mat_t I_mat = OPTIM_MATOPS_EYE(n_vals);
+    const Mat_t I_mat = BMO_MATOPS_EYE(n_vals);
 
     Mat_t W = I_mat;                            // initial approx. to (inverse) Hessian 
     Vec_t grad(n_vals);                         // gradient vector
-    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);    // direction vector
-    Vec_t s = OPTIM_MATOPS_ZERO_VEC(n_vals);
-    Vec_t y = OPTIM_MATOPS_ZERO_VEC(n_vals);
+    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);    // direction vector
+    Vec_t s = BMO_MATOPS_ZERO_VEC(n_vals);
+    Vec_t y = BMO_MATOPS_ZERO_VEC(n_vals);
 
     box_objfn(x, &grad, opt_data);
 
-    double grad_err = OPTIM_MATOPS_L2NORM(grad);
+    double grad_err = BMO_MATOPS_L2NORM(grad);
 
     OPTIM_BFGS_TRACE(-1, grad_err, 0.0, x, d, grad, s, y, W);
 
@@ -140,23 +140,23 @@ optim::internal::bfgs_impl(
 
     // update approx. inverse Hessian (W)
 
-    double W_denom_term = OPTIM_MATOPS_DOT_PROD(y,s);
+    double W_denom_term = BMO_MATOPS_DOT_PROD(y,s);
     Mat_t W_term_1;
 
     if (W_denom_term > 1E-10) {   
         // checking whether the curvature condition holds: y's > 0
-        W_term_1 = I_mat - s * (OPTIM_MATOPS_TRANSPOSE_IN_PLACE(y)) / W_denom_term;
+        W_term_1 = I_mat - s * (BMO_MATOPS_TRANSPOSE_IN_PLACE(y)) / W_denom_term;
     
         // perform rank-1 update of inverse Hessian approximation
-        W = W_term_1 * W * (OPTIM_MATOPS_TRANSPOSE_IN_PLACE(W_term_1)) + s * (OPTIM_MATOPS_TRANSPOSE_IN_PLACE(s)) / W_denom_term;
+        W = W_term_1 * W * (BMO_MATOPS_TRANSPOSE_IN_PLACE(W_term_1)) + s * (BMO_MATOPS_TRANSPOSE_IN_PLACE(s)) / W_denom_term;
     } else {
         W = 0.1 * W;
     }
 
     grad = grad_p;
 
-    grad_err = OPTIM_MATOPS_L2NORM(grad_p);
-    double rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY(s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+    grad_err = BMO_MATOPS_L2NORM(grad_p);
+    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY(s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
     OPTIM_BFGS_TRACE(0, grad_err, rel_sol_change, x_p, d, grad_p, s, y, W);
 
@@ -187,19 +187,19 @@ optim::internal::bfgs_impl(
         s = x_p - x;
         y = grad_p - grad;
 
-        W_denom_term = OPTIM_MATOPS_DOT_PROD(y,s);
+        W_denom_term = BMO_MATOPS_DOT_PROD(y,s);
 
         if (W_denom_term > 1E-10) {
             // checking the curvature condition y.s > 0
-            W_term_1 = I_mat - s * OPTIM_MATOPS_TRANSPOSE_IN_PLACE(y) / W_denom_term;
+            W_term_1 = I_mat - s * BMO_MATOPS_TRANSPOSE_IN_PLACE(y) / W_denom_term;
         
-            W = W_term_1 * W * OPTIM_MATOPS_TRANSPOSE_IN_PLACE(W_term_1) + s * OPTIM_MATOPS_TRANSPOSE_IN_PLACE(s) / W_denom_term;
+            W = W_term_1 * W * BMO_MATOPS_TRANSPOSE_IN_PLACE(W_term_1) + s * BMO_MATOPS_TRANSPOSE_IN_PLACE(s) / W_denom_term;
         }
 
         //
 
-        grad_err = OPTIM_MATOPS_L2NORM(grad_p);
-        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY(s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+        grad_err = BMO_MATOPS_L2NORM(grad_p);
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY(s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
         
         x = x_p;
         grad = grad_p;

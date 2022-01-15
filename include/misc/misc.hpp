@@ -25,4 +25,3 @@
 #include "numerical_gradient.hpp"
 #include "numerical_hessian.hpp"
 #include "transform_vals.hpp"
-#include "unit_vec.hpp"

@@ -90,21 +90,21 @@ lbfgs_recur(Vec_t q,
     // double rho = 1.0;
 
     for (size_t i = 0; i < M; ++i) {
-        double rho = 1.0 / OPTIM_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
-        alpha_vec(i) = rho * OPTIM_MATOPS_DOT_PROD(s_mat.col(i),q);
+        double rho = 1.0 / BMO_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
+        alpha_vec(i) = rho * BMO_MATOPS_DOT_PROD(s_mat.col(i),q);
 
         q -= alpha_vec(i)*y_mat.col(i);
     }
 
-    Vec_t r = q * ( OPTIM_MATOPS_DOT_PROD(s_mat.col(0),y_mat.col(0)) / OPTIM_MATOPS_DOT_PROD(y_mat.col(0),y_mat.col(0)) );
+    Vec_t r = q * ( BMO_MATOPS_DOT_PROD(s_mat.col(0),y_mat.col(0)) / BMO_MATOPS_DOT_PROD(y_mat.col(0),y_mat.col(0)) );
 
     // backwards
 
     // double beta = 1.0;
 
     for (int i = M - 1; i >= 0; i--) {
-        double rho = 1.0 / OPTIM_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
-        double beta = rho * OPTIM_MATOPS_DOT_PROD(y_mat.col(i),r);
+        double rho = 1.0 / BMO_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
+        double beta = rho * BMO_MATOPS_DOT_PROD(y_mat.col(i),r);
 
         r += (alpha_vec(i) - beta)*s_mat.col(i);
     }

@@ -37,7 +37,7 @@ optim::internal::newton_impl(
 
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     // settings
 
@@ -59,18 +59,18 @@ optim::internal::newton_impl(
     Vec_t x = init_out_vals;
     Vec_t x_p = x;
 
-    if (! OPTIM_MATOPS_IS_FINITE(x) ) {
+    if (! BMO_MATOPS_IS_FINITE(x) ) {
         printf("newton error: non-finite initial value(s).\n");
         return false;
     }
 
     Mat_t H(n_vals, n_vals);                    // hessian matrix
     Vec_t grad(n_vals);                         // gradient vector
-    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);    // direction vector
+    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);    // direction vector
 
     opt_objfn(x_p, &grad, &H, opt_data);
 
-    double grad_err = OPTIM_MATOPS_L2NORM(grad);
+    double grad_err = BMO_MATOPS_L2NORM(grad);
 
     OPTIM_NEWTON_TRACE(-1, grad_err, 0.0, x_p, d, grad, H);
 
@@ -80,14 +80,14 @@ optim::internal::newton_impl(
 
     // if ||gradient(initial values)|| > tolerance, then continue
 
-    d = - OPTIM_MATOPS_SOLVE(H, grad); // Newton direction
+    d = - BMO_MATOPS_SOLVE(H, grad); // Newton direction
 
     x_p += d; // no line search used here
 
     opt_objfn(x_p, &grad, &H, opt_data);
 
-    grad_err = OPTIM_MATOPS_L2NORM(grad);
-    double rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+    grad_err = BMO_MATOPS_L2NORM(grad);
+    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
     OPTIM_NEWTON_TRACE(0, grad_err, rel_sol_change, x_p, d, grad, H);
 
@@ -107,15 +107,15 @@ optim::internal::newton_impl(
 
         //
 
-        d = - OPTIM_MATOPS_SOLVE(H,grad);
+        d = - BMO_MATOPS_SOLVE(H,grad);
         x_p += d;
         
         opt_objfn(x_p, &grad, &H, opt_data);
         
         //
 
-        grad_err = OPTIM_MATOPS_L2NORM(grad);
-        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+        grad_err = BMO_MATOPS_L2NORM(grad);
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
         //
 

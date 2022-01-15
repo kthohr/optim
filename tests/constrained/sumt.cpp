@@ -29,7 +29,7 @@ int main()
 {
     //
 
-    Vec_t x_1 = OPTIM_MATOPS_ONE_VEC(2);
+    Vec_t x_1 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_1 = optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
 
@@ -39,11 +39,11 @@ int main()
         std::cout << "sumt: test_1 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "sumt: solution to test_1:\n" << x_1 << "\n";
+    BMO_MATOPS_COUT << "sumt: solution to test_1:\n" << x_1 << "\n";
 
     //
 
-    Vec_t x_2 = OPTIM_MATOPS_ONE_VEC(2);
+    Vec_t x_2 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_2 = optim::sumt(x_2,constr_test_objfn_2,nullptr,constr_test_constrfn_2,nullptr);
 
@@ -53,11 +53,11 @@ int main()
         std::cout << "sumt: test_2 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "sumt: solution to test_2:\n" << x_2 << "\n";
+    BMO_MATOPS_COUT << "sumt: solution to test_2:\n" << x_2 << "\n";
 
     // this is particularly troublesome
 
-    Vec_t x_3 = OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ZERO_VEC(2), 1.2);
+    Vec_t x_3 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 1.2);
 
     bool success_3 = optim::sumt(x_3,constr_test_objfn_3,nullptr,constr_test_constrfn_3,nullptr);
 
@@ -67,7 +67,7 @@ int main()
         std::cout << "sumt: test_3 completed unsuccessfully." << std::endl;
     }
 
-    OPTIM_MATOPS_COUT << "sumt: solution to test_3:\n" << x_3 << "\n";
+    BMO_MATOPS_COUT << "sumt: solution to test_3:\n" << x_3 << "\n";
 
     //
     // coverage tests

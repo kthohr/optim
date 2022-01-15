@@ -48,7 +48,7 @@ int main()
 
     optim::VecInt_t bounds_type = optim::determine_bounds_type(vals_bound,n_vals,lb,ub);
 
-    optim::Vec_t initial_vals = OPTIM_MATOPS_ONE_VEC(n_vals);
+    optim::Vec_t initial_vals = BMO_MATOPS_ONE_VEC(n_vals);
 
     optim::Vec_t vals_trans = optim::transform(initial_vals,bounds_type,lb,ub);
 

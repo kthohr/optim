@@ -29,15 +29,15 @@ numerical_gradient(const Vec_t& vals_inp,
                    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* objfn_data)> objfn, 
                    void* objfn_data)
 {
-    const size_t n_vals = OPTIM_MATOPS_SIZE(vals_inp);
+    const size_t n_vals = BMO_MATOPS_SIZE(vals_inp);
 
     const double step_size = (step_size_inp) ? *step_size_inp : 1e-04;
     const double mach_eps = std::numeric_limits<double>::epsilon();
 
-    const Vec_t step_vec = OPTIM_MATOPS_MAX( OPTIM_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps,1.0/6.0) * OPTIM_MATOPS_ONE_VEC(n_vals) );
+    const Vec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps,1.0/6.0) * BMO_MATOPS_ONE_VEC(n_vals) );
     
     Vec_t x_orig = vals_inp, x_term_1, x_term_2;
-    Vec_t grad_vec = OPTIM_MATOPS_ZERO_VEC(n_vals);
+    Vec_t grad_vec = BMO_MATOPS_ZERO_VEC(n_vals);
 
     //
     

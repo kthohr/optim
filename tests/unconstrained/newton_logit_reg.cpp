@@ -33,7 +33,7 @@ inline
 Mat_t 
 sigm(const Mat_t& X)
 {
-    return OPTIM_MATOPS_SCALAR_DIV_ARRAY(1.0, ( OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_EXP(-X), 1.0) ));
+    return BMO_MATOPS_SCALAR_DIV_ARRAY(1.0, ( BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_EXP(-X), 1.0) ));
 }
 
 // log-likelihood function
@@ -52,27 +52,27 @@ double ll_fn(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_
 
     Vec_t mu = sigm(X*vals_inp);
 
-    double norm_term = static_cast<double>( OPTIM_MATOPS_SIZE(Y) );
+    double norm_term = static_cast<double>( BMO_MATOPS_SIZE(Y) );
 
 #ifndef OPTIM_LOGIT_EX_LL_TERM_1
-    #define OPTIM_LOGIT_EX_LL_TERM_1 OPTIM_MATOPS_HADAMARD_PROD(Y, OPTIM_MATOPS_LOG(mu))
+    #define OPTIM_LOGIT_EX_LL_TERM_1 BMO_MATOPS_HADAMARD_PROD(Y, BMO_MATOPS_LOG(mu))
 #endif
 
 #ifndef OPTIM_LOGIT_EX_LL_TERM_2
-    #define OPTIM_LOGIT_EX_LL_TERM_2 OPTIM_MATOPS_HADAMARD_PROD( OPTIM_MATOPS_ARRAY_ADD_SCALAR(-Y,1.0), OPTIM_MATOPS_LOG( OPTIM_MATOPS_ARRAY_ADD_SCALAR(-mu,1.0) ))
+    #define OPTIM_LOGIT_EX_LL_TERM_2 BMO_MATOPS_HADAMARD_PROD( BMO_MATOPS_ARRAY_ADD_SCALAR(-Y,1.0), BMO_MATOPS_LOG( BMO_MATOPS_ARRAY_ADD_SCALAR(-mu,1.0) ))
 #endif
 
-    const double obj_val = - OPTIM_MATOPS_ACCU( OPTIM_LOGIT_EX_LL_TERM_1 + OPTIM_LOGIT_EX_LL_TERM_2 ) / norm_term; 
+    const double obj_val = - BMO_MATOPS_ACCU( OPTIM_LOGIT_EX_LL_TERM_1 + OPTIM_LOGIT_EX_LL_TERM_2 ) / norm_term; 
 
     //
 
     if (grad_out) {
-        *grad_out = OPTIM_MATOPS_TRANSPOSE(X) * (mu - Y) / norm_term;
+        *grad_out = BMO_MATOPS_TRANSPOSE(X) * (mu - Y) / norm_term;
     }
 
     if (hess_out) {
-        Mat_t S = OPTIM_MATOPS_DIAGMAT( OPTIM_MATOPS_HADAMARD_PROD(mu, OPTIM_MATOPS_ARRAY_ADD_SCALAR(-mu,1.0)) );
-        *hess_out = OPTIM_MATOPS_TRANSPOSE(X) * S * X / norm_term;
+        Mat_t S = BMO_MATOPS_DIAGMAT( BMO_MATOPS_HADAMARD_PROD(mu, BMO_MATOPS_ARRAY_ADD_SCALAR(-mu,1.0)) );
+        *hess_out = BMO_MATOPS_TRANSPOSE(X) * S * X / norm_term;
     }
 
     //
@@ -87,17 +87,17 @@ int main()
     int n_dim = 5;     // dimension of theta
     int n_samp = 1000; // sample length
 
-    Mat_t X = OPTIM_MATOPS_RANDN_MAT(n_samp,n_dim);
-    Vec_t theta_0 = OPTIM_MATOPS_ARRAY_ADD_SCALAR(3.0 * OPTIM_MATOPS_RANDU_VEC(n_dim), 1.0);
+    Mat_t X = BMO_MATOPS_RANDN_MAT(n_samp,n_dim);
+    Vec_t theta_0 = BMO_MATOPS_ARRAY_ADD_SCALAR(3.0 * BMO_MATOPS_RANDU_VEC(n_dim), 1.0);
 
-    OPTIM_MATOPS_COUT << "\nTrue theta:\n" << theta_0 << "\n";
+    BMO_MATOPS_COUT << "\nTrue theta:\n" << theta_0 << "\n";
 
     Vec_t mu = sigm(X*theta_0);
 
     Vec_t Y(n_samp);
 
     for (int i = 0; i < n_samp; ++i) {
-        Y(i) = ( OPTIM_MATOPS_AS_SCALAR(OPTIM_MATOPS_RANDU_VEC(1)) < mu(i) ) ? 1.0 : 0.0;
+        Y(i) = ( BMO_MATOPS_AS_SCALAR(BMO_MATOPS_RANDU_VEC(1)) < mu(i) ) ? 1.0 : 0.0;
     }
 
     // fn data and initial values
@@ -106,7 +106,7 @@ int main()
     opt_data.Y = std::move(Y);
     opt_data.X = std::move(X);
 
-    Vec_t x = OPTIM_MATOPS_ARRAY_ADD_SCALAR( OPTIM_MATOPS_ONE_VEC(n_dim), 1.0 ); // (2,2)
+    Vec_t x = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ONE_VEC(n_dim), 1.0 ); // (2,2)
 
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
  
@@ -122,7 +122,7 @@ int main()
         std::cout << "newton: logit_reg test completed unsuccessfully." << std::endl;
     }
  
-    OPTIM_MATOPS_COUT << "\nnewton: solution to logit_reg test:\n" << x << "\n";
+    BMO_MATOPS_COUT << "\nnewton: solution to logit_reg test:\n" << x << "\n";
  
     return 0;
 }

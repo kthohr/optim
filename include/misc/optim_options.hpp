@@ -90,6 +90,10 @@
         #endif
     #endif
 
+    #ifndef BMO_ENABLE_ARMA_WRAPPERS
+        #define BMO_ENABLE_ARMA_WRAPPERS
+    #endif
+
     namespace optim
     {
         using Mat_t = arma::mat;
@@ -106,12 +110,8 @@
     #include <random>
     #include <Eigen/Dense>
 
-    #if EIGEN_VERSION_AT_LEAST(3,4,50)
-        #define EIGEN_INDEX_ALL Eigen::indexing::all
-    #elif EIGEN_VERSION_AT_LEAST(3,4,0)
-        #define EIGEN_INDEX_ALL Eigen::all
-    #else
-        #error Eigen must be version 3.4.0 or above
+    #ifndef BMO_ENABLE_EIGEN_WRAPPERS
+        #define BMO_ENABLE_EIGEN_WRAPPERS
     #endif
 
     template<typename eT, int iTr, int iTc>
@@ -134,3 +134,7 @@ namespace optim
     static const double inf = std::numeric_limits<double>::infinity();
     using uint_t = unsigned int;
 }
+
+#ifndef BMO_EXTRA_FEATURES
+    #define BMO_EXTRA_FEATURES
+#endif

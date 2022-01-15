@@ -29,9 +29,9 @@ jacobian_adjust(const Vec_t& vals_trans_inp,
                 const Vec_t& lower_bounds, 
                 const Vec_t& upper_bounds)
 {
-    const size_t n_vals = OPTIM_MATOPS_SIZE(bounds_type);
+    const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
-    Mat_t ret_mat = OPTIM_MATOPS_EYE(n_vals);
+    Mat_t ret_mat = BMO_MATOPS_EYE(n_vals);
 
     for (size_t i = 0; i < n_vals; ++i) {
         switch (bounds_type(i)) {

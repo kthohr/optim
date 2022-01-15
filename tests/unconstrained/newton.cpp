@@ -32,7 +32,7 @@ int main()
     //
     // test 1
 
-    Vec_t x_1 = OPTIM_MATOPS_ZERO_VEC(2);
+    Vec_t x_1 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_1 = optim::newton(x_1, unconstr_test_fn_1_whess, nullptr);
 
@@ -43,12 +43,12 @@ int main()
     }
 
     std::cout << "Distance from the actual solution to test_1:\n" \
-              << OPTIM_MATOPS_L2NORM(x_1 - unconstr_test_sols::test_1()) << std::endl;
+              << BMO_MATOPS_L2NORM(x_1 - unconstr_test_sols::test_1()) << std::endl;
 
     //
     // test 2
 
-    Vec_t x_2 = OPTIM_MATOPS_ZERO_VEC(2);
+    Vec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_2 = optim::newton(x_2, unconstr_test_fn_2_whess, nullptr);
 
@@ -59,13 +59,13 @@ int main()
     }
 
     std::cout << "Distance from the actual solution to test_2:\n" \
-              << OPTIM_MATOPS_L2NORM(x_2 - unconstr_test_sols::test_2()) << std::endl;
+              << BMO_MATOPS_L2NORM(x_2 - unconstr_test_sols::test_2()) << std::endl;
 
     //
     // test 3
 
     int test_3_dim = 5;
-    Vec_t x_3 = OPTIM_MATOPS_ONE_VEC(test_3_dim);
+    Vec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
 
     bool success_3 = optim::newton(x_3, unconstr_test_fn_3_whess, nullptr);
 
@@ -76,7 +76,7 @@ int main()
     }
 
     std::cout << "Distance from the actual solution to test_3:\n" \
-              << OPTIM_MATOPS_L2NORM(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
+              << BMO_MATOPS_L2NORM(x_3 - unconstr_test_sols::test_3(test_3_dim)) << std::endl;
 
 
     //
@@ -86,7 +86,7 @@ int main()
     // settings.err_tol = 1.0e-12;
     // settings.print_level = 4;
 
-    Vec_t x_5 = OPTIM_MATOPS_ZERO_VEC(2);
+    Vec_t x_5 = BMO_MATOPS_ZERO_VEC(2);
     x_5(0) = 2.0;
     x_5(1) = 2.0;
 
@@ -99,7 +99,7 @@ int main()
     }
 
     std::cout << "Distance from the actual solution to test_5:\n" \
-              << OPTIM_MATOPS_L2NORM(x_5 - unconstr_test_sols::test_5()) << std::endl;
+              << BMO_MATOPS_L2NORM(x_5 - unconstr_test_sols::test_5()) << std::endl;
 
     //
 

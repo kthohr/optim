@@ -58,7 +58,7 @@ optim::internal::line_search_mt(
 
     double f_step = opt_objfn(x,&grad,opt_data); // q(0)
 
-    double dgrad_init = OPTIM_MATOPS_DOT_PROD(grad,direc);
+    double dgrad_init = BMO_MATOPS_DOT_PROD(grad,direc);
     
     if (dgrad_init >= 0.0) {
         return step;
@@ -103,7 +103,7 @@ optim::internal::line_search_mt(
         x = x_0 + step * direc;
         f_step = opt_objfn(x,&grad,opt_data);
 
-        dgrad = OPTIM_MATOPS_DOT_PROD(grad,direc);
+        dgrad = BMO_MATOPS_DOT_PROD(grad,direc);
         double armijo_check_val = f_init + step*dgrad_test;
 
         // check stop conditions

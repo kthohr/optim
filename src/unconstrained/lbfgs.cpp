@@ -37,7 +37,7 @@ optim::internal::lbfgs_impl(
 
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     // settings
 
@@ -83,10 +83,10 @@ optim::internal::lbfgs_impl(
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
                 // Mat_t jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
-                Vec_t jacob_vec = OPTIM_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
+                Vec_t jacob_vec = BMO_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
 
                 // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
-                *grad_out = OPTIM_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
+                *grad_out = BMO_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
             } else {
                 ret = opt_objfn(vals_inv_trans, nullptr, opt_data);
             }
@@ -101,7 +101,7 @@ optim::internal::lbfgs_impl(
 
     Vec_t x = init_out_vals;
 
-    if (! OPTIM_MATOPS_IS_FINITE(x) ) {
+    if (! BMO_MATOPS_IS_FINITE(x) ) {
         printf("lbfgs error: non-finite initial value(s).\n");
         return false;
     }
@@ -111,13 +111,13 @@ optim::internal::lbfgs_impl(
     }
 
     Vec_t grad(n_vals);                         // gradient vector
-    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);    // direction vector
-    Mat_t s_mat = OPTIM_MATOPS_ZERO_MAT(n_vals, par_M);
-    Mat_t y_mat = OPTIM_MATOPS_ZERO_MAT(n_vals, par_M);
+    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);    // direction vector
+    Mat_t s_mat = BMO_MATOPS_ZERO_MAT(n_vals, par_M);
+    Mat_t y_mat = BMO_MATOPS_ZERO_MAT(n_vals, par_M);
 
     box_objfn(x, &grad, opt_data);
 
-    double grad_err = OPTIM_MATOPS_L2NORM(grad);
+    double grad_err = BMO_MATOPS_L2NORM(grad);
 
     OPTIM_LBFGS_TRACE(-1, grad_err, 0.0, x, d, grad, s_mat, y_mat);
 
@@ -135,8 +135,8 @@ optim::internal::lbfgs_impl(
 
     Vec_t s = x_p - x;
 
-    grad_err = OPTIM_MATOPS_L2NORM(grad);
-    double rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY(s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+    grad_err = BMO_MATOPS_L2NORM(grad);
+    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY(s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
     OPTIM_LBFGS_TRACE(0, grad_err, rel_sol_change, x_p, d, grad_p, s_mat, y_mat);
 
@@ -176,16 +176,16 @@ optim::internal::lbfgs_impl(
         s = x_p - x;
         y = grad_p - grad;
 
-        grad_err = OPTIM_MATOPS_L2NORM(grad_p);
-        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY(s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+        grad_err = BMO_MATOPS_L2NORM(grad_p);
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY(s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
         //
 
         x = x_p;
         grad = grad_p;
 
-        OPTIM_MATOPS_MIDDLE_COLS(s_mat, 1, par_M-1) = OPTIM_MATOPS_EVAL(OPTIM_MATOPS_MIDDLE_COLS(s_mat, 0, par_M-2));
-        OPTIM_MATOPS_MIDDLE_COLS(y_mat, 1, par_M-1) = OPTIM_MATOPS_EVAL(OPTIM_MATOPS_MIDDLE_COLS(y_mat, 0, par_M-2));
+        BMO_MATOPS_MIDDLE_COLS(s_mat, 1, par_M-1) = BMO_MATOPS_EVAL(BMO_MATOPS_MIDDLE_COLS(s_mat, 0, par_M-2));
+        BMO_MATOPS_MIDDLE_COLS(y_mat, 1, par_M-1) = BMO_MATOPS_EVAL(BMO_MATOPS_MIDDLE_COLS(y_mat, 0, par_M-2));
 
         s_mat.col(0) = s;
         y_mat.col(0) = y;

@@ -37,7 +37,7 @@ optim::internal::broyden_impl(
 
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     // Broyden settings
 
@@ -57,13 +57,13 @@ optim::internal::broyden_impl(
     // initialization
 
     Vec_t x = init_out_vals;
-    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);
+    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
 
-    Mat_t B = OPTIM_MATOPS_EYE(n_vals); // initial approx. to (inverse) Jacobian
+    Mat_t B = BMO_MATOPS_EYE(n_vals); // initial approx. to (inverse) Jacobian
 
     Vec_t objfn_vec = opt_objfn(x, opt_data);
 
-    double rel_objfn_change = OPTIM_MATOPS_L2NORM(objfn_vec);
+    double rel_objfn_change = BMO_MATOPS_L2NORM(objfn_vec);
 
     OPTIM_BROYDEN_TRACE(-1, rel_objfn_change, 0.0, x, d, objfn_vec, d, d, B);
 
@@ -81,10 +81,10 @@ optim::internal::broyden_impl(
     Vec_t s = x_p - x;
     Vec_t y = objfn_vec_p - objfn_vec;
 
-    rel_objfn_change = OPTIM_MATOPS_L2NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( y, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-    double rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+    rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
+    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
-    B += (s - B*y) * OPTIM_MATOPS_TRANSPOSE(y) / (OPTIM_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
+    B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
 
     OPTIM_BROYDEN_TRACE(0, rel_objfn_change, rel_sol_change, x_p, d, objfn_vec_p, y, s, B);
 
@@ -114,12 +114,12 @@ optim::internal::broyden_impl(
         s = x_p - x;
         y = objfn_vec_p - objfn_vec;
         
-        B += (s - B*y) * OPTIM_MATOPS_TRANSPOSE(y) / (OPTIM_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
+        B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
 
         //
 
-        rel_objfn_change = OPTIM_MATOPS_L2NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( y, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+        rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
         x = x_p;
         objfn_vec = objfn_vec_p;
@@ -175,7 +175,7 @@ optim::internal::broyden_impl(
     
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     // Broyden settings
 
@@ -195,13 +195,13 @@ optim::internal::broyden_impl(
     // initialization
 
     Vec_t x = init_out_vals;
-    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);
+    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
 
-    Mat_t B = OPTIM_MATOPS_INV( jacob_objfn(x, jacob_data) ); // initial approx. to (inverse) Jacobian
+    Mat_t B = BMO_MATOPS_INV( jacob_objfn(x, jacob_data) ); // initial approx. to (inverse) Jacobian
 
     Vec_t objfn_vec = opt_objfn(x, opt_data);
 
-    double rel_objfn_change = OPTIM_MATOPS_L2NORM(objfn_vec);
+    double rel_objfn_change = BMO_MATOPS_L2NORM(objfn_vec);
 
     OPTIM_BROYDEN_TRACE(-1, rel_objfn_change, 0.0, x, d, objfn_vec, d, d, B);
     
@@ -219,10 +219,10 @@ optim::internal::broyden_impl(
     Vec_t s = x_p - x;
     Vec_t y = objfn_vec_p - objfn_vec;
 
-    rel_objfn_change = OPTIM_MATOPS_L2NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( y, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-    double rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+    rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
+    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
-    B += (s - B*y) * OPTIM_MATOPS_TRANSPOSE(y) / (OPTIM_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
+    B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
 
     OPTIM_BROYDEN_TRACE(0, rel_objfn_change, rel_sol_change, x_p, d, objfn_vec, y, s, B);
 
@@ -253,15 +253,15 @@ optim::internal::broyden_impl(
         y = objfn_vec_p - objfn_vec;
         
         if (iter % 5 == 0) {
-            B = OPTIM_MATOPS_INV( jacob_objfn(x_p,jacob_data) );
+            B = BMO_MATOPS_INV( jacob_objfn(x_p,jacob_data) );
         } else {
-            B += (s - B*y) * OPTIM_MATOPS_TRANSPOSE(y) / (OPTIM_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
+            B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
         }
 
         //
 
-        rel_objfn_change = OPTIM_MATOPS_L2NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( y, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( s, (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+        rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
         //
 

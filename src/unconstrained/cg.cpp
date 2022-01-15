@@ -37,7 +37,7 @@ optim::internal::cg_impl(
     
     bool success = false;
     
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     // CG settings
 
@@ -87,10 +87,10 @@ optim::internal::cg_impl(
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
                 // Mat_t jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
-                Vec_t jacob_vec = OPTIM_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
+                Vec_t jacob_vec = BMO_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
 
                 // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
-                *grad_out = OPTIM_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
+                *grad_out = BMO_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
             } else {
                 ret = opt_objfn(vals_inv_trans, nullptr, opt_data);
             }
@@ -103,13 +103,13 @@ optim::internal::cg_impl(
 
     // initialization
 
-    if (! OPTIM_MATOPS_IS_FINITE(init_out_vals) ) {
+    if (! BMO_MATOPS_IS_FINITE(init_out_vals) ) {
         printf("gd error: non-finite initial value(s).\n");
         return false;
     }
 
     Vec_t x = init_out_vals;
-    Vec_t d = OPTIM_MATOPS_ZERO_VEC(n_vals);
+    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
 
     if (vals_bound) { // should we transform the parameters?
         x = transform(x, bounds_type, lower_bounds, upper_bounds);
@@ -118,7 +118,7 @@ optim::internal::cg_impl(
     Vec_t grad(n_vals); // gradient
     box_objfn(x, &grad, opt_data);
 
-    double grad_err = OPTIM_MATOPS_L2NORM(grad);
+    double grad_err = BMO_MATOPS_L2NORM(grad);
 
     OPTIM_CG_TRACE(-1, grad_err, 0.0, x, d, grad, 0.0);
 
@@ -135,8 +135,8 @@ optim::internal::cg_impl(
 
     double t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
-    grad_err = OPTIM_MATOPS_L2NORM(grad_p);
-    double rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+    grad_err = BMO_MATOPS_L2NORM(grad_p);
+    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
     
     OPTIM_CG_TRACE(0, grad_err, rel_sol_change, x, d, grad, 0.0);
 
@@ -162,7 +162,7 @@ optim::internal::cg_impl(
 
         Vec_t d_p = - grad_p + beta*d;
 
-        t_init = t * (OPTIM_MATOPS_DOT_PROD(grad,d) / OPTIM_MATOPS_DOT_PROD(grad_p,d_p));
+        t_init = t * (BMO_MATOPS_DOT_PROD(grad,d) / BMO_MATOPS_DOT_PROD(grad_p,d_p));
 
         grad = grad_p;
 
@@ -170,8 +170,8 @@ optim::internal::cg_impl(
 
         //
 
-        grad_err = OPTIM_MATOPS_L2NORM(grad_p);
-        rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+        grad_err = BMO_MATOPS_L2NORM(grad_p);
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
 
         d = d_p;
         x = x_p;

@@ -62,7 +62,7 @@ optim::internal::sumt_impl(
         sumt_data_t *d = reinterpret_cast<sumt_data_t*>(sumt_data);
         double c_pen = d->c_pen;
         
-        const size_t n_vals = OPTIM_MATOPS_SIZE(vals_inp);
+        const size_t n_vals = BMO_MATOPS_SIZE(vals_inp);
 
         Vec_t grad_obj(n_vals);
         Mat_t jacob_constr;
@@ -79,13 +79,13 @@ optim::internal::sumt_impl(
 
         //
 
-        double constr_valsq = OPTIM_MATOPS_DOT_PROD(constr_vals,constr_vals);
+        double constr_valsq = BMO_MATOPS_DOT_PROD(constr_vals,constr_vals);
 
         if (constr_valsq > 0) {
             ret = opt_objfn(vals_inp,&grad_obj,opt_data) + c_pen*(constr_valsq / 2.0);
 
             if (grad_out) {
-                *grad_out = grad_obj + c_pen * OPTIM_MATOPS_TRANSPOSE( OPTIM_MATOPS_COLWISE_SUM(jacob_constr) );
+                *grad_out = grad_obj + c_pen * BMO_MATOPS_TRANSPOSE( BMO_MATOPS_COLWISE_SUM(jacob_constr) );
             }
         } else {
             ret = opt_objfn(vals_inp, &grad_obj, opt_data);
@@ -122,7 +122,7 @@ optim::internal::sumt_impl(
         bfgs(x_p, sumt_objfn, &sumt_data, settings);
 
         if (iter % 10 == 0) {
-            rel_sol_change = OPTIM_MATOPS_L1NORM( OPTIM_MATOPS_ARRAY_DIV_ARRAY((x_p - x), (OPTIM_MATOPS_ARRAY_ADD_SCALAR(OPTIM_MATOPS_ABS(x), 1.0e-08)) ) );
+            rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY((x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
         }
         
         //

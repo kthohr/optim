@@ -111,6 +111,8 @@ jobs:
             echo ""
             exit 1
           fi
+          #
+          git submodule update --recursive
       
       - name: Build
         shell: bash

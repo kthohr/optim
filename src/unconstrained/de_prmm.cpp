@@ -35,7 +35,7 @@ optim::internal::de_prmm_impl(
 {
     bool success = false;
 
-    const size_t n_vals = OPTIM_MATOPS_SIZE(init_out_vals);
+    const size_t n_vals = BMO_MATOPS_SIZE(init_out_vals);
 
     //
     // DE settings
@@ -84,8 +84,8 @@ optim::internal::de_prmm_impl(
 
     const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
-    Vec_t par_initial_lb = ( OPTIM_MATOPS_SIZE(settings.de_settings.initial_lb) == n_vals ) ? settings.de_settings.initial_lb : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
-    Vec_t par_initial_ub = ( OPTIM_MATOPS_SIZE(settings.de_settings.initial_ub) == n_vals ) ? settings.de_settings.initial_ub : OPTIM_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
+    Vec_t par_initial_lb = ( BMO_MATOPS_SIZE(settings.de_settings.initial_lb) == n_vals ) ? settings.de_settings.initial_lb : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
+    Vec_t par_initial_ub = ( BMO_MATOPS_SIZE(settings.de_settings.initial_ub) == n_vals ) ? settings.de_settings.initial_ub : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
 
     sampling_bounds_check(vals_bound, n_vals, bounds_type, lower_bounds, upper_bounds, par_initial_lb, par_initial_ub);
 
@@ -114,9 +114,9 @@ optim::internal::de_prmm_impl(
     #pragma omp parallel for
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
-        X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( par_initial_lb + OPTIM_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), OPTIM_MATOPS_RANDU_VEC(n_vals) ) );
+        X_next.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), BMO_MATOPS_RANDU_VEC(n_vals) ) );
 
-        double prop_objfn_val = opt_objfn( OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), nullptr, opt_data);
+        double prop_objfn_val = opt_objfn( BMO_MATOPS_TRANSPOSE(X_next.row(i)), nullptr, opt_data);
 
         if (!std::isfinite(prop_objfn_val)) {
             prop_objfn_val = inf;
@@ -125,7 +125,7 @@ optim::internal::de_prmm_impl(
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( transform( OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            X_next.row(i) = BMO_MATOPS_TRANSPOSE( transform( BMO_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
         }
     }
 
@@ -194,7 +194,7 @@ optim::internal::de_prmm_impl(
         #pragma omp parallel for
 #endif
         for (size_t i = 0; i < n_pop - n_pop_best; ++i) {
-            Vec_t rand_pars = OPTIM_MATOPS_RANDU_VEC(4);
+            Vec_t rand_pars = BMO_MATOPS_RANDU_VEC(4);
 
             if (rand_pars(0) < tau_F) {
                 F_vec(i) = F_l + (F_u-F_l)*rand_pars(1);
@@ -209,27 +209,27 @@ optim::internal::de_prmm_impl(
             uint_t c_1, c_2, c_3;
 
             do {
-                c_1 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
+                c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_1 == i);
 
             do {
-                c_2 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
+                c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_2==i || c_2==c_1);
 
             do {
-                c_3 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
+                c_3 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_3==i || c_3==c_1 || c_3==c_2);
 
             //
 
-            size_t j = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_vals-1) );
+            size_t j = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_vals-1) );
 
-            Vec_t rand_unif = OPTIM_MATOPS_RANDU_VEC(n_vals);
+            Vec_t rand_unif = BMO_MATOPS_RANDU_VEC(n_vals);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
                 if ( rand_unif(k) < CR_vec(i) || k == j ) {
-                    double r_s = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDU_VEC(1) );
+                    double r_s = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDU_VEC(1) );
 
                     if ( r_s < 0.75 || n_pop >= 100 ) {
                         X_prop(k) = X(c_3,k) + F_vec(i) * (X(c_1,k) - X(c_2,k));
@@ -243,7 +243,7 @@ optim::internal::de_prmm_impl(
 
             //
 
-            double prop_objfn_val = box_objfn( OPTIM_MATOPS_TRANSPOSE(X_prop),nullptr,opt_data);
+            double prop_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(X_prop),nullptr,opt_data);
             
             if (prop_objfn_val <= objfn_vals(i)) {
                 X_next.row(i) = X_prop;
@@ -253,7 +253,7 @@ optim::internal::de_prmm_impl(
             }
         }
 
-        min_objfn_val_index = index_min( OPTIM_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - n_pop_best - 1) );
+        min_objfn_val_index = index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - n_pop_best - 1) );
 
         best_val_main = objfn_vals(min_objfn_val_index);
         // best_vec_main = X_next.rows(0,n_pop - n_pop_best - 1).row( objfn_vals.rows(0,n_pop - n_pop_best - 1).index_min() );
@@ -267,7 +267,7 @@ optim::internal::de_prmm_impl(
         // second population
 
         for (size_t i = n_pop - n_pop_best; i < n_pop; ++i) {
-            Vec_t rand_pars = OPTIM_MATOPS_RANDU_VEC(4);
+            Vec_t rand_pars = BMO_MATOPS_RANDU_VEC(4);
 
             if (rand_pars(0) < tau_F) {
                 F_vec(i) = F_l + (F_u-F_l)*rand_pars(1);
@@ -282,18 +282,18 @@ optim::internal::de_prmm_impl(
             uint_t c_1, c_2;
 
             do {
-                c_1 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
+                c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_1 == i);
 
             do {
-                c_2 = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
+                c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
             } while(c_2==i || c_2==c_1);
 
             //
 
-            size_t j = OPTIM_MATOPS_AS_SCALAR( OPTIM_MATOPS_RANDI_VEC(1, 0, n_vals-1) );
+            size_t j = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_vals-1) );
 
-            Vec_t rand_unif = OPTIM_MATOPS_RANDU_VEC(n_vals);
+            Vec_t rand_unif = BMO_MATOPS_RANDU_VEC(n_vals);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
@@ -306,7 +306,7 @@ optim::internal::de_prmm_impl(
 
             //
 
-            double prop_objfn_val = box_objfn( OPTIM_MATOPS_TRANSPOSE(X_prop), nullptr, opt_data);
+            double prop_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(X_prop), nullptr, opt_data);
             
             if (prop_objfn_val <= objfn_vals(i)) {
                 X_next.row(i) = X_prop;
@@ -316,7 +316,7 @@ optim::internal::de_prmm_impl(
             }
         }
 
-        min_objfn_val_index = n_pop - n_pop_best + index_min( OPTIM_MATOPS_MIDDLE_ROWS(objfn_vals, n_pop - n_pop_best, n_pop - 1) );
+        min_objfn_val_index = n_pop - n_pop_best + index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, n_pop - n_pop_best, n_pop - 1) );
 
         // best_val_best = objfn_vals.rows(n_pop - n_pop_best, n_pop - 1).min();
         best_val_best = objfn_vals(min_objfn_val_index);
@@ -327,7 +327,7 @@ optim::internal::de_prmm_impl(
             double the_sum = 0.0;
 
             for (size_t j = 0; j < n_vals; ++j) {
-                double min_val = OPTIM_MATOPS_MIN_VAL(X.col(j));
+                double min_val = BMO_MATOPS_MIN_VAL(X.col(j));
 
                 the_sum += (best_vec_best(j) - min_val) / (xchg_vec(j) - min_val);
             }
@@ -345,7 +345,7 @@ optim::internal::de_prmm_impl(
 
         // assign running global minimum
 
-        min_objfn_val_index = index_min( OPTIM_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - 1) );
+        min_objfn_val_index = index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - 1) );
         double best_val_tmp = objfn_vals(min_objfn_val_index);
 
         if (best_val_tmp < min_objfn_val_running) {
@@ -369,7 +369,7 @@ optim::internal::de_prmm_impl(
     if (return_population_mat) {
         if (vals_bound) {
             for (size_t i = 0; i < n_pop; ++i) {
-                X_next.row(i) = OPTIM_MATOPS_TRANSPOSE( inv_transform(OPTIM_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+                X_next.row(i) = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
             }
         }
 
@@ -379,10 +379,10 @@ optim::internal::de_prmm_impl(
     //
 
     if (vals_bound) {
-        best_sol_running = OPTIM_MATOPS_TRANSPOSE( inv_transform(OPTIM_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
+        best_sol_running = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
     }
 
-    error_reporting(init_out_vals, OPTIM_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
+    error_reporting(init_out_vals, BMO_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
                     success, rel_objfn_change, rel_objfn_change_tol, iter, n_gen, 
                     conv_failure_switch, settings_inp);
 

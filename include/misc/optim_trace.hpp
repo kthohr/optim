@@ -37,25 +37,25 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current solution vector:\n";                                                  \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction vector:\n";                                                         \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    Gradient vector:\n";                                                          \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    s:\n";                                                                        \
-            OPTIM_MATOPS_COUT << s_in << "\n";                                                              \
+            BMO_MATOPS_COUT << s_in << "\n";                                                              \
             std::cout << "    y:\n";                                                                        \
-            OPTIM_MATOPS_COUT << y_in << "\n";                                                              \
+            BMO_MATOPS_COUT << y_in << "\n";                                                              \
             std::cout << "    W:\n";                                                                        \
-            OPTIM_MATOPS_COUT << W_in << "\n";                                                              \
+            BMO_MATOPS_COUT << W_in << "\n";                                                              \
         }                                                                                                   \
     }
 
@@ -69,21 +69,21 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current solution vector:\n";                                                  \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction vector:\n";                                                         \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    Gradient vector:\n";                                                          \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    beta:\n";                                                                     \
-            OPTIM_MATOPS_COUT << beta_in << "\n";                                                           \
+            BMO_MATOPS_COUT << beta_in << "\n";                                                           \
         }                                                                                                   \
     }
 
@@ -101,13 +101,13 @@
             std::cout << "    Stored lowest objective function value achieved:  ";                          \
             std::cout << min_objfn_val_check_in << "\n";                                                    \
             std::cout << "    Current best values:\n";                                                      \
-            OPTIM_MATOPS_COUT << best_sol_running_in << "\n";                                               \
+            BMO_MATOPS_COUT << best_sol_running_in << "\n";                                               \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    X:\n";                                                                        \
-            OPTIM_MATOPS_COUT << X_next_in << "\n";                                                         \
+            BMO_MATOPS_COUT << X_next_in << "\n";                                                         \
         }                                                                                                   \
     }
 
@@ -125,13 +125,13 @@
             std::cout << "    Stored lowest objective function value achieved:  ";                          \
             std::cout << min_objfn_val_check_in << "\n";                                                    \
             std::cout << "    Current best values:\n";                                                      \
-            OPTIM_MATOPS_COUT << best_sol_running_in << "\n";                                               \
+            BMO_MATOPS_COUT << best_sol_running_in << "\n";                                               \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    X:\n";                                                                        \
-            OPTIM_MATOPS_COUT << X_next_in << "\n";                                                         \
+            BMO_MATOPS_COUT << X_next_in << "\n";                                                         \
         }                                                                                                   \
     }
 
@@ -146,30 +146,30 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current values:\n";                                                           \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction:\n";                                                                \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    Gradient:\n";                                                                 \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
             if (settings.gd_settings.method == 3 || settings.gd_settings.method == 4) {                     \
                 std::cout << "    adam_vec_v:\n";                                                           \
-                OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(adam_vec_v_in) << "\n";                         \
+                BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(adam_vec_v_in) << "\n";                         \
             }                                                                                               \
                                                                                                             \
             if (settings.gd_settings.method == 5 || settings.gd_settings.method == 6 ||                     \
                     settings.gd_settings.method == 7) {                                                     \
                 std::cout << "    adam_vec_m:\n";                                                           \
-                OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(adam_vec_m_in) << "\n";                         \
+                BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(adam_vec_m_in) << "\n";                         \
                 std::cout << "    adam_vec_v:\n";                                                           \
-                OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(adam_vec_v_in) << "\n";                         \
+                BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(adam_vec_v_in) << "\n";                         \
             }                                                                                               \
         }                                                                                                   \
     }
@@ -184,23 +184,23 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current values:\n";                                                           \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction:\n";                                                                \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    Gradient:\n";                                                                 \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    s:\n";                                                                        \
-            OPTIM_MATOPS_COUT << s_mat_in << "\n";                                                          \
+            BMO_MATOPS_COUT << s_mat_in << "\n";                                                          \
             std::cout << "    y:\n";                                                                        \
-            OPTIM_MATOPS_COUT << y_mat_in << "\n";                                                          \
+            BMO_MATOPS_COUT << y_mat_in << "\n";                                                          \
         }                                                                                                   \
     }
 
@@ -214,20 +214,20 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current values:\n";                                                           \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction:\n";                                                                \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    Gradient:\n";                                                                 \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(grad_in) << "\n";                                   \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
-            OPTIM_MATOPS_COUT << "    Hessian:\n" << H_in << "\n";                                          \
+            BMO_MATOPS_COUT << "    Hessian:\n" << H_in << "\n";                                          \
         }                                                                                                   \
     }
 
@@ -243,15 +243,15 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current optimal input values:\n";                                             \
-            OPTIM_MATOPS_COUT << simplex_points_in.row(index_min(simplex_fn_vals_in)) << "\n";              \
+            BMO_MATOPS_COUT << simplex_points_in.row(index_min(simplex_fn_vals_in)) << "\n";              \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Objective function value at each vertex:\n";                                  \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(simplex_fn_vals_in) << "\n";                        \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(simplex_fn_vals_in) << "\n";                        \
             std::cout << "    Simplex matrix:\n";                                                           \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(simplex_points_in) << "\n";                         \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(simplex_points_in) << "\n";                         \
         }                                                                                                   \
     }
 
@@ -269,13 +269,13 @@
             std::cout << "    Stored lowest objective function value achieved:  ";                          \
             std::cout << min_objfn_val_check_in << "\n";                                                    \
             std::cout << "    Current best values:\n";                                                      \
-            OPTIM_MATOPS_COUT << best_sol_running_in << "\n";                                               \
+            BMO_MATOPS_COUT << best_sol_running_in << "\n";                                               \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    P:\n";                                                                        \
-            OPTIM_MATOPS_COUT << P_in << "\n";                                                              \
+            BMO_MATOPS_COUT << P_in << "\n";                                                              \
         }                                                                                                   \
     }
 
@@ -293,7 +293,7 @@
             std::cout << "    Stored lowest objective function value achieved:  ";                          \
             std::cout << min_objfn_val_check_in << "\n";                                                    \
             std::cout << "    Current best values:\n";                                                      \
-            OPTIM_MATOPS_COUT << best_sol_running_in << "\n";                                               \
+            BMO_MATOPS_COUT << best_sol_running_in << "\n";                                               \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
@@ -301,7 +301,7 @@
             std::cout << "    w: ";                                                                         \
             std::cout << par_w_in << "\n";                                                                  \
             std::cout << "    P:\n";                                                                        \
-            OPTIM_MATOPS_COUT << P_in << "\n";                                                              \
+            BMO_MATOPS_COUT << P_in << "\n";                                                              \
         }                                                                                                   \
     }
 
@@ -316,25 +316,25 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current values:\n";                                                           \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction:\n";                                                                \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    f(x):\n";                                                                     \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(objfn_vec_in) << "\n";                              \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(objfn_vec_in) << "\n";                              \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    s:\n";                                                                        \
-            OPTIM_MATOPS_COUT << s_in << "\n";                                                              \
+            BMO_MATOPS_COUT << s_in << "\n";                                                              \
             std::cout << "    y:\n";                                                                        \
-            OPTIM_MATOPS_COUT << y_in << "\n";                                                              \
+            BMO_MATOPS_COUT << y_in << "\n";                                                              \
             std::cout << "    B:\n";                                                                        \
-            OPTIM_MATOPS_COUT << B_in << "\n";                                                              \
+            BMO_MATOPS_COUT << B_in << "\n";                                                              \
         }                                                                                                   \
     }
 
@@ -349,26 +349,26 @@
         if (print_level >= 2) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Current values:\n";                                                           \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(x_in) << "\n";                                      \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 3) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    Direction:\n";                                                                \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(d_in) << "\n";                                      \
             std::cout << "    f(x):\n";                                                                     \
-            OPTIM_MATOPS_COUT << OPTIM_MATOPS_TRANSPOSE(objfn_vec_in) << "\n";                              \
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE(objfn_vec_in) << "\n";                              \
         }                                                                                                   \
                                                                                                             \
         if (print_level >= 4) {                                                                             \
             printf("\n");                                                                                   \
             std::cout << "    lambda: " << lambda_in << "\n";                                               \
             std::cout << "    s:\n";                                                                        \
-            OPTIM_MATOPS_COUT << s_in << "\n";                                                              \
+            BMO_MATOPS_COUT << s_in << "\n";                                                              \
             std::cout << "    y:\n";                                                                        \
-            OPTIM_MATOPS_COUT << y_in << "\n";                                                              \
+            BMO_MATOPS_COUT << y_in << "\n";                                                              \
             std::cout << "    B:\n";                                                                        \
-            OPTIM_MATOPS_COUT << B_in << "\n";                                                              \
+            BMO_MATOPS_COUT << B_in << "\n";                                                              \
         }                                                                                                   \
     }
 

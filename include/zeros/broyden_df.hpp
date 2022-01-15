@@ -155,9 +155,9 @@ df_proc_1(const Vec_t& x_vals,
 
     // check: || F(x_k + lambda*d_k) || <= ||F(x_k)||*(1+eta_k) - sigma_1*||lambda*d_k||^2
 
-    double Fx = OPTIM_MATOPS_L2NORM(opt_objfn(x_vals,opt_data));
-    double Fx_p = OPTIM_MATOPS_L2NORM(opt_objfn(x_vals + lambda*direc,opt_data));
-    double direc_norm2 = OPTIM_MATOPS_DOT_PROD(direc,direc);
+    double Fx = BMO_MATOPS_L2NORM(opt_objfn(x_vals,opt_data));
+    double Fx_p = BMO_MATOPS_L2NORM(opt_objfn(x_vals + lambda*direc,opt_data));
+    double direc_norm2 = BMO_MATOPS_DOT_PROD(direc,direc);
 
     double term_2 = sigma_1 * (lambda*lambda) * direc_norm2;
     double term_3 = eta_k * Fx;
@@ -175,7 +175,7 @@ df_proc_1(const Vec_t& x_vals,
         ++iter;
         lambda *= beta; // lambda_i = beta^i;
 
-        Fx_p = OPTIM_MATOPS_L2NORM( opt_objfn(x_vals + lambda*direc, opt_data) );
+        Fx_p = BMO_MATOPS_L2NORM( opt_objfn(x_vals + lambda*direc, opt_data) );
         term_2 = sigma_1 * (lambda*lambda) * direc_norm2;
 
         if (Fx_p <= Fx - term_2 + term_3) {
