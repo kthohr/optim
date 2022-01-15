@@ -112,7 +112,7 @@ jobs:
             exit 1
           fi
           #
-          git submodule update --recursive
+          git submodule update --init
       
       - name: Build
         shell: bash
