@@ -18,29 +18,18 @@
   ##
   ################################################################################*/
 
-#ifndef OPTIMLIB_INCLUDES
-#define OPTIMLIB_INCLUDES
+#ifndef OPTIMLIB_UNCONSTRAINED_INCLUDES
+#define OPTIMLIB_UNCONSTRAINED_INCLUDES
 
-#include "misc/optim_options.hpp"
-
-namespace optim
-{
-    #include "BaseMatrixOps/include/BaseMatrixOps.hpp"
-
-    // misc/utility files
-    #include "misc/misc.hpp"
-
-    // line search
-    #include "line_search/more_thuente.hpp"
-
-    // unconstrained optimization
-    #include "unconstrained/unconstrained.hpp"
-
-    // constrained optimization
-    #include "constrained/sumt.hpp"
-
-    // solving systems of nonlinear equations
-    #include "zeros/zeros.hpp"
-}
+#include "bfgs.hpp"
+#include "lbfgs.hpp"
+#include "newton.hpp"
+#include "cg.hpp"
+#include "gd.hpp"
+#include "de.hpp"
+#include "de_prmm.hpp"
+#include "nm.hpp"
+#include "pso.hpp"
+#include "pso_dv.hpp"
 
 #endif
