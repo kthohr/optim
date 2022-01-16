@@ -44,7 +44,8 @@ OBJECTS_OPTIM= $(OBJECTS_OPTIM_LS) $(OBJECTS_OPTIM_UNCONSTR) $(OBJECTS_OPTIM_CON
 
 all: $(OPTIM_DIR)/$(SHLIB) $(OBJECTS_OPTIM)
 
-# core Optim files
+#
+
 $(OPTIM_SRC_DIR)/misc/%.o: $(OPTIM_SRC_DIR)/misc/%.cpp
 	$(CXX) $(CXXFLAGS) $< -c -o $@
 

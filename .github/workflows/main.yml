@@ -97,7 +97,6 @@ jobs:
             mv ${WDIR}/arma_tmp/include/* ${WDIR}/include
             rm -rf ${WDIR}/arma_tmp
             export ARMA_INCLUDE_PATH="${WDIR}/include"
-            ./configure -c -l arma
           elif [[ "${{ matrix.config.linalg }}" == "eigen" ]]; then 
             export OPTIM_TEST_USE_EIGEN="y"
             mkdir ${WDIR}/eigen_tmp
@@ -105,7 +104,6 @@ jobs:
             mv ${WDIR}/eigen_tmp/* ${WDIR}/include
             rm -rf ${WDIR}/eigen_tmp
             export EIGEN_INCLUDE_PATH="${WDIR}/include"
-            ./configure -c -l eigen
           else
             echo -e "  \x1B[31m- error: unrecognized linear algebra library.\033[0m" >&2 ;
             echo ""
@@ -113,6 +111,7 @@ jobs:
           fi
           #
           git submodule update --init
+          ./configure -c -l ${{ matrix.config.linalg }}
       
       - name: Build
         shell: bash

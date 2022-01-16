@@ -68,6 +68,8 @@
     #define optimlib_inline 
 #endif
 
+//
+
 #ifdef OPTIM_ENABLE_ARMA_WRAPPERS
     #ifdef USE_RCPP_ARMADILLO
         #include <RcppArmadillo.h>
@@ -75,6 +77,7 @@
         #ifndef ARMA_DONT_USE_WRAPPER
             #define ARMA_DONT_USE_WRAPPER
         #endif
+        
         #include "armadillo"
     #endif
 
