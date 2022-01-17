@@ -95,10 +95,10 @@ optim::internal::pso_impl(
     std::vector<rand_engine_t> engines;
 
 #ifdef OPTIM_USE_OMP
-    if (settings.pso_settings.omp_n_threads < 0) {
-        omp_n_threads = std::max(1, static_cast<int>(omp_get_max_threads()) / 2); // OpenMP often detects the number of virtual/logical cores, not physical cores
-    } else {
+    if (settings.pso_settings.omp_n_threads > 0) {
         omp_n_threads = settings.pso_settings.omp_n_threads;
+    } else {
+        omp_n_threads = std::max(1, static_cast<int>(omp_get_max_threads()) / 2); // OpenMP often detects the number of virtual/logical cores, not physical cores
     }
 #endif
 
@@ -129,7 +129,7 @@ optim::internal::pso_impl(
     Mat_t P(n_pop,n_vals);
 
 #ifdef OPTIM_USE_OMP
-    #pragma omp parallel for(omp_n_threads)
+    #pragma omp parallel for num_threads(omp_n_threads)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
@@ -196,7 +196,7 @@ optim::internal::pso_impl(
         // population loop
 
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads)
 #endif
         for (size_t i=0; i < n_pop; ++i) {
             size_t thread_num = 0;

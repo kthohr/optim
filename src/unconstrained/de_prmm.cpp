@@ -96,10 +96,10 @@ optim::internal::de_prmm_impl(
     std::vector<rand_engine_t> engines;
 
 #ifdef OPTIM_USE_OMP
-    if (settings.de_settings.omp_n_threads < 0) {
-        omp_n_threads = std::max(1, static_cast<int>(omp_get_max_threads()) / 2); // OpenMP often detects the number of virtual/logical cores, not physical cores
-    } else {
+    if (settings.de_settings.omp_n_threads > 0) {
         omp_n_threads = settings.de_settings.omp_n_threads;
+    } else {
+        omp_n_threads = std::max(1, static_cast<int>(omp_get_max_threads()) / 2); // OpenMP often detects the number of virtual/logical cores, not physical cores
     }
 #endif
 
@@ -130,7 +130,7 @@ optim::internal::de_prmm_impl(
     Mat_t X(n_pop,n_vals), X_next(n_pop,n_vals);
 
 #ifdef OPTIM_USE_OMP
-    #pragma omp parallel for(omp_n_threads)
+    #pragma omp parallel for num_threads(omp_n_threads)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
@@ -190,7 +190,7 @@ optim::internal::de_prmm_impl(
             Mat_t X_reset(n_pop_temp,n_vals);
 
 #ifdef OPTIM_USE_OMP
-            #pragma omp parallel for(omp_n_threads)
+            #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t j = 0; j < n_pop_temp; ++j) {
                 if (objfn_vals(j) < objfn_vals(j + n_pop_temp)) {
@@ -218,7 +218,7 @@ optim::internal::de_prmm_impl(
         // first population: n_pop - n_pop_best
         
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads)
 #endif
         for (size_t i = 0; i < n_pop - n_pop_best; ++i) {
             size_t thread_num = 0;
@@ -306,7 +306,7 @@ optim::internal::de_prmm_impl(
         // second population
 
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads)
 #endif
         for (size_t i = n_pop - n_pop_best; i < n_pop; ++i) {
             size_t thread_num = 0;
