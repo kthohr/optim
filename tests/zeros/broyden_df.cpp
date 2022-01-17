@@ -36,7 +36,7 @@ int main()
     optim::algo_settings_t settings_1;
     // settings_1.print_level = 4;
 
-    Vec_t x_1 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_1 = optim::broyden_df(x_1,zeros_test_objfn_1,nullptr,settings_1);
 
@@ -51,7 +51,7 @@ int main()
     //
     // test 2
 
-    Vec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_2 = optim::broyden_df(x_2,zeros_test_objfn_2,nullptr);
 

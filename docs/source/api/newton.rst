@@ -59,11 +59,11 @@ Function Declarations
 ---------------------
 
 .. _newton-func-ref1:
-.. doxygenfunction:: newton(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, Mat_t *hess_out, void *opt_data>, void *)
+.. doxygenfunction:: newton(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, Mat_t *hess_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _newton-func-ref2:
-.. doxygenfunction:: newton(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, Mat_t *hess_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: newton(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, Mat_t *hess_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
@@ -73,9 +73,9 @@ Optimization Control Parameters
 
 The basic control parameters are:
 
-- ``double grad_err_tol``: the error tolerance value controlling how small the L2 norm of the gradient vector :math:`\| \nabla f \|` should be before 'convergence' is declared.
+- ``fp_t grad_err_tol``: the error tolerance value controlling how small the L2 norm of the gradient vector :math:`\| \nabla f \|` should be before 'convergence' is declared.
 
-- ``double rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
+- ``fp_t rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
 
   The relative change is computed using:
 

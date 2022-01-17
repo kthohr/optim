@@ -11,6 +11,8 @@ function print_help
     echo "        (default: disabled)" ;
     echo "  -d    Developmental build" ;
     echo "        (default: disabled)" ;
+    echo "  -f    Floating-point number type" ;
+    echo "        (default: double)" ;
     echo "  -g    Debugging build (optimization flags set to -O0 -g)" ;
     echo "        (default: disabled)" ;
     echo "  -h    Print help" ;
@@ -30,7 +32,7 @@ function print_help
     echo "" ;
 }
 
-while getopts hcdgi:l:m:o:pr:-: option; do
+while getopts hcdgf:i:l:m:o:pr:-: option; do
     case "${option}" in
         -)
             case "${OPTARG}" in
@@ -41,6 +43,7 @@ while getopts hcdgi:l:m:o:pr:-: option; do
         h) print_help; exit 2;;
         c) OPTIM_COVERAGE_BUILD="y";;
         d) OPTIM_DEV_BUILD="y";;
+        f) OPTIM_FPN_TYPE=${OPTARG};;
         g) OPTIM_DEBUG_BUILD="y";;
         i) OPTIM_INSTALL_PATH=${OPTARG};;
         l) OPTIM_LINEAR_ALG_LIB=${OPTARG};;
@@ -207,6 +210,12 @@ fi
 
 OPTIM_WARN_FLAGS="-Wall"
 
+# floating-point number type
+
+if [[ "${OPTIM_FPN_TYPE}" == "" ]]; then
+    OPTIM_FPN_TYPE="double"
+fi
+
 # shared library name and install path
 
 OPTIM_SHLIB_NAME="liboptim.so"
@@ -286,6 +295,7 @@ else
     echo -e "  - OpenMP features: \x1B[31mdisabled\033[0m" >&2 ;
 fi
 
+echo "  - floating-point number type: ${OPTIM_FPN_TYPE}"
 echo "  - optimization flags:"
 echo "    ${OPTIM_OPT_FLAGS}"
 
@@ -317,6 +327,7 @@ sed -e "s|@CXX@|${CXX}|" \
     -e "s|@OPTIM_BLAS_LAPACK@|${OPTIM_BLAS_LAPACK}|" \
     -e "s|@OPTIM_WARN_FLAGS@|${OPTIM_WARN_FLAGS}|" \
     -e "s|@OPTIM_OPT_FLAGS@|${OPTIM_OPT_FLAGS}|" \
+    -e "s|@OPTIM_FPN_TYPE@|${OPTIM_FPN_TYPE}|" \
     -e "s|@OPTIM_SHLIB_NAME@|${OPTIM_SHLIB_NAME}|" \
     -e "s|@OPTIM_SHLIB_FLAGS@|${OPTIM_SHLIB_FLAGS}|" \
     -e "s|@OPTIM_INSTALL_PATH@|${OPTIM_INSTALL_PATH}|" \

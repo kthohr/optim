@@ -163,11 +163,11 @@ Function Declarations
 ---------------------
 
 .. _gd-func-ref1:
-.. doxygenfunction:: gd(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: gd(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _gd-func-ref2:
-.. doxygenfunction:: gd(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: gd(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
@@ -177,9 +177,9 @@ Optimization Control Parameters
 
 The basic control parameters are:
 
-- ``double grad_err_tol``: the error tolerance value controlling how small the :math:`L_2` norm of the gradient vector :math:`\| \nabla f \|` should be before 'convergence' is declared.
+- ``fp_t grad_err_tol``: the error tolerance value controlling how small the :math:`L_2` norm of the gradient vector :math:`\| \nabla f \|` should be before 'convergence' is declared.
 
-- ``double rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
+- ``fp_t rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
 
   The relative change is computed using:
 
@@ -193,9 +193,9 @@ The basic control parameters are:
 
 - ``bool vals_bound``: whether the search space of the algorithm is bounded. If ``true``, then
 
-  - ``Vec_t lower_bounds``: defines the lower bounds of the search space.
+  - ``ColVec_t lower_bounds``: defines the lower bounds of the search space.
 
-  - ``Vec_t upper_bounds``: defines the upper bounds of the search space.
+  - ``ColVec_t upper_bounds``: defines the upper bounds of the search space.
 
 In addition to these:
 

@@ -29,7 +29,7 @@ int main()
 {
     //
 
-    Vec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_1 = optim::sumt(x_1,constr_test_objfn_1,nullptr,constr_test_constrfn_1,nullptr);
 
@@ -43,7 +43,7 @@ int main()
 
     //
 
-    Vec_t x_2 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_2 = optim::sumt(x_2,constr_test_objfn_2,nullptr,constr_test_constrfn_2,nullptr);
 
@@ -57,7 +57,7 @@ int main()
 
     // this is particularly troublesome
 
-    Vec_t x_3 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 1.2);
+    ColVec_t x_3 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 1.2);
 
     bool success_3 = optim::sumt(x_3,constr_test_objfn_3,nullptr,constr_test_constrfn_3,nullptr);
 

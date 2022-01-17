@@ -122,11 +122,11 @@ Function Declarations
 ---------------------
 
 .. _cg-func-ref1:
-.. doxygenfunction:: cg(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: cg(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _cg-func-ref2:
-.. doxygenfunction:: cg(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: cg(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
@@ -136,9 +136,9 @@ Optimization Control Parameters
 
 The basic control parameters are:
 
-- ``double grad_err_tol``: the error tolerance value controlling how small the :math:`L_2` norm of the gradient vector :math:`\| \nabla f \|` should be before 'convergence' is declared.
+- ``fp_t grad_err_tol``: the error tolerance value controlling how small the :math:`L_2` norm of the gradient vector :math:`\| \nabla f \|` should be before 'convergence' is declared.
 
-- ``double rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
+- ``fp_t rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
 
   The relative change is computed using:
 
@@ -152,9 +152,9 @@ The basic control parameters are:
 
 - ``bool vals_bound``: whether the search space of the algorithm is bounded. If ``true``, then
 
-  - ``Vec_t lower_bounds``: defines the lower bounds of the search space.
+  - ``ColVec_t lower_bounds``: defines the lower bounds of the search space.
 
-  - ``Vec_t upper_bounds``: defines the upper bounds of the search space.
+  - ``ColVec_t upper_bounds``: defines the upper bounds of the search space.
 
 Additional settings:
 
@@ -162,7 +162,7 @@ Additional settings:
 
   - Default value: ``2``.
 
-- ``double cg_settings.restart_threshold``: parameter :math:`\nu` from step 2 in the algorithm description.
+- ``fp_t cg_settings.restart_threshold``: parameter :math:`\nu` from step 2 in the algorithm description.
 
   - Default value: ``0.1``.
 
@@ -170,11 +170,11 @@ Additional settings:
 
   - Default value: ``false``.
 
-- ``double cg_settings.wolfe_cons_1``: Line search tuning parameter that controls the tolerance on the Armijo sufficient decrease condition.
+- ``fp_t cg_settings.wolfe_cons_1``: Line search tuning parameter that controls the tolerance on the Armijo sufficient decrease condition.
 
   - Default value: ``1E-03``.
 
-- ``double cg_settings.wolfe_cons_2``: Line search tuning parameter that controls the tolerance on the curvature condition.
+- ``fp_t cg_settings.wolfe_cons_2``: Line search tuning parameter that controls the tolerance on the curvature condition.
 
   - Default value: ``0.10``.
 

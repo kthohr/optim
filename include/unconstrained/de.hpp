@@ -39,8 +39,8 @@
  */
 
 bool
-de(Vec_t& init_out_vals, 
-   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+de(ColVec_t& init_out_vals, 
+   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
    void* opt_data);
 
 /**
@@ -58,8 +58,8 @@ de(Vec_t& init_out_vals,
  */
 
 bool
-de(Vec_t& init_out_vals, 
-   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+de(ColVec_t& init_out_vals, 
+   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
    void* opt_data, 
    algo_settings_t& settings);
 
@@ -70,8 +70,8 @@ namespace internal
 {
 
 bool
-de_impl(Vec_t& init_out_vals, 
-        std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+de_impl(ColVec_t& init_out_vals, 
+        std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
         void* opt_data, 
         algo_settings_t* settings_inp);
 

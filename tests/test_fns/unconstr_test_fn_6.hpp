@@ -39,7 +39,7 @@ struct unconstr_test_fn_6_data {
 
 inline
 double
-unconstr_test_fn_6(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+unconstr_test_fn_6(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
 {
     const int n = BMO_MATOPS_SIZE(vals_inp);
 

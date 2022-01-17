@@ -28,8 +28,8 @@
 optimlib_inline
 bool
 optim::internal::cg_impl(
-    Vec_t& init_out_vals, 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
     algo_settings_t* settings_inp)
 {
@@ -51,43 +51,43 @@ optim::internal::cg_impl(
     
     const uint_t conv_failure_switch = settings.conv_failure_switch;
     const size_t iter_max = settings.iter_max;
-    const double grad_err_tol = settings.grad_err_tol;
-    double rel_sol_change_tol = settings.rel_sol_change_tol;
+    const fp_t grad_err_tol = settings.grad_err_tol;
+    fp_t rel_sol_change_tol = settings.rel_sol_change_tol;
 
     if (!settings.cg_settings.use_rel_sol_change_crit) {
         rel_sol_change_tol = -1.0;
     }
 
     const uint_t cg_method = settings.cg_settings.method; // cg update method
-    const double cg_restart_threshold = settings.cg_settings.restart_threshold;
+    const fp_t cg_restart_threshold = settings.cg_settings.restart_threshold;
 
-    const double wolfe_cons_1 = settings.cg_settings.wolfe_cons_1; // line search tuning parameter
-    const double wolfe_cons_2 = settings.cg_settings.wolfe_cons_2;
+    const fp_t wolfe_cons_1 = settings.cg_settings.wolfe_cons_1; // line search tuning parameter
+    const fp_t wolfe_cons_2 = settings.cg_settings.wolfe_cons_2;
 
     const bool vals_bound = settings.vals_bound;
     
-    const Vec_t lower_bounds = settings.lower_bounds;
-    const Vec_t upper_bounds = settings.upper_bounds;
+    const ColVec_t lower_bounds = settings.lower_bounds;
+    const ColVec_t upper_bounds = settings.upper_bounds;
 
-    const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+    const ColVecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
     // lambda function for box constraints
 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* box_data)> box_objfn \
-    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data) \
-    -> double 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data) \
+    -> fp_t 
     {
         if (vals_bound) {
-            Vec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
-            double ret;
+            ColVec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+            fp_t ret;
             
             if (grad_out) {
-                Vec_t grad_obj = *grad_out;
+                ColVec_t grad_obj = *grad_out;
 
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
                 // Mat_t jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
-                Vec_t jacob_vec = BMO_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
+                ColVec_t jacob_vec = BMO_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
 
                 // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
                 *grad_out = BMO_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
@@ -108,17 +108,17 @@ optim::internal::cg_impl(
         return false;
     }
 
-    Vec_t x = init_out_vals;
-    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t x = init_out_vals;
+    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
 
     if (vals_bound) { // should we transform the parameters?
         x = transform(x, bounds_type, lower_bounds, upper_bounds);
     }
 
-    Vec_t grad(n_vals); // gradient
+    ColVec_t grad(n_vals); // gradient
     box_objfn(x, &grad, opt_data);
 
-    double grad_err = BMO_MATOPS_L2NORM(grad);
+    fp_t grad_err = BMO_MATOPS_L2NORM(grad);
 
     OPTIM_CG_TRACE(-1, grad_err, 0.0, x, d, grad, 0.0);
 
@@ -128,15 +128,15 @@ optim::internal::cg_impl(
 
     //
 
-    double t_init = 1.0; // initial value for line search
+    fp_t t_init = 1.0; // initial value for line search
 
     d = - grad;
-    Vec_t x_p = x, grad_p = grad;
+    ColVec_t x_p = x, grad_p = grad;
 
-    double t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
+    fp_t t = line_search_mt(t_init, x_p, grad_p, d, &wolfe_cons_1, &wolfe_cons_2, box_objfn, opt_data);
 
     grad_err = BMO_MATOPS_L2NORM(grad_p);
-    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
+    fp_t rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), OPTIM_FPN_SMALL_NUMBER)) ) );
     
     OPTIM_CG_TRACE(0, grad_err, rel_sol_change, x, d, grad, 0.0);
 
@@ -158,9 +158,9 @@ optim::internal::cg_impl(
 
         //
 
-        double beta = cg_update(grad, grad_p, d, iter, cg_method, cg_restart_threshold);
+        fp_t beta = cg_update(grad, grad_p, d, iter, cg_method, cg_restart_threshold);
 
-        Vec_t d_p = - grad_p + beta*d;
+        ColVec_t d_p = - grad_p + beta*d;
 
         t_init = t * (BMO_MATOPS_DOT_PROD(grad,d) / BMO_MATOPS_DOT_PROD(grad_p,d_p));
 
@@ -171,7 +171,7 @@ optim::internal::cg_impl(
         //
 
         grad_err = BMO_MATOPS_L2NORM(grad_p);
-        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( (x_p - x), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), OPTIM_FPN_SMALL_NUMBER)) ) );
 
         d = d_p;
         x = x_p;
@@ -199,8 +199,8 @@ optim::internal::cg_impl(
 optimlib_inline
 bool
 optim::cg(
-    Vec_t& init_out_vals, 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data)
 {
     return internal::cg_impl(init_out_vals,opt_objfn,opt_data,nullptr);
@@ -209,8 +209,8 @@ optim::cg(
 optimlib_inline
 bool
 optim::cg(
-    Vec_t& init_out_vals, 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
     algo_settings_t& settings)
 {

@@ -36,7 +36,7 @@ int main()
     optim::algo_settings_t settings_1;
     // settings_1.print_level = 4;
 
-    Vec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_1 = optim::pso(x_1,unconstr_test_fn_1,nullptr,settings_1);
 
@@ -52,7 +52,7 @@ int main()
     //
     // test 2
 
-    Vec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_2 = optim::pso(x_2,unconstr_test_fn_2,nullptr);
 
@@ -69,7 +69,7 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    Vec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
+    ColVec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
 
     bool success_3 = optim::pso(x_3,unconstr_test_fn_3,nullptr);
 
@@ -85,7 +85,7 @@ int main()
     //
     // test 4
 
-    Vec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_4 = optim::pso(x_4,unconstr_test_fn_4,nullptr);
 
@@ -108,7 +108,7 @@ int main()
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
 
-    Vec_t x_6 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2);
+    ColVec_t x_6 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2);
 
     settings_6.pso_settings.initial_lb = BMO_MATOPS_ARRAY_ADD_SCALAR(x_6, -2.0);
     settings_6.pso_settings.initial_ub = BMO_MATOPS_ARRAY_ADD_SCALAR(x_6,  2.0);
@@ -127,7 +127,7 @@ int main()
     //
     // test 7
 
-    Vec_t x_7 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_7 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_7 = optim::pso(x_7,unconstr_test_fn_7,nullptr);
 
@@ -143,7 +143,7 @@ int main()
     //
     // test 8
 
-    Vec_t x_8 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_8 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_8 = optim::pso(x_8,unconstr_test_fn_8,nullptr);
 
@@ -179,7 +179,7 @@ int main()
     settings_9.upper_bounds(0) = 15.0;
     settings_9.upper_bounds(1) = 3.0;
 
-    Vec_t x_9 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_9 = BMO_MATOPS_ZERO_VEC(2);
     x_9(0) = -11.0;
 
     settings_9.pso_settings.n_gen = 4000;
@@ -206,7 +206,7 @@ int main()
     settings_10.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), -10.0);
     settings_10.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2),  10.0);
 
-    Vec_t x_10 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_10 = BMO_MATOPS_ZERO_VEC(2);
 
     settings_10.pso_settings.initial_lb = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), -9.9);
     settings_10.pso_settings.initial_ub = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2),  9.9);

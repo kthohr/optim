@@ -35,7 +35,7 @@
 
 inline
 double 
-unconstr_test_fn_4_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
+unconstr_test_fn_4_whess(const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
     const double x_1 = vals_inp(0);
     const double x_2 = vals_inp(1);
@@ -76,7 +76,7 @@ unconstr_test_fn_4_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out
 
 inline
 double
-unconstr_test_fn_4(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+unconstr_test_fn_4(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
 {
     return unconstr_test_fn_4_whess(vals_inp, grad_out, nullptr, opt_data);
 }

@@ -24,9 +24,9 @@
 namespace unconstr_test_sols
 {
 
-Vec_t test_1()
+ColVec_t test_1()
 {
-    Vec_t ret(2);
+    ColVec_t ret(2);
 
     ret(0) = 2.25;
     ret(1) = -4.75;
@@ -36,23 +36,23 @@ Vec_t test_1()
 
 //
 
-Vec_t test_2()
+ColVec_t test_2()
 {
     return BMO_MATOPS_ONE_VEC(2);
 }
 
 //
 
-Vec_t test_3(const int n)
+ColVec_t test_3(const int n)
 {
     return BMO_MATOPS_ZERO_VEC(n);
 }
 
 //
 
-Vec_t test_4()
+ColVec_t test_4()
 {
-    Vec_t ret(2);
+    ColVec_t ret(2);
 
     ret(0) = 3.0;
     ret(1) = 0.5;
@@ -62,9 +62,9 @@ Vec_t test_4()
 
 //
 
-Vec_t test_5()
+ColVec_t test_5()
 {
-    Vec_t ret(2);
+    ColVec_t ret(2);
 
     ret(0) = 1.0;
     ret(1) = 3.0;
@@ -74,30 +74,30 @@ Vec_t test_5()
 
 //
 
-Vec_t test_6()
+ColVec_t test_6()
 {
     return BMO_MATOPS_ZERO_VEC(2);
 }
 
 //
 
-Vec_t test_7()
+ColVec_t test_7()
 {
     return BMO_MATOPS_ZERO_VEC(2);
 }
 
 //
 
-Vec_t test_8()
+ColVec_t test_8()
 {
     return BMO_MATOPS_ONE_VEC(2);
 }
 
 //
 
-Vec_t test_9()
+ColVec_t test_9()
 {
-    Vec_t ret(2);
+    ColVec_t ret(2);
 
     ret(0) = -10.0;
     ret(1) =   1.0;

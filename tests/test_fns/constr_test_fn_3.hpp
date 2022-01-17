@@ -35,7 +35,7 @@
 #define _optim_constr_test_fn_3_HPP
 
 double
-constr_test_objfn_3(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+constr_test_objfn_3(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
 {
     double x = vals_inp(0);
     double y = vals_inp(1);
@@ -50,13 +50,13 @@ constr_test_objfn_3(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
     return obj_val;
 }
 
-Vec_t
-constr_test_constrfn_3(const Vec_t& vals_inp, Mat_t* jacob_out, void* opt_data)
+ColVec_t
+constr_test_constrfn_3(const ColVec_t& vals_inp, Mat_t* jacob_out, void* opt_data)
 {
     double x = vals_inp(0);
     double y = vals_inp(1);
 
-    Vec_t constr_vals(2);
+    ColVec_t constr_vals(2);
     constr_vals(0) = std::pow(x - 1.0,3) - y + 1.0;
     constr_vals(1) = x + y - 2.0;
     

@@ -28,19 +28,22 @@ namespace optim
     #include "BaseMatrixOps/include/BaseMatrixOps.hpp"
 
     // misc/utility files
-    #include "misc/misc.hpp"
+    #include "misc/optim_misc.hpp"
+
+    // stats/rng files
+    #include "stats/optim_stats.hpp"
 
     // line search
     #include "line_search/more_thuente.hpp"
 
     // unconstrained optimization
-    #include "unconstrained/unconstrained.hpp"
+    #include "unconstrained/optim_unconstrained.hpp"
 
     // constrained optimization
     #include "constrained/sumt.hpp"
 
     // solving systems of nonlinear equations
-    #include "zeros/zeros.hpp"
+    #include "zeros/optim_zeros.hpp"
 }
 
 #endif

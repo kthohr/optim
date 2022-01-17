@@ -40,7 +40,7 @@ int main()
     settings_1.conv_failure_switch = 1;
     settings_1.cg_settings.method = 5;
 
-    Vec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
     x_1(1) = - 1.0;
 
     bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,settings_1);
@@ -57,7 +57,7 @@ int main()
     //
     // test 2
 
-    Vec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
 
     bool success_2 = optim::cg(x_2,unconstr_test_fn_2,nullptr);
 
@@ -74,7 +74,7 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    Vec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
+    ColVec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
 
     bool success_3 = optim::cg(x_3,unconstr_test_fn_3,nullptr);
 
@@ -90,7 +90,7 @@ int main()
     //
     // test 4
 
-    Vec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
 
     bool success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr);
 
@@ -110,7 +110,7 @@ int main()
     settings_5.iter_max = 10000;
     settings_5.cg_settings.method = 5;
 
-    Vec_t x_5 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2);
+    ColVec_t x_5 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2);
 
     bool success_5 = optim::cg(x_5,unconstr_test_fn_5,nullptr,settings_5);
 

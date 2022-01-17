@@ -28,8 +28,8 @@
 optimlib_inline
 bool
 optim::internal::broyden_df_impl(
-    Vec_t& init_out_vals, 
-    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data, 
     algo_settings_t* settings_inp)
 {
@@ -51,23 +51,23 @@ optim::internal::broyden_df_impl(
     const uint_t conv_failure_switch = settings.conv_failure_switch;
     
     const size_t iter_max = settings.iter_max;
-    const double rel_objfn_change_tol = settings.rel_objfn_change_tol;
-    const double rel_sol_change_tol = settings.rel_sol_change_tol;
+    const fp_t rel_objfn_change_tol = settings.rel_objfn_change_tol;
+    const fp_t rel_sol_change_tol = settings.rel_sol_change_tol;
 
-    const double rho     = settings.broyden_settings.par_rho; 
-    const double sigma_1 = settings.broyden_settings.par_sigma_1;
-    const double sigma_2 = settings.broyden_settings.par_sigma_2;
+    const fp_t rho     = settings.broyden_settings.par_rho; 
+    const fp_t sigma_1 = settings.broyden_settings.par_sigma_1;
+    const fp_t sigma_2 = settings.broyden_settings.par_sigma_2;
 
     // initialization
 
-    Vec_t x = init_out_vals;
-    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t x = init_out_vals;
+    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
 
     Mat_t B = BMO_MATOPS_EYE(n_vals); // initial approx. to Jacobian
 
-    Vec_t objfn_vec = opt_objfn(x,opt_data);
+    ColVec_t objfn_vec = opt_objfn(x,opt_data);
 
-    double rel_objfn_change = BMO_MATOPS_L2NORM(objfn_vec);
+    fp_t rel_objfn_change = BMO_MATOPS_L2NORM(objfn_vec);
 
     OPTIM_BROYDEN_DF_TRACE(-1, rel_objfn_change, 0.0, x, d, objfn_vec, 0.0, d, d, B);
 
@@ -75,17 +75,17 @@ optim::internal::broyden_df_impl(
         return true;
     }
 
-    double Fx = BMO_MATOPS_L2NORM(objfn_vec);
+    fp_t Fx = BMO_MATOPS_L2NORM(objfn_vec);
 
     //
 
     d = -objfn_vec; // step 1
 
-    Vec_t objfn_vec_p = opt_objfn(x + d,opt_data);
+    ColVec_t objfn_vec_p = opt_objfn(x + d,opt_data);
 
-    double Fx_p = BMO_MATOPS_L2NORM(objfn_vec_p);
+    fp_t Fx_p = BMO_MATOPS_L2NORM(objfn_vec_p);
 
-    double lambda;
+    fp_t lambda;
 
     if (Fx_p <= rho*Fx - sigma_2*BMO_MATOPS_DOT_PROD(d,d)) {
         // step 2
@@ -95,13 +95,13 @@ optim::internal::broyden_df_impl(
         lambda = df_proc_1(x, d, sigma_1, 0, opt_objfn, opt_data);
     }
 
-    Vec_t x_p = x + lambda*d; // step 4
+    ColVec_t x_p = x + lambda*d; // step 4
 
-    Vec_t s = x_p - x;
-    Vec_t y = objfn_vec_p - objfn_vec;
+    ColVec_t s = x_p - x;
+    ColVec_t y = objfn_vec_p - objfn_vec;
 
-    rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
+    rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), OPTIM_FPN_SMALL_NUMBER)) ) );
+    fp_t rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), OPTIM_FPN_SMALL_NUMBER)) ) );
 
     // B += (y - B*s) * BMO_MATOPS_TRANSPOSE(s) / BMO_MATOPS_DOT_PROD(s,s); // step 5
     B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14);
@@ -153,8 +153,8 @@ optim::internal::broyden_df_impl(
 
         //
 
-        rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
+        rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), OPTIM_FPN_SMALL_NUMBER)) ) );
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), OPTIM_FPN_SMALL_NUMBER)) ) );
 
         x = x_p;
         objfn_vec = objfn_vec_p;
@@ -175,8 +175,8 @@ optim::internal::broyden_df_impl(
 optimlib_inline
 bool
 optim::broyden_df(
-    Vec_t& init_out_vals, 
-    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data)
 {
     return internal::broyden_df_impl(init_out_vals,opt_objfn,opt_data,nullptr);
@@ -185,8 +185,8 @@ optim::broyden_df(
 optimlib_inline
 bool
 optim::broyden_df(
-    Vec_t& init_out_vals, 
-    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data, 
     algo_settings_t& settings)
 {
@@ -199,10 +199,10 @@ optim::broyden_df(
 optimlib_inline
 bool
 optim::internal::broyden_df_impl(
-    Vec_t& init_out_vals, 
-    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data,
-    std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
     void* jacob_data, 
     algo_settings_t* settings_inp)
 {
@@ -224,23 +224,23 @@ optim::internal::broyden_df_impl(
 
     const uint_t conv_failure_switch = settings.conv_failure_switch;
     const size_t iter_max = settings.iter_max;
-    const double rel_objfn_change_tol = settings.rel_objfn_change_tol;
-    const double rel_sol_change_tol = settings.rel_sol_change_tol;
+    const fp_t rel_objfn_change_tol = settings.rel_objfn_change_tol;
+    const fp_t rel_sol_change_tol = settings.rel_sol_change_tol;
 
-    const double rho     = settings.broyden_settings.par_rho; 
-    const double sigma_1 = settings.broyden_settings.par_sigma_1;
-    const double sigma_2 = settings.broyden_settings.par_sigma_2;
+    const fp_t rho     = settings.broyden_settings.par_rho; 
+    const fp_t sigma_1 = settings.broyden_settings.par_sigma_1;
+    const fp_t sigma_2 = settings.broyden_settings.par_sigma_2;
 
     // initialization
 
-    Vec_t x = init_out_vals;
-    Vec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t x = init_out_vals;
+    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
 
     Mat_t B = BMO_MATOPS_INV( jacob_objfn(x, jacob_data) ); // inverse Jacobian
 
-    Vec_t objfn_vec = opt_objfn(x, opt_data);
+    ColVec_t objfn_vec = opt_objfn(x, opt_data);
 
-    double rel_objfn_change = BMO_MATOPS_L2NORM(objfn_vec);
+    fp_t rel_objfn_change = BMO_MATOPS_L2NORM(objfn_vec);
 
     OPTIM_BROYDEN_DF_TRACE(-1, rel_objfn_change, 0.0, x, d, objfn_vec, 0.0, d, d, B);
 
@@ -248,17 +248,17 @@ optim::internal::broyden_df_impl(
         return true;
     }
 
-    double Fx = BMO_MATOPS_L2NORM(objfn_vec);
+    fp_t Fx = BMO_MATOPS_L2NORM(objfn_vec);
 
     //
 
     d = - B * objfn_vec; // step 1
 
-    Vec_t objfn_vec_p = opt_objfn(x + d, opt_data);
+    ColVec_t objfn_vec_p = opt_objfn(x + d, opt_data);
 
-    double Fx_p = BMO_MATOPS_L2NORM(objfn_vec_p);
+    fp_t Fx_p = BMO_MATOPS_L2NORM(objfn_vec_p);
 
-    double lambda;
+    fp_t lambda;
 
     if (Fx_p <= rho*Fx - sigma_2*BMO_MATOPS_DOT_PROD(d,d)) {
         // step 2
@@ -268,13 +268,13 @@ optim::internal::broyden_df_impl(
         lambda = df_proc_1(x, d, sigma_1, 0, opt_objfn, opt_data);
     }
 
-    Vec_t x_p = x + lambda*d; // step 4
+    ColVec_t x_p = x + lambda*d; // step 4
 
-    Vec_t s = x_p - x;
-    Vec_t y = objfn_vec_p - objfn_vec;
+    ColVec_t s = x_p - x;
+    ColVec_t y = objfn_vec_p - objfn_vec;
 
-    rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-    double rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
+    rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), OPTIM_FPN_SMALL_NUMBER)) ) );
+    fp_t rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), OPTIM_FPN_SMALL_NUMBER)) ) );
 
     // B += (y - B*s) * s.t() / BMO_MATOPS_DOT_PROD(s,s); // step 5
     B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
@@ -323,8 +323,8 @@ optim::internal::broyden_df_impl(
             B += (s - B*y) * BMO_MATOPS_TRANSPOSE(y) / (BMO_MATOPS_DOT_PROD(y,y) + 1.0e-14); // update B
         }
 
-        rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), 1.0e-08)) ) );
-        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), 1.0e-08)) ) );
+        rel_objfn_change = BMO_MATOPS_L2NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( y, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(objfn_vec), OPTIM_FPN_SMALL_NUMBER)) ) );
+        rel_sol_change = BMO_MATOPS_L1NORM( BMO_MATOPS_ARRAY_DIV_ARRAY( s, (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ABS(x), OPTIM_FPN_SMALL_NUMBER)) ) );
 
         //
 
@@ -349,10 +349,10 @@ optim::internal::broyden_df_impl(
 optimlib_inline
 bool
 optim::broyden_df(
-    Vec_t& init_out_vals, 
-    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data,
-    std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
     void* jacob_data)
 {
     return internal::broyden_df_impl(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr);
@@ -361,10 +361,10 @@ optim::broyden_df(
 optimlib_inline
 bool
 optim::broyden_df(
-    Vec_t& init_out_vals, 
-    std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data,
-    std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
     void* jacob_data, 
     algo_settings_t& settings)
 {

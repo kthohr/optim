@@ -41,10 +41,10 @@
  */
 
 bool 
-sumt(Vec_t& init_out_vals, 
-     std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+sumt(ColVec_t& init_out_vals, 
+     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
      void* opt_data,
-     std::function<Vec_t (const Vec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
+     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
      void* constr_data);
 
 /**
@@ -64,10 +64,10 @@ sumt(Vec_t& init_out_vals,
  */
 
 bool 
-sumt(Vec_t& init_out_vals, 
-     std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+sumt(ColVec_t& init_out_vals, 
+     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
      void* opt_data,
-     std::function<Vec_t (const Vec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
+     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
      void* constr_data, 
      algo_settings_t& settings);
 
@@ -78,23 +78,23 @@ namespace internal
 {
 
 struct sumt_data_t {
-    double c_pen;
+    fp_t c_pen;
 };
 
 inline
-double
-mt_sup_norm(const double a, 
-            const double b, 
-            const double c)
+fp_t
+mt_sup_norm(const fp_t a, 
+            const fp_t b, 
+            const fp_t c)
 {
     return std::max( std::max(std::abs(a), std::abs(b)), std::abs(c) );
 }
 
 bool 
-sumt_impl(Vec_t& init_out_vals, 
-          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+sumt_impl(ColVec_t& init_out_vals, 
+          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
           void* opt_data,
-          std::function<Vec_t (const Vec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
+          std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
           void* constr_data, 
           algo_settings_t* settings_inp);
 

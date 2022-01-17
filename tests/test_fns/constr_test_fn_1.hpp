@@ -31,7 +31,7 @@
 #define _optim_constr_test_fn_1_HPP
 
 double
-constr_test_objfn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+constr_test_objfn_1(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
@@ -46,13 +46,13 @@ constr_test_objfn_1(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
     return obj_val;
 }
 
-Vec_t
-constr_test_constrfn_1(const Vec_t& vals_inp, Mat_t* jacob_out, void* opt_data)
+ColVec_t
+constr_test_constrfn_1(const ColVec_t& vals_inp, Mat_t* jacob_out, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
-    Vec_t constr_vals(1);
+    ColVec_t constr_vals(1);
     constr_vals(0) = -2*x_1 - x_2 + 14.0;
     
     if (jacob_out) {

@@ -25,13 +25,13 @@
 // note: std::isfinite is not true for NaN, - Inf, or + Inf
 
 inline
-VecInt_t
+ColVecInt_t
 determine_bounds_type(const bool vals_bound, 
                       const size_t n_vals, 
-                      const Vec_t& lower_bounds, 
-                      const Vec_t& upper_bounds)
+                      const ColVec_t& lower_bounds, 
+                      const ColVec_t& upper_bounds)
 {
-    VecInt_t ret_vec(n_vals);
+    ColVecInt_t ret_vec(n_vals);
 
     ret_vec.fill(1); // base case: 1 - no bounds imposed
 

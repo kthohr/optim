@@ -34,7 +34,7 @@
 
 inline
 double
-unconstr_test_fn_7(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+unconstr_test_fn_7(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);

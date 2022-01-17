@@ -18,32 +18,15 @@
   ##
   ################################################################################*/
 
-//
-// this example is from
-// https://en.wikipedia.org/wiki/Test_functions_for_optimization
-//
-// Bukin function N.6:
-//
-// f(x) = 100*sqrt(abs(y - 0.01*x^2)) + 0.01*abs(x + 10)
-// -15 <= x <= -5
-// - 3 <= y <= 3
-//
-// solution is: (-10,1)
-//
-
-#ifndef _optim_test_fn_9_HPP
-#define _optim_test_fn_9_HPP
+#ifndef OPTIMLIB_STATS_SEED_VALUES
+#define OPTIMLIB_STATS_SEED_VALUES
 
 inline
-double 
-unconstr_test_fn_9(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
+size_t
+generate_seed_value(const int ind_inp, const int n_threads, rand_engine_t& rand_engine)
 {
-    const double x = vals_inp(0);
-    const double y = vals_inp(1);
-
-    double obj_val = 100*std::sqrt(std::abs(y - 0.01*x*x)) + 0.01*std::abs(x + 10);
-    
-    return obj_val;
+    return static_cast<size_t>( (bmo_stats::runif<fp_t>(rand_engine) + ind_inp + n_threads) * 1000 );
+    // return static_cast<size_t>( (ind_inp + n_threads) * 1000 );
 }
 
 #endif

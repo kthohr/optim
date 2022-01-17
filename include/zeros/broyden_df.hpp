@@ -38,8 +38,8 @@
  */
 
 bool
-broyden_df(Vec_t& init_out_vals, 
-           std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_df(ColVec_t& init_out_vals, 
+           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
            void* opt_data);
 
 /**
@@ -56,8 +56,8 @@ broyden_df(Vec_t& init_out_vals,
  */
 
 bool
-broyden_df(Vec_t& init_out_vals, 
-           std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_df(ColVec_t& init_out_vals, 
+           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
            void* opt_data, 
            algo_settings_t& settings);
 
@@ -80,10 +80,10 @@ broyden_df(Vec_t& init_out_vals,
  */
 
 bool
-broyden_df(Vec_t& init_out_vals, 
-           std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_df(ColVec_t& init_out_vals, 
+           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
            void* opt_data,
-           std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+           std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
            void* jacob_data);
 
 /**
@@ -104,10 +104,10 @@ broyden_df(Vec_t& init_out_vals,
  */
 
 bool
-broyden_df(Vec_t& init_out_vals, 
-           std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_df(ColVec_t& init_out_vals, 
+           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
            void* opt_data,
-           std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+           std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
            void* jacob_data, 
            algo_settings_t& settings);
 
@@ -118,49 +118,49 @@ namespace internal
 {
 
 bool 
-broyden_df_impl(Vec_t& init_out_vals, 
-                std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_df_impl(ColVec_t& init_out_vals, 
+                std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
                 void* opt_data, 
                 algo_settings_t* settings_inp);
 
 bool
-broyden_df_impl(Vec_t& init_out_vals, 
-                std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_df_impl(ColVec_t& init_out_vals, 
+                std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
                 void* opt_data,
-                std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+                std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
                 void* jacob_data, 
                 algo_settings_t* settings_inp);
 
 //
 
 inline
-double
+fp_t
 df_eta(uint_t k)
 {
     return 1.0 / (k*k);
 }
 
 inline
-double 
-df_proc_1(const Vec_t& x_vals, 
-          const Vec_t& direc, 
-          double sigma_1, 
+fp_t 
+df_proc_1(const ColVec_t& x_vals, 
+          const ColVec_t& direc, 
+          fp_t sigma_1, 
           uint_t k, 
-          std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+          std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
           void* opt_data)
 {
-    const double beta = 0.9;
-    const double eta_k = df_eta(k);
-    double lambda = 1.0;
+    const fp_t beta = 0.9;
+    const fp_t eta_k = df_eta(k);
+    fp_t lambda = 1.0;
 
     // check: || F(x_k + lambda*d_k) || <= ||F(x_k)||*(1+eta_k) - sigma_1*||lambda*d_k||^2
 
-    double Fx = BMO_MATOPS_L2NORM(opt_objfn(x_vals,opt_data));
-    double Fx_p = BMO_MATOPS_L2NORM(opt_objfn(x_vals + lambda*direc,opt_data));
-    double direc_norm2 = BMO_MATOPS_DOT_PROD(direc,direc);
+    fp_t Fx = BMO_MATOPS_L2NORM(opt_objfn(x_vals,opt_data));
+    fp_t Fx_p = BMO_MATOPS_L2NORM(opt_objfn(x_vals + lambda*direc,opt_data));
+    fp_t direc_norm2 = BMO_MATOPS_DOT_PROD(direc,direc);
 
-    double term_2 = sigma_1 * (lambda*lambda) * direc_norm2;
-    double term_3 = eta_k * Fx;
+    fp_t term_2 = sigma_1 * (lambda*lambda) * direc_norm2;
+    fp_t term_3 = eta_k * Fx;
     
     if (Fx_p <= Fx - term_2 + term_3) {
         return lambda;

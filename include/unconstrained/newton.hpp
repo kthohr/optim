@@ -40,8 +40,8 @@
  */
 
 bool 
-newton(Vec_t& init_out_vals, 
-       std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+newton(ColVec_t& init_out_vals, 
+       std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
        void* opt_data);
 
 /**
@@ -60,8 +60,8 @@ newton(Vec_t& init_out_vals,
  */
 
 bool
-newton(Vec_t& init_out_vals, 
-       std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+newton(ColVec_t& init_out_vals, 
+       std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
        void* opt_data, 
        algo_settings_t& settings);
 
@@ -72,8 +72,8 @@ namespace internal
 {
 
 bool 
-newton_impl(Vec_t& init_out_vals, 
-            std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+newton_impl(ColVec_t& init_out_vals, 
+            std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
             void* opt_data, 
             algo_settings_t* settings_inp);
 

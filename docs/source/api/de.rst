@@ -88,21 +88,21 @@ Function Declarations
 ---------------------
 
 .. _de-func-ref1:
-.. doxygenfunction:: de(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: de(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _de-func-ref2:
-.. doxygenfunction:: de(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: de(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
 
 .. _de-prmm-func-ref1:
-.. doxygenfunction:: de_prmm(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: de_prmm(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _de-prmm-func-ref2:
-.. doxygenfunction:: de_prmm(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: de_prmm(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 
@@ -113,15 +113,15 @@ Optimization Control Parameters
 
 The basic control parameters are:
 
-- ``double rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in best candidate solution should be before 'convergence' is declared.
+- ``fp_t rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in best candidate solution should be before 'convergence' is declared.
 
 - ``size_t iter_max``: the maximum number of iterations/updates before the algorithm exits.
 
 - ``bool vals_bound``: whether the search space of the algorithm is bounded. If ``true``, then
 
-  - ``Vec_t lower_bounds``: defines the lower bounds of the search space.
+  - ``ColVec_t lower_bounds``: defines the lower bounds of the search space.
 
-  - ``Vec_t upper_bounds``: defines the upper bounds of the search space.
+  - ``ColVec_t upper_bounds``: defines the upper bounds of the search space.
 
 In addition to these:
 

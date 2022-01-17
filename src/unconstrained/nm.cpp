@@ -28,8 +28,8 @@
 optimlib_inline
 bool
 optim::internal::nm_impl(
-    Vec_t& init_out_vals, 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
     algo_settings_t* settings_inp)
 {
@@ -50,31 +50,31 @@ optim::internal::nm_impl(
     
     const uint_t conv_failure_switch = settings.conv_failure_switch;
     const size_t iter_max = settings.iter_max;
-    const double rel_objfn_change_tol = settings.rel_objfn_change_tol;
-    const double rel_sol_change_tol = settings.rel_sol_change_tol;
+    const fp_t rel_objfn_change_tol = settings.rel_objfn_change_tol;
+    const fp_t rel_sol_change_tol = settings.rel_sol_change_tol;
 
     // expansion / contraction parameters
     
-    const double par_alpha = settings.nm_settings.par_alpha;
-    const double par_beta  = (settings.nm_settings.adaptive_pars) ? 0.75 - 1.0 / (2.0*n_vals) : settings.nm_settings.par_beta;
-    const double par_gamma = (settings.nm_settings.adaptive_pars) ? 1.0 + 2.0 / n_vals        : settings.nm_settings.par_gamma;
-    const double par_delta = (settings.nm_settings.adaptive_pars) ? 1.0 - 1.0 / n_vals        : settings.nm_settings.par_delta;
+    const fp_t par_alpha = settings.nm_settings.par_alpha;
+    const fp_t par_beta  = (settings.nm_settings.adaptive_pars) ? 0.75 - 1.0 / (2.0*n_vals) : settings.nm_settings.par_beta;
+    const fp_t par_gamma = (settings.nm_settings.adaptive_pars) ? 1.0 + 2.0 / n_vals        : settings.nm_settings.par_gamma;
+    const fp_t par_delta = (settings.nm_settings.adaptive_pars) ? 1.0 - 1.0 / n_vals        : settings.nm_settings.par_delta;
 
     const bool vals_bound = settings.vals_bound;
     
-    const Vec_t lower_bounds = settings.lower_bounds;
-    const Vec_t upper_bounds = settings.upper_bounds;
+    const ColVec_t lower_bounds = settings.lower_bounds;
+    const ColVec_t upper_bounds = settings.upper_bounds;
 
-    const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+    const ColVecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
     // lambda function for box constraints
 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* box_data)> box_objfn \
-    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data) \
-    -> double 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data) \
+    -> fp_t 
     {
         if (vals_bound) {
-            Vec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+            ColVec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             return opt_objfn(vals_inv_trans,nullptr,opt_data);
         } else {
@@ -85,8 +85,8 @@ optim::internal::nm_impl(
     //
     // setup
 
-    Vec_t simplex_fn_vals(n_vals+1);
-    Vec_t simplex_fn_vals_old(n_vals+1);
+    ColVec_t simplex_fn_vals(n_vals+1);
+    ColVec_t simplex_fn_vals_old(n_vals+1);
     Mat_t simplex_points(n_vals+1, n_vals);
     Mat_t simplex_points_old(n_vals+1, n_vals);
 
@@ -119,7 +119,7 @@ optim::internal::nm_impl(
         }
     }
 
-    double min_val = BMO_MATOPS_MIN_VAL(simplex_fn_vals);
+    fp_t min_val = BMO_MATOPS_MIN_VAL(simplex_fn_vals);
 
     //
     // begin loop
@@ -137,8 +137,8 @@ optim::internal::nm_impl(
     }
 
     size_t iter = 0;
-    double rel_objfn_change = 2*std::abs(rel_objfn_change_tol);
-    double rel_sol_change = 2*std::abs(rel_sol_change_tol);
+    fp_t rel_objfn_change = 2*std::abs(rel_objfn_change_tol);
+    fp_t rel_sol_change = 2*std::abs(rel_sol_change_tol);
 
     simplex_fn_vals_old = simplex_fn_vals;
     simplex_points_old = simplex_points;
@@ -149,19 +149,19 @@ optim::internal::nm_impl(
         
         // step 1
 
-        // VecInt_t sort_vec = arma::sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
-        VecInt_t sort_vec = get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
+        // ColVecInt_t sort_vec = arma::sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
+        ColVecInt_t sort_vec = get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
 
         simplex_fn_vals = BMO_MATOPS_EVAL(simplex_fn_vals(sort_vec));
         simplex_points = BMO_MATOPS_EVAL(BMO_MATOPS_ROWS(simplex_points, sort_vec));
 
         // step 2
 
-        Vec_t centroid = BMO_MATOPS_TRANSPOSE( BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(simplex_points, 0, n_vals-1) ) ) / static_cast<double>(n_vals);
+        ColVec_t centroid = BMO_MATOPS_TRANSPOSE( BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(simplex_points, 0, n_vals-1) ) ) / static_cast<fp_t>(n_vals);
 
-        Vec_t x_r = centroid + par_alpha*(centroid - BMO_MATOPS_TRANSPOSE(simplex_points.row(n_vals)));
+        ColVec_t x_r = centroid + par_alpha*(centroid - BMO_MATOPS_TRANSPOSE(simplex_points.row(n_vals)));
 
-        double f_r = box_objfn(x_r, nullptr, opt_data);
+        fp_t f_r = box_objfn(x_r, nullptr, opt_data);
 
         if (f_r >= simplex_fn_vals(0) && f_r < simplex_fn_vals(n_vals-1)) {
             // reflected point is neither best nor worst in the new simplex
@@ -174,9 +174,9 @@ optim::internal::nm_impl(
 
         if (!next_iter && f_r < simplex_fn_vals(0)) {
             // reflected point is better than the current best; try to go farther along this direction
-            Vec_t x_e = centroid + par_gamma*(x_r - centroid);
+            ColVec_t x_e = centroid + par_gamma*(x_r - centroid);
 
-            double f_e = box_objfn(x_e, nullptr, opt_data);
+            fp_t f_e = box_objfn(x_e, nullptr, opt_data);
 
             if (f_e < f_r) {
                 simplex_points.row(n_vals) = BMO_MATOPS_TRANSPOSE(x_e);
@@ -198,9 +198,9 @@ optim::internal::nm_impl(
 
             if (f_r < simplex_fn_vals(n_vals)) {
                 // outside contraction
-                Vec_t x_oc = centroid + par_beta*(x_r - centroid);
+                ColVec_t x_oc = centroid + par_beta*(x_r - centroid);
 
-                double f_oc = box_objfn(x_oc, nullptr, opt_data);
+                fp_t f_oc = box_objfn(x_oc, nullptr, opt_data);
 
                 if (f_oc <= f_r)
                 {
@@ -212,9 +212,9 @@ optim::internal::nm_impl(
                 // inside contraction: f_r >= simplex_fn_vals(n_vals)
                 
                 // x_ic = centroid - par_beta*(x_r - centroid);
-                Vec_t x_ic = centroid + par_beta*( BMO_MATOPS_TRANSPOSE(simplex_points.row(n_vals)) - centroid );
+                ColVec_t x_ic = centroid + par_beta*( BMO_MATOPS_TRANSPOSE(simplex_points.row(n_vals)) - centroid );
 
-                double f_ic = box_objfn(x_ic, nullptr, opt_data);
+                fp_t f_ic = box_objfn(x_ic, nullptr, opt_data);
 
                 if (f_ic < simplex_fn_vals(n_vals))
                 {
@@ -245,16 +245,16 @@ optim::internal::nm_impl(
 
         //
 
-        // double change_val_min = std::abs(min_val - BMO_MATOPS_MIN_VAL(simplex_fn_vals));
-        // double change_val_max = std::abs(min_val - BMO_MATOPS_MAX_VAL(simplex_fn_vals));
+        // fp_t change_val_min = std::abs(min_val - BMO_MATOPS_MIN_VAL(simplex_fn_vals));
+        // fp_t change_val_max = std::abs(min_val - BMO_MATOPS_MAX_VAL(simplex_fn_vals));
     
-        // rel_objfn_change = std::max( change_val_min, change_val_max ) / (1.0e-08 + BMO_MATOPS_ABS_MAX_VAL(simplex_fn_vals));
+        // rel_objfn_change = std::max( change_val_min, change_val_max ) / (OPTIM_FPN_SMALL_NUMBER + BMO_MATOPS_ABS_MAX_VAL(simplex_fn_vals));
 
-        rel_objfn_change = (BMO_MATOPS_ABS_MAX_VAL(simplex_fn_vals - simplex_fn_vals_old)) / (1.0e-08 + BMO_MATOPS_ABS_MAX_VAL(simplex_fn_vals_old));
+        rel_objfn_change = (BMO_MATOPS_ABS_MAX_VAL(simplex_fn_vals - simplex_fn_vals_old)) / (OPTIM_FPN_SMALL_NUMBER + BMO_MATOPS_ABS_MAX_VAL(simplex_fn_vals_old));
         simplex_fn_vals_old = simplex_fn_vals;
 
         if (rel_sol_change_tol >= 0.0) { 
-            rel_sol_change = (BMO_MATOPS_ABS_MAX_VAL(simplex_points - simplex_points_old)) / (1.0e-08 + BMO_MATOPS_ABS_MAX_VAL(simplex_points_old));
+            rel_sol_change = (BMO_MATOPS_ABS_MAX_VAL(simplex_points - simplex_points_old)) / (OPTIM_FPN_SMALL_NUMBER + BMO_MATOPS_ABS_MAX_VAL(simplex_points_old));
             simplex_points_old = simplex_points;
         }
 
@@ -269,7 +269,7 @@ optim::internal::nm_impl(
 
     //
 
-    Vec_t prop_out = BMO_MATOPS_TRANSPOSE(simplex_points.row(index_min(simplex_fn_vals)));
+    ColVec_t prop_out = BMO_MATOPS_TRANSPOSE(simplex_points.row(index_min(simplex_fn_vals)));
     
     if (vals_bound) {
         prop_out = inv_transform(prop_out, bounds_type, lower_bounds, upper_bounds);
@@ -286,8 +286,8 @@ optim::internal::nm_impl(
 
 optimlib_inline
 bool
-optim::nm(Vec_t& init_out_vals, 
-          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+optim::nm(ColVec_t& init_out_vals, 
+          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
           void* opt_data)
 {
     return internal::nm_impl(init_out_vals,opt_objfn,opt_data,nullptr);
@@ -295,8 +295,8 @@ optim::nm(Vec_t& init_out_vals,
 
 optimlib_inline
 bool
-optim::nm(Vec_t& init_out_vals, 
-          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+optim::nm(ColVec_t& init_out_vals, 
+          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
           void* opt_data, 
           algo_settings_t& settings)
 {

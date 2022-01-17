@@ -34,7 +34,7 @@
 
 inline
 double
-unconstr_test_fn_3(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+unconstr_test_fn_3(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
 {
     const double obj_val = BMO_MATOPS_DOT_PROD(vals_inp,vals_inp);
 
@@ -47,7 +47,7 @@ unconstr_test_fn_3(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
 
 inline
 double
-unconstr_test_fn_3_whess(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
+unconstr_test_fn_3_whess(const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
     const int n_vals = BMO_MATOPS_SIZE(vals_inp);
     const double obj_val = BMO_MATOPS_DOT_PROD(vals_inp,vals_inp);

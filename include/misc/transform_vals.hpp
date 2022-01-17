@@ -23,15 +23,15 @@
  */
 
 inline
-Vec_t
-transform(const Vec_t& vals_inp, 
-          const VecInt_t& bounds_type, 
-          const Vec_t& lower_bounds, 
-          const Vec_t& upper_bounds)
+ColVec_t
+transform(const ColVec_t& vals_inp, 
+          const ColVecInt_t& bounds_type, 
+          const ColVec_t& lower_bounds, 
+          const ColVec_t& upper_bounds)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
-    Vec_t vals_trans_out(n_vals);
+    ColVec_t vals_trans_out(n_vals);
 
     for (size_t i = 0; i < n_vals; ++i) {
         switch (bounds_type(i)) {
@@ -56,15 +56,15 @@ transform(const Vec_t& vals_inp,
 }
 
 inline
-Vec_t
-inv_transform(const Vec_t& vals_trans_inp, 
-              const VecInt_t& bounds_type, 
-              const Vec_t& lower_bounds, 
-              const Vec_t& upper_bounds)
+ColVec_t
+inv_transform(const ColVec_t& vals_trans_inp, 
+              const ColVecInt_t& bounds_type, 
+              const ColVec_t& lower_bounds, 
+              const ColVec_t& upper_bounds)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
-    Vec_t vals_out(n_vals);
+    ColVec_t vals_out(n_vals);
 
     for (size_t i = 0; i < n_vals; ++i) {
         switch (bounds_type(i)) {

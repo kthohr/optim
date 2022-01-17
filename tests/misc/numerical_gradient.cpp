@@ -32,45 +32,45 @@ int main()
 
     //
     // test 1
-    optim::Vec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
 
-    optim::Vec_t grad_vec_1 = optim::numerical_gradient(x_1,nullptr,unconstr_test_fn_1,nullptr);
+    optim::ColVec_t grad_vec_1 = optim::numerical_gradient(x_1,nullptr,unconstr_test_fn_1,nullptr);
 
     BMO_MATOPS_COUT << "gradient 1:\n" << grad_vec_1 << BMO_MATOPS_ENDL;
 
     //
     // test 2
 
-    optim::Vec_t x_2 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_2 = BMO_MATOPS_ONE_VEC(2);
 
-    optim::Vec_t grad_vec_2 = optim::numerical_gradient(x_2,nullptr,unconstr_test_fn_2,nullptr);
+    optim::ColVec_t grad_vec_2 = optim::numerical_gradient(x_2,nullptr,unconstr_test_fn_2,nullptr);
 
     BMO_MATOPS_COUT << "gradient 2:\n" << grad_vec_2 << BMO_MATOPS_ENDL;
 
     //
     // test 3
 
-    optim::Vec_t x_3 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_3 = BMO_MATOPS_ONE_VEC(2);
 
-    optim::Vec_t grad_vec_3 = optim::numerical_gradient(x_3,nullptr,unconstr_test_fn_3,nullptr);
+    optim::ColVec_t grad_vec_3 = optim::numerical_gradient(x_3,nullptr,unconstr_test_fn_3,nullptr);
 
     BMO_MATOPS_COUT << "gradient 3:\n" << grad_vec_3 << BMO_MATOPS_ENDL;
 
     //
     // test 4
 
-    optim::Vec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
 
-    optim::Vec_t grad_vec_4 = optim::numerical_gradient(x_4,nullptr,unconstr_test_fn_4,nullptr);
+    optim::ColVec_t grad_vec_4 = optim::numerical_gradient(x_4,nullptr,unconstr_test_fn_4,nullptr);
 
     BMO_MATOPS_COUT << "gradient 4:\n" << grad_vec_4 << BMO_MATOPS_ENDL;
 
     //
     // test 5
 
-    optim::Vec_t x_5 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_5 = BMO_MATOPS_ONE_VEC(2);
 
-    optim::Vec_t grad_vec_5 = optim::numerical_gradient(x_5,nullptr,unconstr_test_fn_5,nullptr);
+    optim::ColVec_t grad_vec_5 = optim::numerical_gradient(x_5,nullptr,unconstr_test_fn_5,nullptr);
 
     BMO_MATOPS_COUT << "gradient 5:\n" << grad_vec_5 << BMO_MATOPS_ENDL;
 

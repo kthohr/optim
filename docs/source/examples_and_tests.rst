@@ -30,7 +30,7 @@ For example, the BFGS algorithm is called using
 
 .. code:: cpp
 
-    bfgs(Vec_t& init_out_vals, std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data);
+    bfgs(ColVec_t& init_out_vals, std::function<double (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 
 
 ----

@@ -24,10 +24,10 @@
 
 inline
 Mat_t
-jacobian_adjust(const Vec_t& vals_trans_inp, 
-                const VecInt_t& bounds_type, 
-                const Vec_t& lower_bounds, 
-                const Vec_t& upper_bounds)
+jacobian_adjust(const ColVec_t& vals_trans_inp, 
+                const ColVecInt_t& bounds_type, 
+                const ColVec_t& lower_bounds, 
+                const ColVec_t& upper_bounds)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 

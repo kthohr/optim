@@ -43,7 +43,7 @@ Code to run this example is given below.
         #define OPTIM_PI 3.14159265358979
 
         double 
-        ackley_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        ackley_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x = vals_inp(0);
             const double y = vals_inp(1);
@@ -98,7 +98,7 @@ Code to run this example is given below.
     .. code:: cpp
 
         double 
-        beale_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        beale_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x_1 = vals_inp(0);
             const double x_2 = vals_inp(1);
@@ -163,7 +163,7 @@ Code to run this example is given below.
     .. code:: cpp
 
         double 
-        booth_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        booth_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             double x_1 = vals_inp(0);
             double x_2 = vals_inp(1);
@@ -204,7 +204,7 @@ Code to run this example is given below.
     .. code:: cpp
 
         double 
-        bukin_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        bukin_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x = vals_inp(0);
             const double y = vals_inp(1);
@@ -244,7 +244,7 @@ Code to run this example is given below.
         #define OPTIM_PI 3.14159265358979
 
         double 
-        levi_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        levi_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x = vals_inp(0);
             const double y = vals_inp(1);
@@ -285,7 +285,7 @@ Code to run this example is given below.
         #define OPTIM_PI 3.14159265358979
 
         double 
-        rastrigin_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        rastrigin_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x_1 = vals_inp(0);
             const double x_2 = vals_inp(1);
@@ -329,7 +329,7 @@ Code to run this example is given below.
     .. code:: cpp
 
         double 
-        rosenbrock_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        rosenbrock_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x_1 = vals_inp(0);
             const double x_2 = vals_inp(1);
@@ -482,7 +482,7 @@ Code to run this example is given below.
         #define OPTIM_PI 3.14159265358979
 
         double 
-        table_fn(const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)
+        table_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)
         {
             const double x = vals_inp(0);
             const double y = vals_inp(1);

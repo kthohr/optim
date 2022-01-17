@@ -39,8 +39,8 @@
  */
 
 bool
-lbfgs(Vec_t& init_out_vals, 
-      std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+lbfgs(ColVec_t& init_out_vals, 
+      std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
       void* opt_data);
 
 /**
@@ -58,8 +58,8 @@ lbfgs(Vec_t& init_out_vals,
  */
 
 bool
-lbfgs(Vec_t& init_out_vals, 
-      std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+lbfgs(ColVec_t& init_out_vals, 
+      std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
       void* opt_data, 
       algo_settings_t& settings);
 
@@ -70,41 +70,41 @@ namespace internal
 {
 
 bool
-lbfgs_impl(Vec_t& init_out_vals, 
-           std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+lbfgs_impl(ColVec_t& init_out_vals, 
+           std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
            void* opt_data, 
            algo_settings_t* settings_inp);
 
 // algorithm 7.4 of Nocedal and Wright (2006)
 inline
-Vec_t
-lbfgs_recur(Vec_t q, 
+ColVec_t
+lbfgs_recur(ColVec_t q, 
             const Mat_t& s_mat, 
             const Mat_t& y_mat, 
             const uint_t M)
 {
-    Vec_t alpha_vec(M);
+    ColVec_t alpha_vec(M);
 
     // forwards
 
-    // double rho = 1.0;
+    // fp_t rho = 1.0;
 
     for (size_t i = 0; i < M; ++i) {
-        double rho = 1.0 / BMO_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
+        fp_t rho = 1.0 / BMO_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
         alpha_vec(i) = rho * BMO_MATOPS_DOT_PROD(s_mat.col(i),q);
 
         q -= alpha_vec(i)*y_mat.col(i);
     }
 
-    Vec_t r = q * ( BMO_MATOPS_DOT_PROD(s_mat.col(0),y_mat.col(0)) / BMO_MATOPS_DOT_PROD(y_mat.col(0),y_mat.col(0)) );
+    ColVec_t r = q * ( BMO_MATOPS_DOT_PROD(s_mat.col(0),y_mat.col(0)) / BMO_MATOPS_DOT_PROD(y_mat.col(0),y_mat.col(0)) );
 
     // backwards
 
-    // double beta = 1.0;
+    // fp_t beta = 1.0;
 
     for (int i = M - 1; i >= 0; i--) {
-        double rho = 1.0 / BMO_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
-        double beta = rho * BMO_MATOPS_DOT_PROD(y_mat.col(i),r);
+        fp_t rho = 1.0 / BMO_MATOPS_DOT_PROD(y_mat.col(i),s_mat.col(i));
+        fp_t beta = rho * BMO_MATOPS_DOT_PROD(y_mat.col(i),r);
 
         r += (alpha_vec(i) - beta)*s_mat.col(i);
     }

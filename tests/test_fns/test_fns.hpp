@@ -21,7 +21,7 @@
 #ifndef OPTIMLIB_TEST_INCLUDES
 #define OPTIMLIB_TEST_INCLUDES
 
-using optim::Vec_t;
+using optim::ColVec_t;
 using optim::Mat_t;
 
 #define OPTIM_PI 3.14159265358979

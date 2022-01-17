@@ -12,6 +12,7 @@ Features:
   * [Eigen](http://eigen.tuxfamily.org/index.php) (version >= 3.4.0)
 * OpenMP-accelerated algorithms for parallel computation. 
 * Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
+* Available as a single (``float``) or double precision (``double``) library.
 * Available as a header-only library, or as a compiled shared library.
 * Released under a permissive, non-GPL license.
 
@@ -58,10 +59,10 @@ The inputs, in order, are:
 
 For example, the BFGS algorithm is called using
 ```cpp
-bfgs(Vec_t& init_out_vals, std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data);
+bfgs(ColVec_t& init_out_vals, std::function<double (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 ```
 
-where ``Vec_t`` is used to represent either ``arma::vec`` or ``Eigen::VectorXd`` types.
+where ``ColVec_t`` is used to represent either ``arma::vec`` or ``Eigen::VectorXd`` types.
 
 ## Installation Method 1: Shared Library
 
@@ -90,7 +91,8 @@ Configuration options (see `./configure -h`):
 &nbsp; &nbsp; &nbsp; **Primary**
 * `-h` print help
 * `-i` installation path; default: the build directory
-* `-l` specify the choice of linear algebra library; `arma` or `eigen`
+* `-f` floating-point precision mode (Eigen-based builds only); default: `double`
+* `-l` specify the choice of linear algebra library; choose `arma` or `eigen`
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features (*recommended*)

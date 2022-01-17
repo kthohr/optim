@@ -23,21 +23,21 @@
  */
 
 inline
-Vec_t
-numerical_gradient(const Vec_t& vals_inp, 
-                   const double* step_size_inp, 
-                   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* objfn_data)> objfn, 
+ColVec_t
+numerical_gradient(const ColVec_t& vals_inp, 
+                   const fp_t* step_size_inp, 
+                   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* objfn_data)> objfn, 
                    void* objfn_data)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(vals_inp);
 
-    const double step_size = (step_size_inp) ? *step_size_inp : 1e-04;
-    const double mach_eps = std::numeric_limits<double>::epsilon();
+    const fp_t step_size = (step_size_inp) ? *step_size_inp : 1e-04;
+    const fp_t mach_eps = std::numeric_limits<fp_t>::epsilon();
 
-    const Vec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps,1.0/6.0) * BMO_MATOPS_ONE_VEC(n_vals) );
+    const ColVec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps, fp_t(1.0/6.0)) * BMO_MATOPS_ONE_VEC(n_vals) );
     
-    Vec_t x_orig = vals_inp, x_term_1, x_term_2;
-    Vec_t grad_vec = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t x_orig = vals_inp, x_term_1, x_term_2;
+    ColVec_t grad_vec = BMO_MATOPS_ZERO_VEC(n_vals);
 
     //
     
@@ -51,10 +51,10 @@ numerical_gradient(const Vec_t& vals_inp,
         
         //
 
-        double term_1 =  objfn(x_term_1, nullptr, objfn_data);
-        double term_2 = -objfn(x_term_2, nullptr, objfn_data);
+        fp_t term_1 =  objfn(x_term_1, nullptr, objfn_data);
+        fp_t term_2 = -objfn(x_term_2, nullptr, objfn_data);
 
-        double denom_term = 2.0 * step_vec(i);
+        fp_t denom_term = fp_t(2.0) * step_vec(i);
         
         grad_vec(i) = (term_1 + term_2) / denom_term;
     }

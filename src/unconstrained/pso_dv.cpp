@@ -28,8 +28,8 @@
 optimlib_inline
 bool
 optim::internal::pso_dv_impl(
-    Vec_t& init_out_vals, 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
     algo_settings_t* settings_inp)
 {
@@ -49,7 +49,7 @@ optim::internal::pso_dv_impl(
     const int print_level = settings.print_level;
 
     const uint_t conv_failure_switch = settings.conv_failure_switch;
-    const double rel_objfn_change_tol = settings.rel_objfn_change_tol;
+    const fp_t rel_objfn_change_tol = settings.rel_objfn_change_tol;
 
     const size_t n_pop = settings.pso_settings.n_pop;
     const size_t n_gen = settings.pso_settings.n_gen;
@@ -58,35 +58,53 @@ optim::internal::pso_dv_impl(
 
     const uint_t stag_limit = 50;
 
-    double par_w = 1.0;
-    double par_beta = 0.5;
-    const double par_damp = 0.99;
-    // const double par_c_1 = 1.494;
-    const double par_c_2 = 1.494;
+    fp_t par_w = 1.0;
+    fp_t par_beta = 0.5;
+    const fp_t par_damp = 0.99;
+    // const fp_t par_c_1 = 1.494;
+    const fp_t par_c_2 = 1.494;
 
-    const double par_CR = 0.7;
+    const fp_t par_CR = 0.7;
 
     const bool vals_bound = settings.vals_bound;
     
-    const Vec_t lower_bounds = settings.lower_bounds;
-    const Vec_t upper_bounds = settings.upper_bounds;
+    const ColVec_t lower_bounds = settings.lower_bounds;
+    const ColVec_t upper_bounds = settings.upper_bounds;
 
-    const VecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
+    const ColVecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
-    Vec_t par_initial_lb = ( BMO_MATOPS_SIZE(settings.pso_settings.initial_lb) == n_vals ) ? settings.pso_settings.initial_lb : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
-    Vec_t par_initial_ub = ( BMO_MATOPS_SIZE(settings.pso_settings.initial_ub) == n_vals ) ? settings.pso_settings.initial_ub : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
+    ColVec_t par_initial_lb = ( BMO_MATOPS_SIZE(settings.pso_settings.initial_lb) == n_vals ) ? settings.pso_settings.initial_lb : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals, -0.5);
+    ColVec_t par_initial_ub = ( BMO_MATOPS_SIZE(settings.pso_settings.initial_ub) == n_vals ) ? settings.pso_settings.initial_ub : BMO_MATOPS_ARRAY_ADD_SCALAR(init_out_vals,  0.5);
 
     sampling_bounds_check(vals_bound, n_vals, bounds_type, lower_bounds, upper_bounds, par_initial_lb, par_initial_ub);
 
-    //
+    // random sampling setup
+
+    int omp_n_threads = 1;
+    rand_engine_t rand_engine(settings.rng_seed_value);
+    std::vector<rand_engine_t> engines;
+
+#ifdef OPTIM_USE_OMP
+    if (settings.pso_settings.omp_n_threads < 0) {
+        omp_n_threads = std::max(1, static_cast<int>(omp_get_max_threads()) / 2); // OpenMP often detects the number of virtual/logical cores, not physical cores
+    } else {
+        omp_n_threads = settings.pso_settings.omp_n_threads;
+    }
+#endif
+
+    for (int i = 0; i < omp_n_threads; ++i) {
+        size_t seed_val = generate_seed_value(i, omp_n_threads, rand_engine);
+        engines.push_back(rand_engine_t(seed_val));
+    }
+
     // lambda function for box constraints
 
-    std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* box_data)> box_objfn \
-    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data) \
-    -> double 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* box_data)> box_objfn \
+    = [opt_objfn, vals_bound, bounds_type, lower_bounds, upper_bounds] (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data) \
+    -> fp_t 
     {
         if (vals_bound) {
-            Vec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
+            ColVec_t vals_inv_trans = inv_transform(vals_inp, bounds_type, lower_bounds, upper_bounds);
             
             return opt_objfn(vals_inv_trans,nullptr,opt_data);
         }
@@ -99,16 +117,24 @@ optim::internal::pso_dv_impl(
     //
     // initialize
 
-    Vec_t objfn_vals(n_pop);
+    ColVec_t objfn_vals(n_pop);
     Mat_t P(n_pop, n_vals);
 
 #ifdef OPTIM_USE_OMP
-    #pragma omp parallel for
+    #pragma omp parallel for(omp_n_threads)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
-        P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), BMO_MATOPS_RANDU_VEC(n_vals) ) );
+        size_t thread_num = 0;
 
-        double prop_objfn_val = opt_objfn(BMO_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
+#ifdef OPTIM_USE_OMP
+        thread_num = omp_get_thread_num();
+#endif
+
+        ColVec_t rand_vec = bmo_stats::rsunif_vec<fp_t>(n_vals, engines[thread_num]);
+
+        P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
+
+        fp_t prop_objfn_val = opt_objfn(BMO_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
 
         if (std::isnan(prop_objfn_val)) {
             prop_objfn_val = inf;
@@ -121,24 +147,24 @@ optim::internal::pso_dv_impl(
         }
     }
 
-    Vec_t best_vals = objfn_vals;
+    ColVec_t best_vals = objfn_vals;
 
     Mat_t best_vecs = P;
 
     Mat_t V = BMO_MATOPS_ZERO_MAT(n_pop,n_vals);
 
-    double min_objfn_val_running = BMO_MATOPS_MIN_VAL(objfn_vals);
-    double min_objfn_val_check = min_objfn_val_running;
+    fp_t min_objfn_val_running = BMO_MATOPS_MIN_VAL(objfn_vals);
+    fp_t min_objfn_val_check = min_objfn_val_running;
 
     RowVec_t best_sol_running = P.row( index_min(objfn_vals) );
 
-    Vec_t stag_vec = BMO_MATOPS_ZERO_VEC(n_pop); // arma::zeros(n_pop,1);
+    ColVec_t stag_vec = BMO_MATOPS_ZERO_VEC(n_pop); // arma::zeros(n_pop,1);
 
     //
     // begin loop
 
     size_t iter = 0;
-    double rel_objfn_change = 2.0*rel_objfn_change_tol;
+    fp_t rel_objfn_change = 2.0*rel_objfn_change_tol;
 
     while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen) {
         ++iter;
@@ -147,35 +173,44 @@ optim::internal::pso_dv_impl(
         RowVec_t P_min = BMO_MATOPS_COLWISE_MIN(P);
 
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for 
+        #pragma omp parallel for(omp_n_threads)
 #endif
         for (size_t i = 0; i < n_pop; ++i) {
+            size_t thread_num = 0;
+
+#ifdef OPTIM_USE_OMP
+            thread_num = omp_get_thread_num();
+#endif
+
             uint_t c_1, c_2;
 
             do { // 'r_2' in paper's notation
-                c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                // c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                c_1 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while(c_1 == i);
 
             do { // 'r_3' in paper's notation
-                c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                // c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_pop-1)));
+                c_2 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while(c_2 == i || c_2 == c_1);
 
             //
 
-            Vec_t rand_CR = BMO_MATOPS_RANDU_VEC(n_vals);
+            ColVec_t rand_CR = BMO_MATOPS_RANDU_VEC(n_vals);
 
             RowVec_t delta_vec = P.row(c_1) - P.row(c_2);
 
             for (size_t k = 0; k < n_vals; ++k) {
                 if (rand_CR(k) <= par_CR) {
-                    double rand_u = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDU_VEC(1) );
+                    // fp_t rand_u = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDU_VEC(1) );
+                    fp_t rand_u = bmo_stats::runif<fp_t>(engines[thread_num]);
 
-                    V(i,k) = par_w*V(i,k) + par_beta*delta_vec(k) + par_c_2*rand_u*(best_sol_running(k) - P(i,k));
+                    V(i,k) = par_w * V(i,k) + par_beta * delta_vec(k) + par_c_2 * rand_u * (best_sol_running(k) - P(i,k));
                 }
             }
 
             RowVec_t TR = P.row(i) + V.row(i);
-            double TR_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(TR), nullptr, opt_data);
+            fp_t TR_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(TR), nullptr, opt_data);
 
             if (TR_objfn_val < objfn_vals(i)) {
                 P.row(i) = TR;
@@ -185,7 +220,9 @@ optim::internal::pso_dv_impl(
             }
 
             if (stag_vec(i) >= stag_limit) {
-                P.row(i) = P_min + BMO_MATOPS_HADAMARD_PROD( BMO_MATOPS_RANDU_ROWVEC(n_vals), (P_max - P_min));
+                RowVec_t rand_vec = bmo_stats::rsunif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+
+                P.row(i) = P_min + BMO_MATOPS_HADAMARD_PROD( rand_vec, (P_max - P_min));
                 stag_vec(i) = 0;
 
                 objfn_vals(i) = box_objfn( BMO_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
@@ -203,7 +240,7 @@ optim::internal::pso_dv_impl(
         //
 
         size_t min_objfn_val_index = index_min(objfn_vals);
-        double min_objfn_val = objfn_vals(min_objfn_val_index);
+        fp_t min_objfn_val = objfn_vals(min_objfn_val_index);
 
         if (min_objfn_val < min_objfn_val_running) {
             min_objfn_val_running = min_objfn_val;
@@ -211,7 +248,7 @@ optim::internal::pso_dv_impl(
         }
 
         if (iter%check_freq == 0) {
-            rel_objfn_change = std::abs(min_objfn_val_running - min_objfn_val_check) / (1.0e-08 + std::abs(min_objfn_val_running));
+            rel_objfn_change = std::abs(min_objfn_val_running - min_objfn_val_check) / (OPTIM_FPN_SMALL_NUMBER + std::abs(min_objfn_val_running));
             
             if (min_objfn_val_running < min_objfn_val_check) {
                 min_objfn_val_check = min_objfn_val_running;
@@ -240,8 +277,8 @@ optim::internal::pso_dv_impl(
 
 optimlib_inline
 bool
-optim::pso_dv(Vec_t& init_out_vals, 
-              std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+optim::pso_dv(ColVec_t& init_out_vals, 
+              std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
               void* opt_data)
 {
     return internal::pso_dv_impl(init_out_vals,opt_objfn,opt_data,nullptr);
@@ -249,8 +286,8 @@ optim::pso_dv(Vec_t& init_out_vals,
 
 optimlib_inline
 bool
-optim::pso_dv(Vec_t& init_out_vals, 
-              std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+optim::pso_dv(ColVec_t& init_out_vals, 
+              std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
               void* opt_data, 
               algo_settings_t& settings)
 {

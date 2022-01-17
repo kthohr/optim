@@ -24,6 +24,8 @@ The primary configuration options can be displayed by calling ``./configure -h``
             (default: disabled)
     -d    Developmental build
             (default: disabled)
+    -f    Floating-point number type
+            (default: double)
     -g    Debugging build (optimization flags set to -O0 -g)
             (default: disabled)
     -h    Print help

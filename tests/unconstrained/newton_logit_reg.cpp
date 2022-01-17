@@ -24,7 +24,7 @@
 
 #include "optim.hpp"
 
-using optim::Vec_t;
+using optim::ColVec_t;
 using optim::Mat_t;
 
 // sigmoid function
@@ -39,18 +39,18 @@ sigm(const Mat_t& X)
 // log-likelihood function
 
 struct ll_data_t {
-    Vec_t Y;
+    ColVec_t Y;
     Mat_t X;
 };
 
-double ll_fn(const Vec_t& vals_inp, Vec_t* grad_out, Mat_t* hess_out, void* opt_data)
+double ll_fn(const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)
 {
     ll_data_t* objfn_data = reinterpret_cast<ll_data_t*>(opt_data);
 
-    Vec_t Y = objfn_data->Y;
+    ColVec_t Y = objfn_data->Y;
     Mat_t X = objfn_data->X;
 
-    Vec_t mu = sigm(X*vals_inp);
+    ColVec_t mu = sigm(X*vals_inp);
 
     double norm_term = static_cast<double>( BMO_MATOPS_SIZE(Y) );
 
@@ -87,14 +87,14 @@ int main()
     int n_dim = 5;     // dimension of theta
     int n_samp = 1000; // sample length
 
-    Mat_t X = BMO_MATOPS_RANDN_MAT(n_samp,n_dim);
-    Vec_t theta_0 = BMO_MATOPS_ARRAY_ADD_SCALAR(3.0 * BMO_MATOPS_RANDU_VEC(n_dim), 1.0);
+    Mat_t X = optim::bmo_stats::rsnorm_mat<optim::fp_t>(n_samp,n_dim);
+    ColVec_t theta_0 = BMO_MATOPS_ARRAY_ADD_SCALAR(3.0 * BMO_MATOPS_RANDU_VEC(n_dim), 1.0);
 
     BMO_MATOPS_COUT << "\nTrue theta:\n" << theta_0 << "\n";
 
-    Vec_t mu = sigm(X*theta_0);
+    ColVec_t mu = sigm(X*theta_0);
 
-    Vec_t Y(n_samp);
+    ColVec_t Y(n_samp);
 
     for (int i = 0; i < n_samp; ++i) {
         Y(i) = ( BMO_MATOPS_AS_SCALAR(BMO_MATOPS_RANDU_VEC(1)) < mu(i) ) ? 1.0 : 0.0;
@@ -106,7 +106,7 @@ int main()
     opt_data.Y = std::move(Y);
     opt_data.X = std::move(X);
 
-    Vec_t x = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ONE_VEC(n_dim), 1.0 ); // (2,2)
+    ColVec_t x = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ONE_VEC(n_dim), 1.0 ); // (2,2)
 
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
  

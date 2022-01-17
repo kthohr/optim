@@ -26,11 +26,11 @@ inline
 void
 sampling_bounds_check(const bool vals_bound,
                       const size_t n_vals,
-                      const VecInt_t bounds_type,
-                      const Vec_t& hard_lower_bounds, 
-                      const Vec_t& hard_upper_bounds,
-                      Vec_t& sampling_lower_bounds,
-                      Vec_t& sampling_upper_bounds)
+                      const ColVecInt_t bounds_type,
+                      const ColVec_t& hard_lower_bounds, 
+                      const ColVec_t& hard_upper_bounds,
+                      ColVec_t& sampling_lower_bounds,
+                      ColVec_t& sampling_upper_bounds)
 {
     if (vals_bound) {
         for (size_t i = 0; i < n_vals; ++i) {

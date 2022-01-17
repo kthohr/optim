@@ -39,8 +39,8 @@
  */
 
 bool 
-cg(Vec_t& init_out_vals, 
-   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+cg(ColVec_t& init_out_vals, 
+   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
    void* opt_data);
 
 /**
@@ -58,8 +58,8 @@ cg(Vec_t& init_out_vals,
  */
 
 bool
-cg(Vec_t& init_out_vals, 
-   std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+cg(ColVec_t& init_out_vals, 
+   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
    void* opt_data, 
    algo_settings_t& settings);
 
@@ -70,29 +70,29 @@ namespace internal
 {
 
 bool 
-cg_impl(Vec_t& init_out_vals, 
-        std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> opt_objfn, 
+cg_impl(ColVec_t& init_out_vals, 
+        std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
         void* opt_data, 
         algo_settings_t* settings_inp);
 
 // update function
 
 inline
-double
-cg_update(const Vec_t& grad, 
-          const Vec_t& grad_p, 
-          const Vec_t& direc, 
+fp_t
+cg_update(const ColVec_t& grad, 
+          const ColVec_t& grad_p, 
+          const ColVec_t& direc, 
           const uint_t iter, 
           const uint_t cg_method, 
-          const double cg_restart_threshold)
+          const fp_t cg_restart_threshold)
 {
     // threshold test
-    double ratio_value = std::abs( BMO_MATOPS_DOT_PROD(grad_p,grad) ) / BMO_MATOPS_DOT_PROD(grad_p,grad_p);
+    fp_t ratio_value = std::abs( BMO_MATOPS_DOT_PROD(grad_p,grad) ) / BMO_MATOPS_DOT_PROD(grad_p,grad_p);
 
     if ( ratio_value > cg_restart_threshold ) {
         return 0.0;
     } else {
-        double beta = 1.0;
+        fp_t beta = 1.0;
 
         switch (cg_method)
         {
@@ -111,10 +111,10 @@ cg_update(const Vec_t& grad,
             case 3: // FR-PR hybrid, see eq. 5.48 in Nocedal and Wright
             {
                 if (iter > 1) {
-                    const double beta_denom = BMO_MATOPS_DOT_PROD(grad, grad);
+                    const fp_t beta_denom = BMO_MATOPS_DOT_PROD(grad, grad);
                     
-                    const double beta_FR = BMO_MATOPS_DOT_PROD(grad_p, grad_p) / beta_denom;
-                    const double beta_PR = BMO_MATOPS_DOT_PROD(grad_p, grad_p - grad) / beta_denom;
+                    const fp_t beta_FR = BMO_MATOPS_DOT_PROD(grad_p, grad_p) / beta_denom;
+                    const fp_t beta_PR = BMO_MATOPS_DOT_PROD(grad_p, grad_p - grad) / beta_denom;
                     
                     if (beta_PR < - beta_FR) {
                         beta = -beta_FR;
@@ -144,10 +144,10 @@ cg_update(const Vec_t& grad,
 
             case 6: // Hager-Zhang
             {
-                Vec_t y = grad_p - grad;
+                ColVec_t y = grad_p - grad;
 
-                Vec_t term_1 = y - 2*direc*(BMO_MATOPS_DOT_PROD(y,y) / BMO_MATOPS_DOT_PROD(y,direc));
-                Vec_t term_2 = grad_p / BMO_MATOPS_DOT_PROD(y,direc);
+                ColVec_t term_1 = y - 2*direc*(BMO_MATOPS_DOT_PROD(y,y) / BMO_MATOPS_DOT_PROD(y,direc));
+                ColVec_t term_2 = grad_p / BMO_MATOPS_DOT_PROD(y,direc);
 
                 beta = BMO_MATOPS_DOT_PROD(term_1,term_2);
                 break;
@@ -162,7 +162,7 @@ cg_update(const Vec_t& grad,
 
         //
 
-        return std::max(beta, 0.0);
+        return std::max(beta, fp_t(0.0));
     }
 }
 

@@ -22,16 +22,17 @@
 
 #include <algorithm>
 #include <numeric>
+#include <random>
 #include <vector>
 
 // version
 
 #ifndef OPTIM_VERSION_MAJOR
-    #define OPTIM_VERSION_MAJOR 2
+    #define OPTIM_VERSION_MAJOR 3
 #endif
 
 #ifndef OPTIM_VERSION_MINOR
-    #define OPTIM_VERSION_MINOR 1
+    #define OPTIM_VERSION_MINOR 0
 #endif
 
 #ifndef OPTIM_VERSION_PATCH
@@ -68,6 +69,35 @@
     #define optimlib_inline 
 #endif
 
+// floating point number type
+
+#ifndef OPTIM_FPN_TYPE
+    #define OPTIM_FPN_TYPE double
+#endif
+
+#if OPTIM_FPN_TYPE == float
+    #undef OPTIM_FPN_SMALL_NUMBER
+    #define OPTIM_FPN_SMALL_NUMBER fp_t(1e-05)
+#elif OPTIM_FPN_TYPE == double
+    #undef OPTIM_FPN_SMALL_NUMBER
+    #define OPTIM_FPN_SMALL_NUMBER fp_t(1e-08)
+#else
+    #error floating-point number type must be 'float' or 'double'
+#endif
+
+//
+
+namespace optim
+{
+    using uint_t = unsigned int;
+    using fp_t = OPTIM_FPN_TYPE;
+
+    using rand_engine_t = std::mt19937_64;
+
+    static const double eps_dbl = std::numeric_limits<fp_t>::epsilon();
+    static const double inf = std::numeric_limits<fp_t>::infinity();
+}
+
 //
 
 #ifdef OPTIM_ENABLE_ARMA_WRAPPERS
@@ -100,9 +130,9 @@
     namespace optim
     {
         using Mat_t = arma::mat;
-        using Vec_t = arma::vec;
+        using ColVec_t = arma::vec;
         using RowVec_t = arma::rowvec;
-        using VecInt_t = arma::uvec;
+        using ColVecInt_t = arma::uvec;
     }
 #endif
 
@@ -122,22 +152,24 @@
 
     namespace optim
     {
-        using Mat_t = Eigen::MatrixXd;
-        using Vec_t = Eigen::VectorXd;
-        using RowVec_t = Eigen::Matrix<double,1,Eigen::Dynamic>;
-        using VecInt_t = Eigen::VectorXi;
+        using Mat_t = Eigen::Matrix<fp_t, Eigen::Dynamic, Eigen::Dynamic>;
+        using ColVec_t = Eigen::Matrix<fp_t, Eigen::Dynamic, 1>;
+        using RowVec_t = Eigen::Matrix<fp_t, 1, Eigen::Dynamic>;
+        using ColVecInt_t = Eigen::Matrix<int, Eigen::Dynamic, 1>;
+        using RowVecInt_t = Eigen::Matrix<int, 1, Eigen::Dynamic>;
     }
 #endif
 
 //
 
-namespace optim
-{
-    static const double eps_dbl = std::numeric_limits<double>::epsilon();
-    static const double inf = std::numeric_limits<double>::infinity();
-    using uint_t = unsigned int;
-}
+#ifndef BMO_ENABLE_EXTRA_FEATURES
+    #define BMO_ENABLE_EXTRA_FEATURES
+#endif
 
-#ifndef BMO_EXTRA_FEATURES
-    #define BMO_EXTRA_FEATURES
+#ifndef BMO_ENABLE_STATS_FEATURES
+    #define BMO_ENABLE_STATS_FEATURES
+#endif
+
+#ifndef BMO_RAND_ENGINE_TYPE
+    #define BMO_RAND_ENGINE_TYPE optim::rand_engine_t
 #endif

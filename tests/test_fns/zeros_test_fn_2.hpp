@@ -28,15 +28,15 @@
 #ifndef _optim_zeros_test_fn_2_HPP
 #define _optim_zeros_test_fn_2_HPP
 
-Vec_t
-zeros_test_objfn_2(const Vec_t& vals_inp, void* opt_data)
+ColVec_t
+zeros_test_objfn_2(const ColVec_t& vals_inp, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);
 
     //
 
-    Vec_t ret(2);
+    ColVec_t ret(2);
 
     ret(0) =   2*x_1 - x_2   - std::exp(-x_1);
     ret(1) = - x_1   + 2*x_2 - std::exp(-x_2);
@@ -47,7 +47,7 @@ zeros_test_objfn_2(const Vec_t& vals_inp, void* opt_data)
 }
 
 Mat_t
-zeros_test_jacob_2(const Vec_t& vals_inp, void* opt_data)
+zeros_test_jacob_2(const ColVec_t& vals_inp, void* opt_data)
 {
     double x_1 = vals_inp(0);
     double x_2 = vals_inp(1);

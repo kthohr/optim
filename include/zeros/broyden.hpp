@@ -40,8 +40,8 @@
  */
 
 bool
-broyden(Vec_t& init_out_vals, 
-        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden(ColVec_t& init_out_vals, 
+        std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
         void* opt_data);
 
 /**
@@ -58,8 +58,8 @@ broyden(Vec_t& init_out_vals,
  */
 
 bool
-broyden(Vec_t& init_out_vals, 
-        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden(ColVec_t& init_out_vals, 
+        std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
         void* opt_data, 
         algo_settings_t& settings);
 
@@ -83,10 +83,10 @@ broyden(Vec_t& init_out_vals,
  */
 
 bool
-broyden(Vec_t& init_out_vals, 
-        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden(ColVec_t& init_out_vals, 
+        std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
         void* opt_data,
-        std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+        std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
         void* jacob_data);
 
 /**
@@ -107,10 +107,10 @@ broyden(Vec_t& init_out_vals,
  */
 
 bool
-broyden(Vec_t& init_out_vals, 
-        std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden(ColVec_t& init_out_vals, 
+        std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
         void* opt_data,
-        std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+        std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
         void* jacob_data, 
         algo_settings_t& settings);
 
@@ -121,17 +121,17 @@ namespace internal
 {
 
 bool
-broyden_impl(Vec_t& init_out_vals, 
-            std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_impl(ColVec_t& init_out_vals, 
+            std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
             void* opt_data, 
             algo_settings_t* settings_inp);
 
 
 bool
-broyden_impl(Vec_t& init_out_vals, 
-            std::function<Vec_t (const Vec_t& vals_inp, void* opt_data)> opt_objfn, 
+broyden_impl(ColVec_t& init_out_vals, 
+            std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
             void* opt_data,
-            std::function<Mat_t (const Vec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+            std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
             void* jacob_data, 
             algo_settings_t* settings_inp);
 

@@ -31,19 +31,19 @@ namespace internal
 // update function
 
 inline
-Vec_t
-gd_update(const Vec_t& vals_inp,
-          const Vec_t& grad,
-          const Vec_t& grad_p,
-          const Vec_t& direc,
-          std::function<double (const Vec_t& vals_inp, Vec_t* grad_out, void* opt_data)> box_objfn,
+ColVec_t
+gd_update(const ColVec_t& vals_inp,
+          const ColVec_t& grad,
+          const ColVec_t& grad_p,
+          const ColVec_t& direc,
+          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> box_objfn,
           void* opt_data,
           const size_t iter,
           gd_settings_t& gd_settings,
-          Vec_t& adam_vec_m,
-          Vec_t& adam_vec_v)
+          ColVec_t& adam_vec_m,
+          ColVec_t& adam_vec_v)
 {
-    Vec_t direc_out; // direction
+    ColVec_t direc_out; // direction
 
     if (gd_settings.step_decay) {
         if ((iter % gd_settings.step_decay_periods) == 0) {
@@ -68,7 +68,7 @@ gd_update(const Vec_t& vals_inp,
 
         case 2: // Nesterov accelerated gradient
         {
-            Vec_t NAG_grad( BMO_MATOPS_SIZE(vals_inp) );
+            ColVec_t NAG_grad( BMO_MATOPS_SIZE(vals_inp) );
             box_objfn(vals_inp - gd_settings.par_momentum * direc, &NAG_grad, opt_data);
 
             // direc_out = gd_settings.par_step_size * (gd_settings.par_momentum * direc + NAG_grad);
@@ -86,7 +86,7 @@ gd_update(const Vec_t& vals_inp,
 
         case 4: // RMSProp
         {
-            adam_vec_v = gd_settings.par_ada_rho * adam_vec_v + (1.0 - gd_settings.par_ada_rho) * BMO_MATOPS_POW(grad_p,2);
+            adam_vec_v = gd_settings.par_ada_rho * adam_vec_v + (fp_t(1.0) - gd_settings.par_ada_rho) * BMO_MATOPS_POW(grad_p,2);
 
             direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( gd_settings.par_step_size * grad_p, BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(adam_vec_v), gd_settings.par_ada_norm_term) );
             break;
@@ -98,31 +98,31 @@ gd_update(const Vec_t& vals_inp,
                 adam_vec_m = BMO_MATOPS_ARRAY_ADD_SCALAR(adam_vec_m, gd_settings.par_step_size);
             }
 
-            adam_vec_v = gd_settings.par_ada_rho * adam_vec_v + (1.0 - gd_settings.par_ada_rho) * BMO_MATOPS_POW(grad_p,2);
+            adam_vec_v = gd_settings.par_ada_rho * adam_vec_v + (fp_t(1.0) - gd_settings.par_ada_rho) * BMO_MATOPS_POW(grad_p,2);
 
-            Vec_t grad_direc = BMO_MATOPS_ARRAY_DIV_ARRAY((BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(adam_vec_m), gd_settings.par_ada_norm_term)), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(adam_vec_v), gd_settings.par_ada_norm_term)));
+            ColVec_t grad_direc = BMO_MATOPS_ARRAY_DIV_ARRAY((BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(adam_vec_m), gd_settings.par_ada_norm_term)), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(adam_vec_v), gd_settings.par_ada_norm_term)));
 
             direc_out = BMO_MATOPS_HADAMARD_PROD(grad_p, grad_direc);
 
-            adam_vec_m = gd_settings.par_ada_rho * adam_vec_m + (1.0 - gd_settings.par_ada_rho) * BMO_MATOPS_POW(direc_out,2);
+            adam_vec_m = gd_settings.par_ada_rho * adam_vec_m + (fp_t(1.0) - gd_settings.par_ada_rho) * BMO_MATOPS_POW(direc_out,2);
             break;
         }
 
         case 6: // Adam and AdaMax
         {
-            adam_vec_m = gd_settings.par_adam_beta_1 * adam_vec_m + (1.0 - gd_settings.par_adam_beta_1) * grad_p;
+            adam_vec_m = gd_settings.par_adam_beta_1 * adam_vec_m + (fp_t(1.0) - gd_settings.par_adam_beta_1) * grad_p;
 
             if (gd_settings.ada_max) {
                 adam_vec_v = BMO_MATOPS_MAX(gd_settings.par_adam_beta_2 * adam_vec_v, BMO_MATOPS_ABS(grad_p));
 
-                double adam_step_size = gd_settings.par_step_size / (1.0 - std::pow(gd_settings.par_adam_beta_1,iter));
+                fp_t adam_step_size = gd_settings.par_step_size / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_1,iter));
 
                 direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( (adam_step_size * adam_vec_m), (BMO_MATOPS_ARRAY_ADD_SCALAR(adam_vec_v, gd_settings.par_ada_norm_term)) );
             } else {
-                double adam_step_size = gd_settings.par_step_size * std::sqrt(1.0 - std::pow(gd_settings.par_adam_beta_2,iter)) \
-                                     / (1.0 - std::pow(gd_settings.par_adam_beta_1,iter));
+                fp_t adam_step_size = gd_settings.par_step_size * std::sqrt(fp_t(1.0) - std::pow(gd_settings.par_adam_beta_2,iter)) \
+                                     / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_1,iter));
 
-                adam_vec_v = gd_settings.par_adam_beta_2 * adam_vec_v + (1.0 - gd_settings.par_adam_beta_2) * BMO_MATOPS_POW(grad_p,2);
+                adam_vec_v = gd_settings.par_adam_beta_2 * adam_vec_v + (fp_t(1.0) - gd_settings.par_adam_beta_2) * BMO_MATOPS_POW(grad_p,2);
 
                 direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( (adam_step_size * adam_vec_m), (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(adam_vec_v), gd_settings.par_ada_norm_term)) );
             }
@@ -132,23 +132,23 @@ gd_update(const Vec_t& vals_inp,
 
         case 7: // Nadam and NadaMax
         {
-            adam_vec_m = gd_settings.par_adam_beta_1 * adam_vec_m + (1.0 - gd_settings.par_adam_beta_1) * grad_p;
+            adam_vec_m = gd_settings.par_adam_beta_1 * adam_vec_m + (fp_t(1.0) - gd_settings.par_adam_beta_1) * grad_p;
 
             if (gd_settings.ada_max) {
                 adam_vec_v = BMO_MATOPS_MAX(gd_settings.par_adam_beta_2 * adam_vec_v, BMO_MATOPS_ABS(grad_p));
 
-                Vec_t m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.par_adam_beta_1,iter));
-                Vec_t grad_hat = grad_p / (1.0 - std::pow(gd_settings.par_adam_beta_1,iter));
+                ColVec_t m_hat = adam_vec_m / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_1,iter));
+                ColVec_t grad_hat = grad_p / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_1,iter));
 
-                direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( (gd_settings.par_step_size * ( gd_settings.par_adam_beta_1 * m_hat + (1.0 - gd_settings.par_adam_beta_1) * grad_hat )) , (BMO_MATOPS_ARRAY_ADD_SCALAR(adam_vec_v, gd_settings.par_ada_norm_term)) );
+                direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( (gd_settings.par_step_size * ( gd_settings.par_adam_beta_1 * m_hat + (fp_t(1.0) - gd_settings.par_adam_beta_1) * grad_hat )) , (BMO_MATOPS_ARRAY_ADD_SCALAR(adam_vec_v, gd_settings.par_ada_norm_term)) );
             } else {
-                adam_vec_v = gd_settings.par_adam_beta_2 * adam_vec_v + (1.0 - gd_settings.par_adam_beta_2) * BMO_MATOPS_POW(grad_p,2);
+                adam_vec_v = gd_settings.par_adam_beta_2 * adam_vec_v + (fp_t(1.0) - gd_settings.par_adam_beta_2) * BMO_MATOPS_POW(grad_p,2);
 
-                Vec_t m_hat = adam_vec_m / (1.0 - std::pow(gd_settings.par_adam_beta_1,iter));
-                Vec_t v_hat = adam_vec_v / (1.0 - std::pow(gd_settings.par_adam_beta_2,iter));
-                Vec_t grad_hat = grad_p / (1.0 - std::pow(gd_settings.par_adam_beta_1,iter));
+                ColVec_t m_hat = adam_vec_m / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_1,iter));
+                ColVec_t v_hat = adam_vec_v / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_2,iter));
+                ColVec_t grad_hat = grad_p / (fp_t(1.0) - std::pow(gd_settings.par_adam_beta_1,iter));
 
-                direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( (gd_settings.par_step_size * ( gd_settings.par_adam_beta_1 * m_hat + (1.0 - gd_settings.par_adam_beta_1) * grad_hat )) , (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(v_hat), gd_settings.par_ada_norm_term)) );
+                direc_out = BMO_MATOPS_ARRAY_DIV_ARRAY( (gd_settings.par_step_size * ( gd_settings.par_adam_beta_1 * m_hat + (fp_t(1.0) - gd_settings.par_adam_beta_1) * grad_hat )) , (BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_SQRT(v_hat), gd_settings.par_ada_norm_term)) );
             }
 
             break;
@@ -170,10 +170,10 @@ gd_update(const Vec_t& vals_inp,
 
 inline
 void
-gradient_clipping(Vec_t& grad_, const gd_settings_t& gd_settings)
+gradient_clipping(ColVec_t& grad_, const gd_settings_t& gd_settings)
 {
 
-    double grad_norm;
+    fp_t grad_norm;
     
     if (gd_settings.clip_max_norm) {
         grad_norm = BMO_MATOPS_LINFNORM(grad_);

@@ -113,11 +113,11 @@ Function Declarations
 ---------------------
 
 .. _nm-func-ref1:
-.. doxygenfunction:: nm(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: nm(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _nm-func-ref2:
-.. doxygenfunction:: nm(Vec_t&, std::function<doubleconst Vec_t &vals_inp, Vec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: nm(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
@@ -127,7 +127,7 @@ Optimization Control Parameters
 
 The basic control parameters are:
 
-- ``double rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in the simplex of function values, defined as:
+- ``fp_t rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in the simplex of function values, defined as:
 
     .. math::
 
@@ -136,7 +136,7 @@ The basic control parameters are:
 
   should be before 'convergence' is declared.
 
-- ``double rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
+- ``fp_t rel_sol_change_tol``: the error tolerance value controlling how small the proportional change in the solution vector should be before 'convergence' is declared.
 
   The relative change is computed using:
 
@@ -150,21 +150,21 @@ The basic control parameters are:
 
 - ``bool vals_bound``: whether the search space of the algorithm is bounded. If ``true``, then
 
-  - ``Vec_t lower_bounds``: defines the lower bounds of the search space.
+  - ``ColVec_t lower_bounds``: defines the lower bounds of the search space.
 
-  - ``Vec_t upper_bounds``: defines the upper bounds of the search space.
+  - ``ColVec_t upper_bounds``: defines the upper bounds of the search space.
 
 - ``struct nm_settings_t``, which defines several parameters that control the behavior of the simplex.
 
   - ``bool adaptive_pars = true``: scale the contraction, expansion, and shrinkage parameters using the dimension of the optimization problem.
 
-  - ``double par_alpha = 1.0``: reflection parameter.
+  - ``fp_t par_alpha = 1.0``: reflection parameter.
 
-  - ``double par_beta = 0.5``: contraction parameter.
+  - ``fp_t par_beta = 0.5``: contraction parameter.
 
-  - ``double par_gamma = 2.0``: expansion parameter.
+  - ``fp_t par_gamma = 2.0``: expansion parameter.
 
-  - ``double par_delta = 0.5``: shrinkage parameter.
+  - ``fp_t par_delta = 0.5``: shrinkage parameter.
 
   - ``bool custom_initial_simplex = false``: whether to use user-defined values for the initial simplex matrix.
 
