@@ -122,11 +122,11 @@ Function Declarations
 ---------------------
 
 .. _cg-func-ref1:
-.. doxygenfunction:: cg(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: cg(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _cg-func-ref2:
-.. doxygenfunction:: cg(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: cg(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----

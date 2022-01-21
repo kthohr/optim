@@ -113,11 +113,11 @@ Function Declarations
 ---------------------
 
 .. _nm-func-ref1:
-.. doxygenfunction:: nm(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: nm(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
    :project: optimlib
 
 .. _nm-func-ref2:
-.. doxygenfunction:: nm(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: nm(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----

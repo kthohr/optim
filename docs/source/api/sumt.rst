@@ -36,11 +36,11 @@ Definitions
 -----------
 
 .. _sumt-func-ref1:
-.. doxygenfunction:: sumt(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, std::function<Vec_tconst ColVec_t &vals_inp, Mat_t *jacob_out, void *constr_data>, void *)
+.. doxygenfunction:: sumt(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, std::function<Vec_tconst ColVec_t &vals_inp, Mat_t *jacob_out, void *constr_data>, void *)
    :project: optimlib
 
 .. _sumt-func-ref2:
-.. doxygenfunction:: sumt(ColVec_t&, std::function<doubleconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, std::function<Vec_tconst ColVec_t &vals_inp, Mat_t *jacob_out, void *constr_data>, void *, algo_settings_t&)
+.. doxygenfunction:: sumt(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, std::function<Vec_tconst ColVec_t &vals_inp, Mat_t *jacob_out, void *constr_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
