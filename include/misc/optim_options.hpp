@@ -170,6 +170,6 @@ namespace optim
     #define BMO_ENABLE_STATS_FEATURES
 #endif
 
-#ifndef BMO_RAND_ENGINE_TYPE
-    #define BMO_RAND_ENGINE_TYPE optim::rand_engine_t
+#ifndef BMO_RNG_ENGINE_TYPE
+    #define BMO_RNG_ENGINE_TYPE optim::rand_engine_t
 #endif
