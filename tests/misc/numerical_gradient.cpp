@@ -32,7 +32,7 @@ int main()
 
     //
     // test 1
-    optim::ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_1 = BMO_MATOPS_ONE_COLVEC(2);
 
     optim::ColVec_t grad_vec_1 = optim::numerical_gradient(x_1,nullptr,unconstr_test_fn_1,nullptr);
 
@@ -41,7 +41,7 @@ int main()
     //
     // test 2
 
-    optim::ColVec_t x_2 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_2 = BMO_MATOPS_ONE_COLVEC(2);
 
     optim::ColVec_t grad_vec_2 = optim::numerical_gradient(x_2,nullptr,unconstr_test_fn_2,nullptr);
 
@@ -50,7 +50,7 @@ int main()
     //
     // test 3
 
-    optim::ColVec_t x_3 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_3 = BMO_MATOPS_ONE_COLVEC(2);
 
     optim::ColVec_t grad_vec_3 = optim::numerical_gradient(x_3,nullptr,unconstr_test_fn_3,nullptr);
 
@@ -59,7 +59,7 @@ int main()
     //
     // test 4
 
-    optim::ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_4 = BMO_MATOPS_ONE_COLVEC(2);
 
     optim::ColVec_t grad_vec_4 = optim::numerical_gradient(x_4,nullptr,unconstr_test_fn_4,nullptr);
 
@@ -68,7 +68,7 @@ int main()
     //
     // test 5
 
-    optim::ColVec_t x_5 = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t x_5 = BMO_MATOPS_ONE_COLVEC(2);
 
     optim::ColVec_t grad_vec_5 = optim::numerical_gradient(x_5,nullptr,unconstr_test_fn_5,nullptr);
 

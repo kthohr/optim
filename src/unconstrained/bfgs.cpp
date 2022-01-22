@@ -113,9 +113,9 @@ optim::internal::bfgs_impl(
 
     Mat_t W = I_mat;                            // initial approx. to (inverse) Hessian 
     ColVec_t grad(n_vals);                         // gradient vector
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);    // direction vector
-    ColVec_t s = BMO_MATOPS_ZERO_VEC(n_vals);
-    ColVec_t y = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);    // direction vector
+    ColVec_t s = BMO_MATOPS_ZERO_COLVEC(n_vals);
+    ColVec_t y = BMO_MATOPS_ZERO_COLVEC(n_vals);
 
     box_objfn(x, &grad, opt_data);
 

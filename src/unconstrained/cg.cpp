@@ -109,7 +109,7 @@ optim::internal::cg_impl(
     }
 
     ColVec_t x = init_out_vals;
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);
 
     if (vals_bound) { // should we transform the parameters?
         x = transform(x, bounds_type, lower_bounds, upper_bounds);

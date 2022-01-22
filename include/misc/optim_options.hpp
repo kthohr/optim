@@ -129,10 +129,12 @@ namespace optim
 
     namespace optim
     {
-        using Mat_t = arma::mat;
-        using ColVec_t = arma::vec;
-        using RowVec_t = arma::rowvec;
-        using ColVecInt_t = arma::uvec;
+        using Mat_t = arma::Mat<fp_t>;
+        using ColVec_t = arma::Col<fp_t>;
+        using RowVec_t = arma::Row<fp_t>;
+        using ColVecInt_t = arma::Col<int>;
+        using RowVecInt_t = arma::Row<int>;
+        using ColVecUInt_t = arma::Col<unsigned long long>;
     }
 #endif
 
@@ -157,6 +159,7 @@ namespace optim
         using RowVec_t = Eigen::Matrix<fp_t, 1, Eigen::Dynamic>;
         using ColVecInt_t = Eigen::Matrix<int, Eigen::Dynamic, 1>;
         using RowVecInt_t = Eigen::Matrix<int, 1, Eigen::Dynamic>;
+        using ColVecUInt_t = Eigen::Matrix<size_t, Eigen::Dynamic, 1>;
     }
 #endif
 

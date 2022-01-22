@@ -40,7 +40,7 @@ int main()
     settings_1.conv_failure_switch = 1;
     settings_1.cg_settings.method = 5;
 
-    ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ONE_COLVEC(2);
     x_1(1) = - 1.0;
 
     bool success_1 = optim::cg(x_1,unconstr_test_fn_1,nullptr,settings_1);
@@ -57,7 +57,7 @@ int main()
     //
     // test 2
 
-    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_2 = optim::cg(x_2,unconstr_test_fn_2,nullptr);
 
@@ -74,7 +74,7 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    ColVec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
+    ColVec_t x_3 = BMO_MATOPS_ONE_COLVEC(test_3_dim);
 
     bool success_3 = optim::cg(x_3,unconstr_test_fn_3,nullptr);
 
@@ -90,7 +90,7 @@ int main()
     //
     // test 4
 
-    ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_4 = BMO_MATOPS_ONE_COLVEC(2);
 
     bool success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr);
 
@@ -110,7 +110,7 @@ int main()
     settings_5.iter_max = 10000;
     settings_5.cg_settings.method = 5;
 
-    ColVec_t x_5 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2);
+    ColVec_t x_5 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2), 2);
 
     bool success_5 = optim::cg(x_5,unconstr_test_fn_5,nullptr,settings_5);
 
@@ -128,37 +128,37 @@ int main()
 
     optim::algo_settings_t settings_cov;
 
-    x_1 = BMO_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_COLVEC(2);
     settings_cov.cg_settings.method = 1;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     BMO_MATOPS_COUT << "\ncg: solution to test_2 using cg_method = 1\n" << x_1 << "\n";
 
-    x_1 = BMO_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_COLVEC(2);
     settings_cov.cg_settings.method = 2;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     BMO_MATOPS_COUT << "cg: solution to test_2 using cg_method = 2\n" << x_1 << "\n";
 
-    x_1 = BMO_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_COLVEC(2);
     settings_cov.cg_settings.method = 3;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     BMO_MATOPS_COUT << "cg: solution to test_2 using cg_method = 3\n" << x_1 << "\n";
 
-    x_1 = BMO_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_COLVEC(2);
     settings_cov.cg_settings.method = 4;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     BMO_MATOPS_COUT << "cg: solution to test_2 using cg_method = 4\n" << x_1 << "\n";
 
-    x_1 = BMO_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_COLVEC(2);
     settings_cov.cg_settings.method = 5;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
     BMO_MATOPS_COUT << "cg: solution to test_2 using cg_method = 5\n" << x_1 << "\n";
     
-    x_1 = BMO_MATOPS_ZERO_VEC(2);
+    x_1 = BMO_MATOPS_ZERO_COLVEC(2);
     settings_cov.cg_settings.method = 6;
     optim::cg(x_1,unconstr_test_fn_2,nullptr,settings_cov);
 
@@ -169,10 +169,10 @@ int main()
     optim::algo_settings_t settings_extra;
 
     settings_extra.vals_bound = true;
-    settings_extra.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), -4.5);
-    settings_extra.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2),  4.5);
+    settings_extra.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2), -4.5);
+    settings_extra.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2),  4.5);
 
-    x_4 = BMO_MATOPS_ONE_VEC(2);
+    x_4 = BMO_MATOPS_ONE_COLVEC(2);
     
     success_4 = optim::cg(x_4,unconstr_test_fn_4,nullptr,settings_extra);
 

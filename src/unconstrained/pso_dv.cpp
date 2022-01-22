@@ -158,7 +158,7 @@ optim::internal::pso_dv_impl(
 
     RowVec_t best_sol_running = P.row( index_min(objfn_vals) );
 
-    ColVec_t stag_vec = BMO_MATOPS_ZERO_VEC(n_pop); // arma::zeros(n_pop,1);
+    ColVec_t stag_vec = BMO_MATOPS_ZERO_COLVEC(n_pop); // arma::zeros(n_pop,1);
 
     //
     // begin loop
@@ -196,7 +196,8 @@ optim::internal::pso_dv_impl(
 
             //
 
-            ColVec_t rand_CR = BMO_MATOPS_RANDU_VEC(n_vals);
+            // ColVec_t rand_CR = BMO_MATOPS_RANDU_VEC(n_vals);
+            ColVec_t rand_CR = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
 
             RowVec_t delta_vec = P.row(c_1) - P.row(c_2);
 

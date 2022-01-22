@@ -34,10 +34,10 @@ numerical_gradient(const ColVec_t& vals_inp,
     const fp_t step_size = (step_size_inp) ? *step_size_inp : 1e-04;
     const fp_t mach_eps = std::numeric_limits<fp_t>::epsilon();
 
-    const ColVec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps, fp_t(1.0/6.0)) * BMO_MATOPS_ONE_VEC(n_vals) );
+    const ColVec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps, fp_t(1.0/6.0)) * BMO_MATOPS_ONE_COLVEC(n_vals) );
     
     ColVec_t x_orig = vals_inp, x_term_1, x_term_2;
-    ColVec_t grad_vec = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t grad_vec = BMO_MATOPS_ZERO_COLVEC(n_vals);
 
     //
     

@@ -66,7 +66,7 @@ optim::internal::newton_impl(
 
     Mat_t H(n_vals, n_vals);                    // hessian matrix
     ColVec_t grad(n_vals);                         // gradient vector
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);    // direction vector
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);    // direction vector
 
     opt_objfn(x_p, &grad, &H, opt_data);
 

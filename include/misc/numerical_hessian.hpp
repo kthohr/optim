@@ -35,7 +35,7 @@ numerical_hessian(const ColVec_t& vals_inp,
     const fp_t mach_eps = std::numeric_limits<fp_t>::epsilon();
 
     // const ColVec_t step_vec = arma::max(arma::abs(vals_inp), std::sqrt(step_size) * std::pow(mach_eps,1.0/6.0) * arma::ones(n_vals,1));
-    const ColVec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps, fp_t(1.0/6.0)) * BMO_MATOPS_ONE_VEC(n_vals) );
+    const ColVec_t step_vec = BMO_MATOPS_MAX( BMO_MATOPS_ABS(vals_inp), std::sqrt(step_size) * std::pow(mach_eps, fp_t(1.0/6.0)) * BMO_MATOPS_ONE_COLVEC(n_vals) );
     
     ColVec_t x_orig = vals_inp, x_term_1, x_term_2, x_term_3, x_term_4;
     Mat_t hessian_mat = BMO_MATOPS_ZERO_MAT(n_vals,n_vals);

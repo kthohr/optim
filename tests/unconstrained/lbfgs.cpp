@@ -35,7 +35,7 @@ int main()
     //
     // test 1
 
-    ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ONE_COLVEC(2);
 
     bool success_1 = optim::lbfgs(x_1, unconstr_test_fn_1, nullptr);
 
@@ -53,7 +53,7 @@ int main()
 
     // settings.print_level = 3;
 
-    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_2 = optim::lbfgs(x_2, unconstr_test_fn_2, nullptr, settings);
 
@@ -70,7 +70,7 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    ColVec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
+    ColVec_t x_3 = BMO_MATOPS_ONE_COLVEC(test_3_dim);
 
     bool success_3 = optim::lbfgs(x_3, unconstr_test_fn_3, nullptr);
 
@@ -91,7 +91,7 @@ int main()
     // settings_4.rel_sol_change_tol = -1.0;
     // settings_4.print_level = 4;
 
-    ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_4 = BMO_MATOPS_ONE_COLVEC(2);
     x_4(0) = 4.0;
     x_4(1) = 0.0;
 
@@ -109,7 +109,7 @@ int main()
     //
     // test 5
 
-    ColVec_t x_5 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_5 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_5 = optim::lbfgs(x_5, unconstr_test_fn_5, nullptr);
 
@@ -131,10 +131,10 @@ int main()
     optim::lbfgs(x_1, unconstr_test_fn_1 ,nullptr, settings);
 
     settings.vals_bound = true;
-    settings.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ZERO_VEC(2), - 4.5);
-    settings.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ZERO_VEC(2), + 4.5);
+    settings.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ZERO_COLVEC(2), - 4.5);
+    settings.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ZERO_COLVEC(2), + 4.5);
 
-    x_4 = BMO_MATOPS_ONE_VEC(2);
+    x_4 = BMO_MATOPS_ONE_COLVEC(2);
     
     success_4 = optim::lbfgs(x_4, unconstr_test_fn_4, nullptr, settings);
 

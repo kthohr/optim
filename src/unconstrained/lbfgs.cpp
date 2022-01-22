@@ -111,7 +111,7 @@ optim::internal::lbfgs_impl(
     }
 
     ColVec_t grad(n_vals);                         // gradient vector
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);    // direction vector
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);    // direction vector
     Mat_t s_mat = BMO_MATOPS_ZERO_MAT(n_vals, par_M);
     Mat_t y_mat = BMO_MATOPS_ZERO_MAT(n_vals, par_M);
 

@@ -150,7 +150,7 @@ optim::internal::nm_impl(
         // step 1
 
         // ColVecInt_t sort_vec = arma::sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
-        ColVecInt_t sort_vec = get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
+        ColVecUInt_t sort_vec = get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
 
         simplex_fn_vals = BMO_MATOPS_EVAL(simplex_fn_vals(sort_vec));
         simplex_points = BMO_MATOPS_EVAL(BMO_MATOPS_ROWS(simplex_points, sort_vec));

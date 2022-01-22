@@ -32,7 +32,7 @@ int main()
     //
     // test 1
 
-    ColVec_t x_1 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_1 = optim::newton(x_1, unconstr_test_fn_1_whess, nullptr);
 
@@ -48,7 +48,7 @@ int main()
     //
     // test 2
 
-    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_2 = optim::newton(x_2, unconstr_test_fn_2_whess, nullptr);
 
@@ -65,7 +65,7 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    ColVec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
+    ColVec_t x_3 = BMO_MATOPS_ONE_COLVEC(test_3_dim);
 
     bool success_3 = optim::newton(x_3, unconstr_test_fn_3_whess, nullptr);
 
@@ -86,7 +86,7 @@ int main()
     // settings.err_tol = 1.0e-12;
     // settings.print_level = 4;
 
-    ColVec_t x_5 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_5 = BMO_MATOPS_ZERO_COLVEC(2);
     x_5(0) = 2.0;
     x_5(1) = 2.0;
 

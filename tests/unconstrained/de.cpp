@@ -33,7 +33,7 @@ int main()
     //
     // test 1
 
-    ColVec_t x_1 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_1 = BMO_MATOPS_ONE_COLVEC(2);
 
     bool success_1 = optim::de(x_1,unconstr_test_fn_1,nullptr);
 
@@ -49,7 +49,7 @@ int main()
     //
     // test 2
 
-    ColVec_t x_2 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_2 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_2 = optim::de(x_2,unconstr_test_fn_2,nullptr);
 
@@ -66,7 +66,7 @@ int main()
     // test 3
 
     int test_3_dim = 5;
-    ColVec_t x_3 = BMO_MATOPS_ONE_VEC(test_3_dim);
+    ColVec_t x_3 = BMO_MATOPS_ONE_COLVEC(test_3_dim);
 
     bool success_3 = optim::de(x_3,unconstr_test_fn_3,nullptr);
 
@@ -82,7 +82,7 @@ int main()
     //
     // test 4
 
-    ColVec_t x_4 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_4 = BMO_MATOPS_ONE_COLVEC(2);
 
     bool success_4 = optim::de(x_4,unconstr_test_fn_4,nullptr);
 
@@ -105,7 +105,7 @@ int main()
     unconstr_test_fn_6_data test_6_data;
     test_6_data.A = 10;
 
-    ColVec_t x_6 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2);
+    ColVec_t x_6 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2), 2);
 
     settings_6.de_settings.initial_lb = BMO_MATOPS_ARRAY_ADD_SCALAR(x_6, -2.0);
     settings_6.de_settings.initial_ub = BMO_MATOPS_ARRAY_ADD_SCALAR(x_6,  2.0);
@@ -124,7 +124,7 @@ int main()
     //
     // test 7
 
-    ColVec_t x_7 = BMO_MATOPS_ONE_VEC(2);
+    ColVec_t x_7 = BMO_MATOPS_ONE_COLVEC(2);
 
     bool success_7 = optim::de(x_7,unconstr_test_fn_7,nullptr);
 
@@ -140,7 +140,7 @@ int main()
     //
     // test 8
     
-    ColVec_t x_8 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_8 = BMO_MATOPS_ZERO_COLVEC(2);
 
     bool success_8 = optim::de(x_8,unconstr_test_fn_8,nullptr);
 
@@ -158,25 +158,25 @@ int main()
 
     optim::algo_settings_t settings_9;
     
-    settings_9.de_settings.initial_lb = BMO_MATOPS_ZERO_VEC(2);
+    settings_9.de_settings.initial_lb = BMO_MATOPS_ZERO_COLVEC(2);
     settings_9.de_settings.initial_lb(0) = -13;
     settings_9.de_settings.initial_lb(1) = -2;
 
-    settings_9.de_settings.initial_ub = BMO_MATOPS_ZERO_VEC(2);
+    settings_9.de_settings.initial_ub = BMO_MATOPS_ZERO_COLVEC(2);
     settings_9.de_settings.initial_ub(0) = -9;
     settings_9.de_settings.initial_ub(1) = 2;
 
     settings_9.vals_bound = true;
 
-    settings_9.lower_bounds = BMO_MATOPS_ZERO_VEC(2);
+    settings_9.lower_bounds = BMO_MATOPS_ZERO_COLVEC(2);
     settings_9.lower_bounds(0) = -15.0;
     settings_9.lower_bounds(1) = -3.0;
 
-    settings_9.upper_bounds = BMO_MATOPS_ZERO_VEC(2);
+    settings_9.upper_bounds = BMO_MATOPS_ZERO_COLVEC(2);
     settings_9.upper_bounds(0) = 15.0;
     settings_9.upper_bounds(1) = 3.0;
 
-    ColVec_t x_9 = BMO_MATOPS_ZERO_VEC(2);
+    ColVec_t x_9 = BMO_MATOPS_ZERO_COLVEC(2);
     x_9(0) = -11.0;
 
     bool success_9 = optim::de(x_9,unconstr_test_fn_9,nullptr,settings_9);
@@ -198,7 +198,7 @@ int main()
     optim::de(x_1,unconstr_test_fn_1,nullptr);
     optim::de(x_1,unconstr_test_fn_1,nullptr,settings);
 
-    x_7 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), 2.0);
+    x_7 = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2), 2.0);
     optim::de(x_7,unconstr_test_fn_7,nullptr,settings);
 
     if (success_7) {
@@ -215,10 +215,10 @@ int main()
     optim::algo_settings_t settings_2;
 
     settings_2.vals_bound = true;
-    settings_2.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2), -4.5);
-    settings_2.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_VEC(2),  4.5);
+    settings_2.lower_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2), -4.5);
+    settings_2.upper_bounds = BMO_MATOPS_ARRAY_ADD_SCALAR(BMO_MATOPS_ZERO_COLVEC(2),  4.5);
 
-    x_4 = BMO_MATOPS_ONE_VEC(2);
+    x_4 = BMO_MATOPS_ONE_COLVEC(2);
     
     success_4 = optim::de(x_4,unconstr_test_fn_4,nullptr,settings_2);
 

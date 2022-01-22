@@ -106,7 +106,7 @@ int main()
     opt_data.Y = std::move(Y);
     opt_data.X = std::move(X);
 
-    ColVec_t x = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ONE_VEC(n_dim), 1.0 ); // (2,2)
+    ColVec_t x = BMO_MATOPS_ARRAY_ADD_SCALAR( BMO_MATOPS_ONE_COLVEC(n_dim), 1.0 ); // (2,2)
 
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
  

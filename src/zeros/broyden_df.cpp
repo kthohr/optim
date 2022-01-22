@@ -61,7 +61,7 @@ optim::internal::broyden_df_impl(
     // initialization
 
     ColVec_t x = init_out_vals;
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);
 
     Mat_t B = BMO_MATOPS_EYE(n_vals); // initial approx. to Jacobian
 
@@ -234,7 +234,7 @@ optim::internal::broyden_df_impl(
     // initialization
 
     ColVec_t x = init_out_vals;
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);
 
     Mat_t B = BMO_MATOPS_INV( jacob_objfn(x, jacob_data) ); // inverse Jacobian
 

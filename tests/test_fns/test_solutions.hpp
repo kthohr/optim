@@ -38,14 +38,14 @@ ColVec_t test_1()
 
 ColVec_t test_2()
 {
-    return BMO_MATOPS_ONE_VEC(2);
+    return BMO_MATOPS_ONE_COLVEC(2);
 }
 
 //
 
 ColVec_t test_3(const int n)
 {
-    return BMO_MATOPS_ZERO_VEC(n);
+    return BMO_MATOPS_ZERO_COLVEC(n);
 }
 
 //
@@ -76,21 +76,21 @@ ColVec_t test_5()
 
 ColVec_t test_6()
 {
-    return BMO_MATOPS_ZERO_VEC(2);
+    return BMO_MATOPS_ZERO_COLVEC(2);
 }
 
 //
 
 ColVec_t test_7()
 {
-    return BMO_MATOPS_ZERO_VEC(2);
+    return BMO_MATOPS_ZERO_COLVEC(2);
 }
 
 //
 
 ColVec_t test_8()
 {
-    return BMO_MATOPS_ONE_VEC(2);
+    return BMO_MATOPS_ONE_COLVEC(2);
 }
 
 //

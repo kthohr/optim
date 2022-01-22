@@ -34,15 +34,15 @@ optim::ColVec_t
 optim_simple_fn_2(const optim::ColVec_t& vals_inp, void* opt_data)
 {
     int n = BMO_MATOPS_SIZE(vals_inp);
-    optim::ColVec_t ret_vec = BMO_MATOPS_ZERO_VEC(n);
+    optim::ColVec_t ret_vec = BMO_MATOPS_ZERO_COLVEC(n);
     return ret_vec;
 }
 
 int main()
 {
     
-    optim::ColVec_t out_vals = BMO_MATOPS_ONE_VEC(2);
-    optim::ColVec_t x_p = BMO_MATOPS_ONE_VEC(2);
+    optim::ColVec_t out_vals = BMO_MATOPS_ONE_COLVEC(2);
+    optim::ColVec_t x_p = BMO_MATOPS_ONE_COLVEC(2);
 
     bool success = false;
 

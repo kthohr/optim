@@ -104,18 +104,18 @@ optim::internal::gd_basic_impl(
     }
 
     ColVec_t x = init_out_vals;
-    ColVec_t d = BMO_MATOPS_ZERO_VEC(n_vals);
+    ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);
 
     ColVec_t adam_vec_m;
     ColVec_t adam_vec_v;
 
     if (settings.gd_settings.method == 3 || settings.gd_settings.method == 4) {
-        adam_vec_v = BMO_MATOPS_ZERO_VEC(n_vals);
+        adam_vec_v = BMO_MATOPS_ZERO_COLVEC(n_vals);
     }
 
     if (settings.gd_settings.method == 5 || settings.gd_settings.method == 6 || settings.gd_settings.method == 7) {
-        adam_vec_m = BMO_MATOPS_ZERO_VEC(n_vals);
-        adam_vec_v = BMO_MATOPS_ZERO_VEC(n_vals);
+        adam_vec_m = BMO_MATOPS_ZERO_COLVEC(n_vals);
+        adam_vec_v = BMO_MATOPS_ZERO_COLVEC(n_vals);
     }
 
     if (vals_bound) { // should we transform the parameters?
