@@ -141,7 +141,7 @@ optim::internal::pso_impl(
         if (center_particle && i == n_pop - 1) {
             P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop-2) ) / static_cast<fp_t>(n_pop-1); // center vector
         } else {
-            ColVec_t rand_vec = bmo_stats::rsunif_vec<fp_t>(n_vals, engines[thread_num]);
+            ColVec_t rand_vec = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
 
             P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
         }
@@ -206,8 +206,8 @@ optim::internal::pso_impl(
 #endif
 
             if ( !(center_particle && i == n_pop - 1) ) {
-                RowVec_t rand_vec_1 = bmo_stats::rsunif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
-                RowVec_t rand_vec_2 = bmo_stats::rsunif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+                RowVec_t rand_vec_1 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+                RowVec_t rand_vec_2 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
 
                 V.row(i) = par_w * V.row(i) + par_c_cog * BMO_MATOPS_HADAMARD_PROD( rand_vec_1, (best_vecs.row(i) - P.row(i)) ) \
                     + par_c_soc * BMO_MATOPS_HADAMARD_PROD( rand_vec_2, (best_sol_running - P.row(i)) );

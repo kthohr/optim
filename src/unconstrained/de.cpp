@@ -123,7 +123,7 @@ optim::internal::de_impl(
         thread_num = omp_get_thread_num();
 #endif
 
-        ColVec_t rand_vec = bmo_stats::rsunif_vec<fp_t>(n_vals, engines[thread_num]);
+        ColVec_t rand_vec = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
 
         X_next.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
 
@@ -192,7 +192,7 @@ optim::internal::de_impl(
             // const size_t j = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_vals-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
             const size_t j = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
 
-            ColVec_t rand_unif = bmo_stats::rsunif_vec<fp_t>(n_vals, engines[thread_num]);
+            ColVec_t rand_unif = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {

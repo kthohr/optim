@@ -130,7 +130,7 @@ optim::internal::pso_dv_impl(
         thread_num = omp_get_thread_num();
 #endif
 
-        ColVec_t rand_vec = bmo_stats::rsunif_vec<fp_t>(n_vals, engines[thread_num]);
+        ColVec_t rand_vec = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
 
         P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
 
@@ -220,7 +220,7 @@ optim::internal::pso_dv_impl(
             }
 
             if (stag_vec(i) >= stag_limit) {
-                RowVec_t rand_vec = bmo_stats::rsunif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+                RowVec_t rand_vec = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
 
                 P.row(i) = P_min + BMO_MATOPS_HADAMARD_PROD( rand_vec, (P_max - P_min));
                 stag_vec(i) = 0;
