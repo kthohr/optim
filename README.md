@@ -12,7 +12,7 @@ Features:
   * [Eigen](http://eigen.tuxfamily.org/index.php) (version >= 3.4.0)
 * OpenMP-accelerated algorithms for parallel computation. 
 * Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
-* Available as a single (``float``) or double precision (``double``) library.
+* Available as a single precision (``float``) or double precision (``double``) library.
 * Available as a header-only library, or as a compiled shared library.
 * Released under a permissive, non-GPL license.
 
@@ -91,7 +91,7 @@ Configuration options (see `./configure -h`):
 &nbsp; &nbsp; &nbsp; **Primary**
 * `-h` print help
 * `-i` installation path; default: the build directory
-* `-f` floating-point precision mode (Eigen-based builds only); default: `double`
+* `-f` floating-point precision mode; default: `double`
 * `-l` specify the choice of linear algebra library; choose `arma` or `eigen`
 * `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
