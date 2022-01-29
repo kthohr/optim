@@ -41,6 +41,12 @@
 
 //
 
+#ifdef _MSC_VER
+    #error OptimLib: MSVC is not supported
+#endif
+
+//
+
 #if defined(_OPENMP) && !defined(OPTIM_DONT_USE_OPENMP)
     #undef OPTIM_USE_OPENMP
     #define OPTIM_USE_OPENMP
@@ -82,7 +88,7 @@
     #undef OPTIM_FPN_SMALL_NUMBER
     #define OPTIM_FPN_SMALL_NUMBER fp_t(1e-08)
 #else
-    #error floating-point number type must be 'float' or 'double'
+    #error OptimLib: floating-point number type (OPTIM_FPN_TYPE) must be 'float' or 'double'
 #endif
 
 //
@@ -136,11 +142,7 @@ namespace optim
         using RowVecInt_t = arma::Row<int>;
         using ColVecUInt_t = arma::Col<unsigned long long>;
     }
-#endif
-
-//
-
-#ifdef OPTIM_ENABLE_EIGEN_WRAPPERS
+#elif defined OPTIM_ENABLE_EIGEN_WRAPPERS
     #include <iostream>
     #include <random>
     #include <Eigen/Dense>
@@ -161,6 +163,8 @@ namespace optim
         using RowVecInt_t = Eigen::Matrix<int, 1, Eigen::Dynamic>;
         using ColVecUInt_t = Eigen::Matrix<size_t, Eigen::Dynamic, 1>;
     }
+#else
+    #error OptimLib: you must enable the Armadillo OR Eigen wrappers
 #endif
 
 //
