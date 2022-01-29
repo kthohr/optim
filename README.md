@@ -65,7 +65,7 @@ where ``ColVec_t`` is used to represent either ``arma::vec`` or ``Eigen::VectorX
 
 ## Installation
 
-OptimLib is available as a compiled shared library, or as header-only library, for Unix-alike systems only (e.g., popular Linux-based distros, as well as macOS). Use of this library on a Windows-based system, with or without MSVC, **is not supported**.
+OptimLib is available as a compiled shared library, or as header-only library, for Unix-alike systems only (e.g., popular Linux-based distros, as well as macOS). Use of this library with Windows-based systems, with or without MSVC, **is not supported**.
 
 ### Requirements
 
