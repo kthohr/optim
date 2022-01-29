@@ -20,8 +20,7 @@ Features:
 * [Algorithms](#algorithms)
 * [Documentation](#documentation)
 * [General API](#api)
-* [Installation Method 1: Shared Library](#installation-method-1-shared-library)
-* [Installation Method 2: Header-only Library](#installation-method-2-header-only-library)
+* [Installation](#installation)
 * [R Compatibility](#r-compatibility)
 * [Examples](#examples)
 * [Author and License](#author)
@@ -64,7 +63,33 @@ bfgs(ColVec_t& init_out_vals, std::function<double (const ColVec_t& vals_inp, Co
 
 where ``ColVec_t`` is used to represent either ``arma::vec`` or ``Eigen::VectorXd`` types.
 
-## Installation Method 1: Shared Library
+## Installation
+
+OptimLib is available as a compiled shared library, or as header-only library, for Unix-alike systems only (e.g., popular Linux-based distros, as well as macOS). Use of this library on a Windows-based system, with or without MSVC, **is not supported**.
+
+### Requirements
+
+OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. (Note that Eigen version 3.4.0 requires a C++14-compatible compiler.)
+
+If choosing a shared library build, set (one) of the following environment variables *before* running `configure`:
+``` bash
+export ARMA_INCLUDE_PATH=/path/to/armadillo
+export EIGEN_INCLUDE_PATH=/path/to/eigen
+```
+
+Before including the header files, define **one** of the following:
+``` cpp
+#define OPTIM_ENABLE_ARMA_WRAPPERS
+#define OPTIM_ENABLE_EIGEN_WRAPPERS
+```
+
+Example:
+``` cpp
+#define OPTIM_ENABLE_EIGEN_WRAPPERS
+#include "optim.hpp"
+```
+
+### Installation Method 1: Shared Library
 
 The library can be installed on Unix-alike systems via the standard `./configure && make` method:
 
@@ -93,7 +118,7 @@ Configuration options (see `./configure -h`):
 * `-i` installation path; default: the build directory
 * `-f` floating-point precision mode; default: `double`
 * `-l` specify the choice of linear algebra library; choose `arma` or `eigen`
-* `-m` specify the BLAS and Lapack libraries to link against; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
+* `-m` specify the BLAS and Lapack libraries to link with; for example, `-m "-lopenblas"` or `-m "-framework Accelerate"`
 * `-o` compiler optimization options; defaults to `-O3 -march=native -ffp-contract=fast -flto -DARMA_NO_DEBUG`
 * `-p` enable OpenMP parallelization features (*recommended*)
 
@@ -105,16 +130,6 @@ Configuration options (see `./configure -h`):
 &nbsp; &nbsp; &nbsp; **Special**
 * `--header-only-version` generate a header-only version of OptimLib (see [below](#installation-method-2-header-only-library))
 <!-- * `-R` RcppArmadillo compatible build by setting the appropriate R library directories (R, Rcpp, and RcppArmadillo) -->
-
-### Linear Algebra Library
-
-OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. (Note that Eigen version 3.4.0 requires a C++14-compatible compiler.)
-
-Set (one) of the following environment variables *before* running `configure`:
-``` bash
-export ARMA_INCLUDE_PATH=/path/to/armadillo
-export EIGEN_INCLUDE_PATH=/path/to/eigen
-```
 
 ## Installation Method 2: Header-only Library
 
