@@ -4,12 +4,13 @@ OptimLib is a lightweight C++ library of numerical optimization methods for nonl
 
 Features:
 
-* A C++11/14 library of local and global optimization algorithms, as well as root finding techniques.
+* A C++11/14/17 library of local and global optimization algorithms, as well as root finding techniques.
 * Derivative-free optimization using advanced, parallelized metaheuristic methods.
 * Constrained optimization routines to handle simple box constraints, as well as systems of nonlinear constraints.
 * For fast and efficient matrix-based computation, OptimLib supports the following templated linear algebra libraries:
   * [Armadillo](http://arma.sourceforge.net/)
   * [Eigen](http://eigen.tuxfamily.org/index.php) (version >= 3.4.0)
+* Automatic differentiation functionality is available through use of the [Autodiff library](https://autodiff.github.io)
 * OpenMP-accelerated algorithms for parallel computation. 
 * Straightforward linking with parallelized BLAS libraries, such as [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 * Available as a single precision (``float``) or double precision (``double``) library.
@@ -23,6 +24,7 @@ Features:
 * [Installation](#installation)
 * [R Compatibility](#r-compatibility)
 * [Examples](#examples)
+* [Automatic Differentiation](#automatic-differentiation)
 * [Author and License](#author)
 
 ## Algorithms
@@ -407,6 +409,10 @@ newton: true values vs estimates:
    2.3167   2.4313
    2.2465   2.3064
 ```
+
+## Automatic Differentiation
+
+By combining Eigen with the [Autodiff library](https://autodiff.github.io), OptimLib provides experimental support for automatic differentiation. See the [documentation](https://optimlib.readthedocs.io/en/latest/autodiff.html) for more details on this topic.
 
 ## Author
 

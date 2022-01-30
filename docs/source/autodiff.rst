@@ -20,16 +20,20 @@ The example below uses forward-mode automatic differentiation to compute the gra
 
 .. code:: cpp
 
+    /*
+    * Forward-mode autodiff test with Sphere function
+    */
+
     #define OPTIM_ENABLE_EIGEN_WRAPPERS
     #include "optim.hpp"
 
-    #include <autodiff/forward.hpp>
-    #include <autodiff/forward/eigen.hpp>
+    #include <autodiff/forward/real.hpp>
+    #include <autodiff/forward/real/eigen.hpp>
 
     //
 
-    autodiff::dual 
-    opt_fnd(const autodiff::VectorXdual& x)
+    autodiff::real
+    opt_fnd(const autodiff::ArrayXreal& x)
     {
         return x.cwiseProduct(x).sum();
     }
@@ -37,18 +41,18 @@ The example below uses forward-mode automatic differentiation to compute the gra
     double
     opt_fn(const Eigen::VectorXd& x, Eigen::VectorXd* grad_out, void* opt_data)
     {
-        autodiff::dual u;
-        autodiff::VectorXdual xd = x.eval();
+        autodiff::real u;
+        autodiff::ArrayXreal xd = x.eval();
 
         if (grad_out) {
-            Eigen::VectorXd grad_tmp = autodiff::forward::gradient(opt_fnd, autodiff::wrt(xd), autodiff::forward::at(xd), u);
+            Eigen::VectorXd grad_tmp = autodiff::gradient(opt_fnd, autodiff::wrt(xd), autodiff::at(xd), u);
 
             *grad_out = grad_tmp;
         } else {
             u = opt_fnd(xd);
         }
 
-        return u.val;
+        return u.val();
     }
 
     int main()
@@ -59,9 +63,9 @@ The example below uses forward-mode automatic differentiation to compute the gra
         bool success = optim::bfgs(x, opt_fn, nullptr);
 
         if (success) {
-            std::cout << "bfgs: autodiff test completed successfully." << std::endl;
+            std::cout << "bfgs: forward-mode autodiff test completed successfully.\n" << std::endl;
         } else {
-            std::cout << "bfgs: autodiff test completed unsuccessfully." << std::endl;
+            std::cout << "bfgs: forward-mode autodiff test completed unsuccessfully.\n" << std::endl;
         }
 
         std::cout << "solution: x = \n" << x << std::endl;
@@ -76,5 +80,7 @@ This example can be compiled using:
 
     g++ -Wall -std=c++17 -O3 -march=native -ffp-contract=fast -I/path/to/eigen -I/path/to/autodiff -I/path/to/optim/include optim_autodiff_ex.cpp -o optim_autodiff_ex.out -L/path/to/optim/lib -loptim
 
+
+See the ``examples/autodiff`` directory for an example using reverse-mode automatic differentiation.
 
 ----
