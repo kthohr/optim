@@ -23,40 +23,40 @@ The following options should be declared **before** including the OptimLib heade
 
   - To explicitly enable OpenMP features, use:
 
-.. code:: cpp
+  .. code:: cpp
 
     #define OPTIM_USE_OPENMP
 
   - To explicitly disable OpenMP functionality, use:
 
-.. code:: cpp
+  .. code:: cpp
 
     #define OPTIM_DONT_USE_OPENMP
 
 - To use OptimLib with Armadillo or Eigen:
 
-.. code:: cpp
+  .. code:: cpp
 
     #define OPTIM_ENABLE_ARMA_WRAPPERS
     #define OPTIM_ENABLE_EIGEN_WRAPPERS
 
   Example:
 
-.. code:: cpp
+  .. code:: cpp
 
     #define OPTIM_ENABLE_EIGEN_WRAPPERS
     #include "optim.hpp"
 
 - To use OptimLib with RcppArmadillo or RcppEigen:
 
-.. code:: cpp
+  .. code:: cpp
 
     #define OPTIM_USE_RCPP_ARMADILLO
     #define OPTIM_USE_RCPP_EIGEN
 
   Example:
 
-.. code:: cpp
+  .. code:: cpp
 
     #define OPTIM_USE_RCPP_EIGEN
     #include "optim.hpp"
