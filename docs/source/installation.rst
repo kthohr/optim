@@ -69,27 +69,6 @@ Installation Method 1: Shared Library
 
 The library can be installed on Unix-alike systems via the standard ``./configure && make`` method.
 
-If choosing a shared library build, set (one) of the following environment variables *before* running `configure`:
-
-.. code:: bash
-
-    export ARMA_INCLUDE_PATH=/path/to/armadillo
-    export EIGEN_INCLUDE_PATH=/path/to/eigen
-
-Before including the header files, define **one** of the following:
-
-.. code:: cpp
-
-    #define OPTIM_ENABLE_ARMA_WRAPPERS
-    #define OPTIM_ENABLE_EIGEN_WRAPPERS
-
-Example:
-
-.. code:: cpp
-
-    #define OPTIM_ENABLE_EIGEN_WRAPPERS
-    #include "optim.hpp"
-
 The primary configuration options can be displayed by calling ``./configure -h``, which results in:
 
 .. code:: bash
@@ -122,14 +101,20 @@ The primary configuration options can be displayed by calling ``./configure -h``
     Special options:
     --header-only-version    Generate a header-only version of OptimLib
 
+If choosing a shared library build, set (one) of the following environment variables *before* running `configure`:
 
-For example, to set the install path to ``/usr/local``, use Armadillo as the linear algebra library, and enable OpenMP features, we would run:
+.. code:: bash
+
+    export ARMA_INCLUDE_PATH=/path/to/armadillo
+    export EIGEN_INCLUDE_PATH=/path/to/eigen
+
+Then, to set the install path to ``/usr/local``, use Armadillo as the linear algebra library, and enable OpenMP features, we would run:
 
 .. code:: bash
 
     ./configure -i "/usr/local" -l arma -p
 
-Following this with the standard ``make && make install`` will build the library and install into ``/usr/local``.
+Following this with the standard ``make && make install`` would build the library and install into ``/usr/local``.
 
 ----
 
