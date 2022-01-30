@@ -106,8 +106,12 @@ namespace optim
 
 //
 
-#ifdef OPTIM_ENABLE_ARMA_WRAPPERS
-    #ifdef USE_RCPP_ARMADILLO
+#if defined(OPTIM_ENABLE_ARMA_WRAPPERS) || defined(OPTIM_USE_RCPP_ARMADILLO)
+    #ifndef OPTIM_ENABLE_ARMA_WRAPPERS
+        #define OPTIM_ENABLE_ARMA_WRAPPERS
+    #endif
+
+    #ifdef OPTIM_USE_RCPP_ARMADILLO
         #include <RcppArmadillo.h>
     #else
         #ifndef ARMA_DONT_USE_WRAPPER
@@ -142,10 +146,18 @@ namespace optim
         using RowVecInt_t = arma::Row<int>;
         using ColVecUInt_t = arma::Col<unsigned long long>;
     }
-#elif defined OPTIM_ENABLE_EIGEN_WRAPPERS
+#elif defined(OPTIM_ENABLE_EIGEN_WRAPPERS) || defined(OPTIM_USE_RCPP_EIGEN)
+    #ifndef OPTIM_ENABLE_EIGEN_WRAPPERS
+        #define OPTIM_ENABLE_EIGEN_WRAPPERS
+    #endif
+    
     #include <iostream>
-    #include <random>
-    #include <Eigen/Dense>
+
+    #ifdef OPTIM_USE_RCPP_EIGEN
+        #include <RcppEigen.h>
+    #else
+        #include <Eigen/Dense>
+    #endif
 
     #ifndef BMO_ENABLE_EIGEN_WRAPPERS
         #define BMO_ENABLE_EIGEN_WRAPPERS

@@ -61,7 +61,7 @@ For example, the BFGS algorithm is called using
 bfgs(ColVec_t& init_out_vals, std::function<double (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data);
 ```
 
-where ``ColVec_t`` is used to represent either ``arma::vec`` or ``Eigen::VectorXd`` types.
+where ``ColVec_t`` is used to represent, e.g., ``arma::vec`` or ``Eigen::VectorXd`` types.
 
 ## Installation
 
@@ -143,10 +143,17 @@ This will create a new directory, `header_only_version`, containing a copy of Op
 
 ## R Compatibility
 
-To use OptimLib with an R package, first generate a header-only version of the library (see [above](#installation-method-2-header-only-library)). Then add the compiler definition `USE_RCPP_ARMADILLO` before including the OptimLib files:
+To use OptimLib with an R package, first generate a header-only version of the library (see [above](#installation-method-2-header-only-library)). Then simply add a compiler definition before including the OptimLib files.
 
+* For RcppArmadillo:
 ```cpp
-#define USE_RCPP_ARMADILLO
+#define OPTIM_USE_RCPP_ARMADILLO
+#include "optim.hpp"
+```
+
+* For RcppEigen:
+```cpp
+#define OPTIM_USE_RCPP_EIGEN
 #include "optim.hpp"
 ```
 
