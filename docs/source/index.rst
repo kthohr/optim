@@ -23,6 +23,8 @@ Features:
 
   - `Eigen <http://eigen.tuxfamily.org/index.php>`_ (version >= 3.4.0)
 
+- Automatic differentiation functionality is available through use of the `Autodiff library <https://autodiff.github.io>`_
+
 - OpenMP-accelerated algorithms for parallel computation. 
 
 - Straightforward linking with parallelized BLAS libraries, such as `OpenBLAS <https://github.com/xianyi/OpenBLAS>`_.
