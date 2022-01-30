@@ -67,6 +67,20 @@ optim::internal::nm_impl(
 
     const ColVecInt_t bounds_type = determine_bounds_type(vals_bound, n_vals, lower_bounds, upper_bounds);
 
+    // random sampling setup
+
+    int omp_n_threads = 1;
+
+#ifdef OPTIM_USE_OMP
+    if (settings.nm_settings.omp_n_threads > 0) {
+        omp_n_threads = settings.nm_settings.omp_n_threads;
+    } else {
+        omp_n_threads = std::max(1, static_cast<int>(omp_get_max_threads()) / 2); // OpenMP often detects the number of virtual/logical cores, not physical cores
+    }
+#else
+    (void)(omp_n_threads);
+#endif
+
     // lambda function for box constraints
 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* box_data)> box_objfn \
@@ -99,7 +113,7 @@ optim::internal::nm_impl(
     }
 
     if (vals_bound) {
-        simplex_points.row(0) = BMO_MATOPS_TRANSPOSE( transform(BMO_MATOPS_TRANSPOSE(simplex_points.row(0)), bounds_type, lower_bounds, upper_bounds) );
+        simplex_points.row(0) = transform<RowVec_t>(simplex_points.row(0), bounds_type, lower_bounds, upper_bounds);
     }
 
     for (size_t i = 1; i < n_vals + 1; ++i) {
@@ -115,7 +129,7 @@ optim::internal::nm_impl(
         simplex_fn_vals(i) = opt_objfn(BMO_MATOPS_TRANSPOSE(simplex_points.row(i)),nullptr,opt_data);
 
         if (vals_bound) {
-            simplex_points.row(i) = BMO_MATOPS_TRANSPOSE( transform(BMO_MATOPS_TRANSPOSE(simplex_points.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            simplex_points.row(i) = transform<RowVec_t>(simplex_points.row(i), bounds_type, lower_bounds, upper_bounds);
         }
     }
 
@@ -234,7 +248,7 @@ optim::internal::nm_impl(
             }
 
 #ifdef OPTIM_USE_OMP
-            #pragma omp parallel for
+            #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t i = 1; i < n_vals + 1; i++) {
                 simplex_fn_vals(i) = box_objfn( BMO_MATOPS_TRANSPOSE(simplex_points.row(i)), nullptr, opt_data);
@@ -286,19 +300,21 @@ optim::internal::nm_impl(
 
 optimlib_inline
 bool
-optim::nm(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data)
+optim::nm(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
     return internal::nm_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
 bool
-optim::nm(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data, 
-          algo_settings_t& settings)
+optim::nm(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
     return internal::nm_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

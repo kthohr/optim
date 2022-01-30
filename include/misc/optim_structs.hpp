@@ -97,6 +97,8 @@ struct lbfgs_settings_t
 
 struct nm_settings_t
 {
+    int omp_n_threads = -1; // numbers of threads to use
+    
     bool adaptive_pars = true;
 
     fp_t par_alpha = 1.0; // reflection parameter

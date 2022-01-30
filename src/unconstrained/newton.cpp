@@ -135,19 +135,21 @@ optim::internal::newton_impl(
 
 optimlib_inline
 bool
-optim::newton(ColVec_t& init_out_vals, 
-              std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
-              void* opt_data)
+optim::newton(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
     return internal::newton_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
 bool
-optim::newton(ColVec_t& init_out_vals, 
-              std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
-              void* opt_data, 
-              algo_settings_t& settings)
+optim::newton(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
     return internal::newton_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

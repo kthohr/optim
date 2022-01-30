@@ -39,9 +39,10 @@
  */
 
 bool 
-bfgs(ColVec_t& init_out_vals, 
-     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-     void* opt_data);
+bfgs(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data);
 
 /**
  * @brief The Broyden–Fletcher–Goldfarb–Shanno (BFGS) Quasi-Newton Optimization Algorithm

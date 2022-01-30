@@ -24,17 +24,18 @@
 
 inline
 void
-error_reporting(ColVec_t& out_vals, 
-                const ColVec_t& x_p, 
-                std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-                void* opt_data, 
-                bool& success, 
-                const fp_t err, 
-                const fp_t err_tol, 
-                const size_t iter, 
-                const size_t iter_max, 
-                const int conv_failure_switch, 
-                algo_settings_t* settings_inp)
+error_reporting(
+    ColVec_t& out_vals, 
+    const ColVec_t& x_p, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    bool& success, 
+    const fp_t err, 
+    const fp_t err_tol, 
+    const size_t iter, 
+    const size_t iter_max, 
+    const int conv_failure_switch, 
+    algo_settings_t* settings_inp)
 {
     success = false;
 
@@ -68,7 +69,7 @@ error_reporting(ColVec_t& out_vals,
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: best guess:\n");
 
-            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_INPLACE(x_p) << "\n";
             std::cout << "iterations: " << iter << ". error: " << err << std::endl;
         }
     } else {
@@ -85,13 +86,14 @@ error_reporting(ColVec_t& out_vals,
 
 inline
 void
-error_reporting(ColVec_t& out_vals, 
-                const ColVec_t& x_p, 
-                std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-                void* opt_data,
-                bool& success, 
-                const int conv_failure_switch, 
-                algo_settings_t* settings_inp)
+error_reporting(
+    ColVec_t& out_vals, 
+    const ColVec_t& x_p, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    bool& success, 
+    const int conv_failure_switch, 
+    algo_settings_t* settings_inp)
 {
     if (conv_failure_switch == 0 || conv_failure_switch == 1) {
         out_vals = x_p;
@@ -111,17 +113,18 @@ error_reporting(ColVec_t& out_vals,
 
 inline
 void
-error_reporting(ColVec_t& out_vals, 
-                const ColVec_t& x_p, 
-                std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-                void* opt_data,
-                bool& success, 
-                const fp_t err, 
-                const fp_t err_tol, 
-                const size_t iter, 
-                const size_t iter_max, 
-                const int conv_failure_switch, 
-                algo_settings_t* settings_inp)
+error_reporting(
+    ColVec_t& out_vals, 
+    const ColVec_t& x_p, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    bool& success, 
+    const fp_t err, 
+    const fp_t err_tol, 
+    const size_t iter, 
+    const size_t iter_max, 
+    const int conv_failure_switch, 
+    algo_settings_t* settings_inp)
 {
     success = false;
 
@@ -155,13 +158,13 @@ error_reporting(ColVec_t& out_vals,
             printf("optim failure: iter_max not reached but algorithm stopped.\n");
             printf("optim failure: best guess:\n");
 
-            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_INPLACE(x_p) << "\n";
             std::cout << "error: " << err << std::endl;
         } else {
             printf("optim failure: iter_max reached before convergence could be achieved.\n");
             printf("optim failure: best guess:\n");
 
-            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_IN_PLACE(x_p) << "\n";
+            BMO_MATOPS_COUT << BMO_MATOPS_TRANSPOSE_INPLACE(x_p) << "\n";
             std::cout << "error: " << err << std::endl;
         }
     } else {
@@ -180,17 +183,18 @@ error_reporting(ColVec_t& out_vals,
 
 inline
 void
-error_reporting(ColVec_t& out_vals, 
-                const ColVec_t& x_p, 
-                std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
-                void* opt_data,
-                bool& success, 
-                const fp_t err, 
-                const fp_t err_tol, 
-                const size_t iter, 
-                const size_t iter_max, 
-                const int conv_failure_switch, 
-                algo_settings_t* settings_inp)
+error_reporting(
+    ColVec_t& out_vals, 
+    const ColVec_t& x_p, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    bool& success, 
+    const fp_t err, 
+    const fp_t err_tol, 
+    const size_t iter, 
+    const size_t iter_max, 
+    const int conv_failure_switch, 
+    algo_settings_t* settings_inp)
 {
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> lam_objfn \
     = [opt_objfn] (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data) 

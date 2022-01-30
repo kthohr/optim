@@ -126,11 +126,12 @@ optim::internal::de_prmm_impl(
     //
     // setup
 
+    ColVec_t rand_vec(n_vals);
     ColVec_t objfn_vals(n_pop);
     Mat_t X(n_pop,n_vals), X_next(n_pop,n_vals);
 
 #ifdef OPTIM_USE_OMP
-    #pragma omp parallel for num_threads(omp_n_threads)
+    #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
@@ -139,7 +140,7 @@ optim::internal::de_prmm_impl(
         thread_num = omp_get_thread_num();
 #endif
 
-        ColVec_t rand_vec = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+        bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
 
         X_next.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
 
@@ -152,7 +153,7 @@ optim::internal::de_prmm_impl(
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            X_next.row(i) = BMO_MATOPS_TRANSPOSE( transform( BMO_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            X_next.row(i) = transform<RowVec_t>( X_next.row(i), bounds_type, lower_bounds, upper_bounds);
         }
     }
 
@@ -176,6 +177,7 @@ optim::internal::de_prmm_impl(
     uint_t n_reset = 1;
     size_t iter = 0;
     fp_t rel_objfn_change = 2*rel_objfn_change_tol;
+    ColVec_t rand_pars(4);
 
     while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen + 1) {
         ++iter;
@@ -218,7 +220,7 @@ optim::internal::de_prmm_impl(
         // first population: n_pop - n_pop_best
         
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec,rand_pars)
 #endif
         for (size_t i = 0; i < n_pop - n_pop_best; ++i) {
             size_t thread_num = 0;
@@ -227,7 +229,7 @@ optim::internal::de_prmm_impl(
             thread_num = omp_get_thread_num();
 #endif
 
-            ColVec_t rand_pars = bmo_stats::runif_vec<fp_t>(4, engines[thread_num]);
+            bmo_stats::internal::runif_vec_inplace<fp_t>(4, engines[thread_num], rand_pars);
 
             if (rand_pars(0) < tau_F) {
                 F_vec(i) = F_l + (F_u-F_l) * rand_pars(1);
@@ -242,32 +244,27 @@ optim::internal::de_prmm_impl(
             uint_t c_1, c_2, c_3;
 
             do {
-                // c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
                 c_1 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while (c_1 == i);
 
             do {
-                // c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
                 c_2 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while (c_2==i || c_2==c_1);
 
             do {
-                // c_3 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
                 c_3 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while (c_3==i || c_3==c_1 || c_3==c_2);
 
             //
 
-            // size_t j = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_vals-1) );
-            const size_t j = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
+            const size_t rand_ind = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
 
-            // ColVec_t rand_unif = BMO_MATOPS_RANDU_VEC(n_vals);
-            ColVec_t rand_unif = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+            // ColVec_t rand_unif = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
-                if ( rand_unif(k) < CR_vec(i) || k == j ) {
-                    // fp_t r_s = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDU_VEC(1) );
+                if ( rand_vec(k) < CR_vec(i) || k == rand_ind ) {
                     fp_t r_s = bmo_stats::runif<fp_t>(engines[thread_num]);
 
                     if ( r_s < fp_t(0.75) || n_pop >= 100 ) {
@@ -306,7 +303,7 @@ optim::internal::de_prmm_impl(
         // second population
 
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec,rand_pars)
 #endif
         for (size_t i = n_pop - n_pop_best; i < n_pop; ++i) {
             size_t thread_num = 0;
@@ -315,7 +312,7 @@ optim::internal::de_prmm_impl(
             thread_num = omp_get_thread_num();
 #endif
 
-            ColVec_t rand_pars = bmo_stats::runif_vec<fp_t>(4, engines[thread_num]);
+            bmo_stats::internal::runif_vec_inplace<fp_t>(4, engines[thread_num], rand_pars);
 
             if (rand_pars(0) < tau_F) {
                 F_vec(i) = F_l + (F_u-F_l) * rand_pars(1);
@@ -330,26 +327,22 @@ optim::internal::de_prmm_impl(
             uint_t c_1, c_2;
 
             do {
-                // c_1 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
                 c_1 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while(c_1 == i);
 
             do {
-                // c_2 = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_pop-1) );
                 c_2 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
             } while(c_2==i || c_2==c_1);
 
             //
 
-            // size_t j = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_vals-1) );
-            const size_t j = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
+            const size_t rand_ind = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
 
-            // ColVec_t rand_unif = BMO_MATOPS_RANDU_VEC(n_vals);
-            ColVec_t rand_unif = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
-                if ( rand_unif(k) < CR_vec(i) || k == j ) {
+                if ( rand_vec(k) < CR_vec(i) || k == rand_ind ) {
                     X_prop(k) = best_vec_best(k) + F_vec(i) * (X(c_1,k) - X(c_2,k));
                 } else {
                     X_prop(k) = X(i,k);
@@ -420,8 +413,11 @@ optim::internal::de_prmm_impl(
 
     if (return_population_mat) {
         if (vals_bound) {
+#ifdef OPTIM_USE_OMP
+        #pragma omp parallel for num_threads(omp_n_threads)
+#endif
             for (size_t i = 0; i < n_pop; ++i) {
-                X_next.row(i) = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+                X_next.row(i) = inv_transform<RowVec_t>(X_next.row(i), bounds_type, lower_bounds, upper_bounds);
             }
         }
 
@@ -431,7 +427,7 @@ optim::internal::de_prmm_impl(
     //
 
     if (vals_bound) {
-        best_sol_running = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
+        best_sol_running = inv_transform(best_sol_running, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals, BMO_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 

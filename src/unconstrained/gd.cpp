@@ -188,19 +188,21 @@ optim::internal::gd_basic_impl(
 
 optimlib_inline
 bool
-optim::gd(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data)
+optim::gd(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
     return internal::gd_basic_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
 bool
-optim::gd(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data, 
-          algo_settings_t& settings)
+optim::gd(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
     return internal::gd_basic_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

@@ -125,11 +125,12 @@ optim::internal::pso_impl(
     //
     // initialize
 
+    ColVec_t rand_vec(n_vals);
     ColVec_t objfn_vals(n_pop);
     Mat_t P(n_pop,n_vals);
 
 #ifdef OPTIM_USE_OMP
-    #pragma omp parallel for num_threads(omp_n_threads)
+    #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
@@ -141,7 +142,7 @@ optim::internal::pso_impl(
         if (center_particle && i == n_pop - 1) {
             P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop-2) ) / static_cast<fp_t>(n_pop-1); // center vector
         } else {
-            ColVec_t rand_vec = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
 
             P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
         }
@@ -155,7 +156,7 @@ optim::internal::pso_impl(
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            P.row(i) = BMO_MATOPS_TRANSPOSE( transform(BMO_MATOPS_TRANSPOSE(P.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            P.row(i) = transform<RowVec_t>(P.row(i), bounds_type, lower_bounds, upper_bounds);
         }
     }
 
@@ -173,6 +174,8 @@ optim::internal::pso_impl(
     size_t iter = 0;
     fp_t rel_objfn_change = 2.0*rel_objfn_change_tol;
 
+    RowVec_t rand_vec_1(n_vals);
+    RowVec_t rand_vec_2(n_vals);
     Mat_t V = BMO_MATOPS_ZERO_MAT(n_pop,n_vals);
 
     while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen) {
@@ -196,7 +199,7 @@ optim::internal::pso_impl(
         // population loop
 
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec_1,rand_vec_2)
 #endif
         for (size_t i=0; i < n_pop; ++i) {
             size_t thread_num = 0;
@@ -206,8 +209,11 @@ optim::internal::pso_impl(
 #endif
 
             if ( !(center_particle && i == n_pop - 1) ) {
-                RowVec_t rand_vec_1 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
-                RowVec_t rand_vec_2 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+                bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec_1);
+                bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec_2);
+
+                // RowVec_t rand_vec_1 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+                // RowVec_t rand_vec_2 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
 
                 V.row(i) = par_w * V.row(i) + par_c_cog * BMO_MATOPS_HADAMARD_PROD( rand_vec_1, (best_vecs.row(i) - P.row(i)) ) \
                     + par_c_soc * BMO_MATOPS_HADAMARD_PROD( rand_vec_2, (best_sol_running - P.row(i)) );
@@ -260,8 +266,11 @@ optim::internal::pso_impl(
 
     if (return_position_mat) {
         if (vals_bound) {
+#ifdef OPTIM_USE_OMP
+        #pragma omp parallel for num_threads(omp_n_threads)
+#endif
             for (size_t i = 0; i < n_pop; ++i) {
-                P.row(i) = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(P.row(i)), bounds_type, lower_bounds, upper_bounds) );
+                P.row(i) = inv_transform<RowVec_t>(P.row(i), bounds_type, lower_bounds, upper_bounds);
             }
         }
 
@@ -271,7 +280,7 @@ optim::internal::pso_impl(
     //
 
     if (vals_bound) {
-        best_sol_running = BMO_MATOPS_TRANSPOSE( inv_transform( BMO_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
+        best_sol_running = inv_transform( best_sol_running, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals, BMO_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
@@ -285,19 +294,21 @@ optim::internal::pso_impl(
 
 optimlib_inline
 bool
-optim::pso(ColVec_t& init_out_vals, 
-           std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-           void* opt_data)
+optim::pso(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
     return internal::pso_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
 bool
-optim::pso(ColVec_t& init_out_vals, 
-           std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-           void* opt_data, 
-           algo_settings_t& settings)
+optim::pso(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
     return internal::pso_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

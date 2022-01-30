@@ -212,19 +212,21 @@ optim::internal::lbfgs_impl(
 
 optimlib_inline
 bool
-optim::lbfgs(ColVec_t& init_out_vals, 
-             std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-             void* opt_data)
+optim::lbfgs(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
     return internal::lbfgs_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
 
 optimlib_inline
 bool
-optim::lbfgs(ColVec_t& init_out_vals, 
-             std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-             void* opt_data, 
-             algo_settings_t& settings)
+optim::lbfgs(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
     return internal::lbfgs_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

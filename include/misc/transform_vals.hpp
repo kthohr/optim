@@ -22,16 +22,18 @@
  * transform values
  */
 
+template<typename vT>
 inline
-ColVec_t
-transform(const ColVec_t& vals_inp, 
-          const ColVecInt_t& bounds_type, 
-          const ColVec_t& lower_bounds, 
-          const ColVec_t& upper_bounds)
+vT
+transform(
+    const vT& vals_inp, 
+    const ColVecInt_t& bounds_type, 
+    const ColVec_t& lower_bounds, 
+    const ColVec_t& upper_bounds)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
-    ColVec_t vals_trans_out(n_vals);
+    vT vals_trans_out(n_vals);
 
     for (size_t i = 0; i < n_vals; ++i) {
         switch (bounds_type(i)) {
@@ -55,16 +57,18 @@ transform(const ColVec_t& vals_inp,
     return vals_trans_out;
 }
 
+template<typename vT>
 inline
-ColVec_t
-inv_transform(const ColVec_t& vals_trans_inp, 
-              const ColVecInt_t& bounds_type, 
-              const ColVec_t& lower_bounds, 
-              const ColVec_t& upper_bounds)
+vT
+inv_transform(
+    const vT& vals_trans_inp, 
+    const ColVecInt_t& bounds_type, 
+    const ColVec_t& lower_bounds, 
+    const ColVec_t& upper_bounds)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
-    ColVec_t vals_out(n_vals);
+    vT vals_out(n_vals);
 
     for (size_t i = 0; i < n_vals; ++i) {
         switch (bounds_type(i)) {

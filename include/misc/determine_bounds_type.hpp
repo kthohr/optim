@@ -26,14 +26,15 @@
 
 inline
 ColVecInt_t
-determine_bounds_type(const bool vals_bound, 
-                      const size_t n_vals, 
-                      const ColVec_t& lower_bounds, 
-                      const ColVec_t& upper_bounds)
+determine_bounds_type(
+    const bool vals_bound, 
+    const size_t n_vals, 
+    const ColVec_t& lower_bounds, 
+    const ColVec_t& upper_bounds)
 {
     ColVecInt_t ret_vec(n_vals);
 
-    ret_vec.fill(1); // base case: 1 - no bounds imposed
+    BMO_MATOPS_SET_VALUES_SCALAR(ret_vec, 1); // base case: 1 - no bounds imposed
 
     if (vals_bound) {
         for (size_t i = 0; i < n_vals; ++i) {

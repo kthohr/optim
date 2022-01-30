@@ -110,11 +110,12 @@ optim::internal::de_impl(
     //
     // setup
 
+    ColVec_t rand_vec(n_vals);
     ColVec_t objfn_vals(n_pop);
     Mat_t X(n_pop,n_vals), X_next(n_pop,n_vals);
 
 #ifdef OPTIM_USE_OMP
-    #pragma omp parallel for num_threads(omp_n_threads)
+    #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
@@ -123,7 +124,7 @@ optim::internal::de_impl(
         thread_num = omp_get_thread_num();
 #endif
 
-        ColVec_t rand_vec = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+        bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
 
         X_next.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
 
@@ -136,7 +137,7 @@ optim::internal::de_impl(
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            X_next.row(i) = BMO_MATOPS_TRANSPOSE( transform(BMO_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+            X_next.row(i) = transform<RowVec_t>(X_next.row(i), bounds_type, lower_bounds, upper_bounds);
         }
     }
 
@@ -161,7 +162,7 @@ optim::internal::de_impl(
         // loop over population
 
 #ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads)
+        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec)
 #endif
         for (size_t i = 0; i < n_pop; ++i) {
             size_t thread_num = 0;
@@ -189,14 +190,13 @@ optim::internal::de_impl(
 
             //
 
-            // const size_t j = BMO_MATOPS_AS_SCALAR( BMO_MATOPS_RANDI_VEC(1, 0, n_vals-1) ); // arma::as_scalar(arma::randi(1, arma::distr_param(0, n_vals-1)));
-            const size_t j = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
+            const size_t rand_ind = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
 
-            ColVec_t rand_unif = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
+            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
-                if ( rand_unif(k) < par_CR || k == j ) {
+                if ( rand_vec(k) < par_CR || k == rand_ind ) {
                     if ( mutation_method == 1 ) {
                         X_prop(k) = X(c_3,k) + par_F*(X(c_1,k) - X(c_2,k));
                     } else {
@@ -253,8 +253,11 @@ optim::internal::de_impl(
 
     if (return_population_mat) {
         if (vals_bound) {
+#ifdef OPTIM_USE_OMP
+        #pragma omp parallel for num_threads(omp_n_threads)
+#endif
             for (size_t i = 0; i < n_pop; ++i) {
-                X_next.row(i) = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(X_next.row(i)), bounds_type, lower_bounds, upper_bounds) );
+                X_next.row(i) = inv_transform<RowVec_t>(X_next.row(i), bounds_type, lower_bounds, upper_bounds);
             }
         }
 
@@ -264,7 +267,7 @@ optim::internal::de_impl(
     //
 
     if (vals_bound) {
-        best_sol_running = BMO_MATOPS_TRANSPOSE( inv_transform(BMO_MATOPS_TRANSPOSE(best_sol_running), bounds_type, lower_bounds, upper_bounds) );
+        best_sol_running = inv_transform(best_sol_running, bounds_type, lower_bounds, upper_bounds);
     }
 
     error_reporting(init_out_vals, BMO_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
@@ -278,19 +281,21 @@ optim::internal::de_impl(
 
 optimlib_inline
 bool
-optim::de(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data)
+optim::de(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data)
 {
     return internal::de_impl(init_out_vals, opt_objfn, opt_data, nullptr);
 }
 
 optimlib_inline
 bool
-optim::de(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data, 
-          algo_settings_t& settings)
+optim::de(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings)
 {
     return internal::de_impl(init_out_vals, opt_objfn, opt_data, &settings);
 }

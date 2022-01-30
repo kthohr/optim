@@ -121,19 +121,21 @@ namespace internal
 {
 
 bool
-broyden_impl(ColVec_t& init_out_vals, 
-            std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-            void* opt_data, 
-            algo_settings_t* settings_inp);
+broyden_impl(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp);
 
 
 bool
-broyden_impl(ColVec_t& init_out_vals, 
-            std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-            void* opt_data,
-            std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
-            void* jacob_data, 
-            algo_settings_t* settings_inp);
+broyden_impl(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    void* jacob_data, 
+    algo_settings_t* settings_inp);
 
 }
 

@@ -70,21 +70,23 @@ namespace internal
 {
 
 bool 
-cg_impl(ColVec_t& init_out_vals, 
-        std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-        void* opt_data, 
-        algo_settings_t* settings_inp);
+cg_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp);
 
 // update function
 
 inline
 fp_t
-cg_update(const ColVec_t& grad, 
-          const ColVec_t& grad_p, 
-          const ColVec_t& direc, 
-          const uint_t iter, 
-          const uint_t cg_method, 
-          const fp_t cg_restart_threshold)
+cg_update(
+    const ColVec_t& grad, 
+    const ColVec_t& grad_p, 
+    const ColVec_t& direc, 
+    const uint_t iter, 
+    const uint_t cg_method, 
+    const fp_t cg_restart_threshold)
 {
     // threshold test
     fp_t ratio_value = std::abs( BMO_MATOPS_DOT_PROD(grad_p,grad) ) / BMO_MATOPS_DOT_PROD(grad_p,grad_p);

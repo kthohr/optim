@@ -145,10 +145,10 @@ optim::internal::bfgs_impl(
 
     if (W_denom_term > 1E-10) {   
         // checking whether the curvature condition holds: y's > 0
-        W_term_1 = I_mat - s * (BMO_MATOPS_TRANSPOSE_IN_PLACE(y)) / W_denom_term;
+        W_term_1 = I_mat - s * (BMO_MATOPS_TRANSPOSE_INPLACE(y)) / W_denom_term;
     
         // perform rank-1 update of inverse Hessian approximation
-        W = W_term_1 * W * (BMO_MATOPS_TRANSPOSE_IN_PLACE(W_term_1)) + s * (BMO_MATOPS_TRANSPOSE_IN_PLACE(s)) / W_denom_term;
+        W = W_term_1 * W * (BMO_MATOPS_TRANSPOSE_INPLACE(W_term_1)) + s * (BMO_MATOPS_TRANSPOSE_INPLACE(s)) / W_denom_term;
     } else {
         W = 0.1 * W;
     }
@@ -191,9 +191,9 @@ optim::internal::bfgs_impl(
 
         if (W_denom_term > 1E-10) {
             // checking the curvature condition y.s > 0
-            W_term_1 = I_mat - s * BMO_MATOPS_TRANSPOSE_IN_PLACE(y) / W_denom_term;
+            W_term_1 = I_mat - s * BMO_MATOPS_TRANSPOSE_INPLACE(y) / W_denom_term;
         
-            W = W_term_1 * W * BMO_MATOPS_TRANSPOSE_IN_PLACE(W_term_1) + s * BMO_MATOPS_TRANSPOSE_IN_PLACE(s) / W_denom_term;
+            W = W_term_1 * W * BMO_MATOPS_TRANSPOSE_INPLACE(W_term_1) + s * BMO_MATOPS_TRANSPOSE_INPLACE(s) / W_denom_term;
         }
 
         //

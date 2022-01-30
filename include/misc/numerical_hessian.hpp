@@ -24,10 +24,11 @@
 
 inline
 Mat_t
-numerical_hessian(const ColVec_t& vals_inp, 
-                  const fp_t* step_size_inp, 
-                  std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* objfn_data)> objfn, 
-                  void* objfn_data)
+numerical_hessian(
+    const ColVec_t& vals_inp, 
+    const fp_t* step_size_inp, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* objfn_data)> objfn, 
+    void* objfn_data)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(vals_inp);
 
