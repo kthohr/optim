@@ -31,7 +31,8 @@ optim::internal::bfgs_impl(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     // notation: 'p' stands for '+1'.
 
@@ -111,8 +112,8 @@ optim::internal::bfgs_impl(
 
     const Mat_t I_mat = BMO_MATOPS_EYE(n_vals);
 
-    Mat_t W = I_mat;                            // initial approx. to (inverse) Hessian 
-    ColVec_t grad(n_vals);                         // gradient vector
+    Mat_t W = I_mat;                                // initial approx. to (inverse) Hessian 
+    ColVec_t grad(n_vals);                          // gradient vector
     ColVec_t d = BMO_MATOPS_ZERO_COLVEC(n_vals);    // direction vector
     ColVec_t s = BMO_MATOPS_ZERO_COLVEC(n_vals);
     ColVec_t y = BMO_MATOPS_ZERO_COLVEC(n_vals);
@@ -229,7 +230,8 @@ bool
 optim::bfgs(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-    void* opt_data)
+    void* opt_data
+)
 {
     return internal::bfgs_impl(init_out_vals, opt_objfn, opt_data, nullptr);
 }
@@ -240,7 +242,8 @@ optim::bfgs(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t& settings)
+    algo_settings_t& settings
+)
 {
     return internal::bfgs_impl(init_out_vals, opt_objfn, opt_data, &settings);
 }

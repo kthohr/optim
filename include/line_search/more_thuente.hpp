@@ -31,35 +31,41 @@ namespace internal
 {
 
 fp_t
-line_search_mt(fp_t step, 
-               ColVec_t& x, 
-               ColVec_t& grad, 
-               const ColVec_t& direc, 
-               const fp_t* wolfe_cons_1_inp, 
-               const fp_t* wolfe_cons_2_inp, 
-               std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-               void* opt_data);
+line_search_mt(
+    fp_t step, 
+    ColVec_t& x, 
+    ColVec_t& grad, 
+    const ColVec_t& direc, 
+    const fp_t* wolfe_cons_1_inp, 
+    const fp_t* wolfe_cons_2_inp, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 // update the 'interval of uncertainty'
 
 uint_t 
-mt_step(fp_t& st_best, 
-        fp_t& f_best, 
-        fp_t& d_best, 
-        fp_t& st_other, 
-        fp_t& f_other, 
-        fp_t& d_other, 
-        fp_t& step, 
-        fp_t& f_step, 
-        fp_t& d_step, 
-        bool& bracket, 
-        fp_t step_min, 
-        fp_t step_max);
+mt_step(
+    fp_t& st_best, 
+    fp_t& f_best, 
+    fp_t& d_best, 
+    fp_t& st_other, 
+    fp_t& f_other, 
+    fp_t& d_other, 
+    fp_t& step, 
+    fp_t& f_step, 
+    fp_t& d_step, 
+    bool& bracket, 
+    fp_t step_min, 
+    fp_t step_max
+);
 
 fp_t 
-mt_sup_norm(const fp_t a, 
-            const fp_t b, 
-            const fp_t c);
+mt_sup_norm(
+    const fp_t a, 
+    const fp_t b, 
+    const fp_t c
+);
 
 }
 

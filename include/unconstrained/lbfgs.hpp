@@ -39,9 +39,11 @@
  */
 
 bool
-lbfgs(ColVec_t& init_out_vals, 
-      std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-      void* opt_data);
+lbfgs(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief The Limited Memory Variant of the BFGS Optimization Algorithm
@@ -58,10 +60,12 @@ lbfgs(ColVec_t& init_out_vals,
  */
 
 bool
-lbfgs(ColVec_t& init_out_vals, 
-      std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-      void* opt_data, 
-      algo_settings_t& settings);
+lbfgs(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -70,18 +74,22 @@ namespace internal
 {
 
 bool
-lbfgs_impl(ColVec_t& init_out_vals, 
-           std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-           void* opt_data, 
-           algo_settings_t* settings_inp);
+lbfgs_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp
+);
 
 // algorithm 7.4 of Nocedal and Wright (2006)
 inline
 ColVec_t
-lbfgs_recur(ColVec_t q, 
-            const Mat_t& s_mat, 
-            const Mat_t& y_mat, 
-            const uint_t M)
+lbfgs_recur(
+    ColVec_t q, 
+    const Mat_t& s_mat, 
+    const Mat_t& y_mat, 
+    const uint_t M
+)
 {
     ColVec_t alpha_vec(M);
 

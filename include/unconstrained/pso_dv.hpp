@@ -39,9 +39,11 @@
  */
 
 bool 
-pso_dv(ColVec_t& init_out_vals, 
-       std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-       void* opt_data);
+pso_dv(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief Particle Swarm Optimization (PSO) with Differentially-Perturbed Velocity (DV)
@@ -58,10 +60,12 @@ pso_dv(ColVec_t& init_out_vals,
  */
 
 bool
-pso_dv(ColVec_t& init_out_vals, 
-       std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-       void* opt_data, 
-       algo_settings_t& settings);
+pso_dv(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -70,10 +74,12 @@ namespace internal
 {
 
 bool 
-pso_dv_impl(ColVec_t& init_out_vals, 
-            std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-            void* opt_data, 
-            algo_settings_t* settings_inp);
+pso_dv_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp
+);
 
 }
 

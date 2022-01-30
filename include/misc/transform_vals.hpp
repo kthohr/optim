@@ -29,7 +29,8 @@ transform(
     const vT& vals_inp, 
     const ColVecInt_t& bounds_type, 
     const ColVec_t& lower_bounds, 
-    const ColVec_t& upper_bounds)
+    const ColVec_t& upper_bounds
+)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 
@@ -64,7 +65,8 @@ inv_transform(
     const vT& vals_trans_inp, 
     const ColVecInt_t& bounds_type, 
     const ColVec_t& lower_bounds, 
-    const ColVec_t& upper_bounds)
+    const ColVec_t& upper_bounds
+)
 {
     const size_t n_vals = BMO_MATOPS_SIZE(bounds_type);
 

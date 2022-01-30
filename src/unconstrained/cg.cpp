@@ -31,7 +31,8 @@ optim::internal::cg_impl(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     // notation: 'p' stands for '+1'.
     
@@ -201,7 +202,8 @@ bool
 optim::cg(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-    void* opt_data)
+    void* opt_data
+)
 {
     return internal::cg_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
@@ -212,7 +214,8 @@ optim::cg(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t& settings)
+    algo_settings_t& settings
+)
 {
     return internal::cg_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }

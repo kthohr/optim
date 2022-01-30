@@ -31,7 +31,8 @@ optim::internal::broyden_df_impl(
     ColVec_t& init_out_vals, 
     std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     // notation: 'p' stands for '+1'.
     
@@ -177,7 +178,8 @@ bool
 optim::broyden_df(
     ColVec_t& init_out_vals, 
     std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-    void* opt_data)
+    void* opt_data
+)
 {
     return internal::broyden_df_impl(init_out_vals,opt_objfn,opt_data,nullptr);
 }
@@ -188,7 +190,8 @@ optim::broyden_df(
     ColVec_t& init_out_vals, 
     std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t& settings)
+    algo_settings_t& settings
+)
 {
     return internal::broyden_df_impl(init_out_vals,opt_objfn,opt_data,&settings);
 }
@@ -204,7 +207,8 @@ optim::internal::broyden_df_impl(
     void* opt_data,
     std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
     void* jacob_data, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     // notation: 'p' stands for '+1'.
     
@@ -353,7 +357,8 @@ optim::broyden_df(
     std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
     void* opt_data,
     std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
-    void* jacob_data)
+    void* jacob_data
+)
 {
     return internal::broyden_df_impl(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,nullptr);
 }
@@ -366,7 +371,8 @@ optim::broyden_df(
     void* opt_data,
     std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
     void* jacob_data, 
-    algo_settings_t& settings)
+    algo_settings_t& settings
+)
 {
     return internal::broyden_df_impl(init_out_vals,opt_objfn,opt_data,jacob_objfn,jacob_data,&settings);
 }

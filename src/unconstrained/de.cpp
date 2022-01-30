@@ -224,6 +224,8 @@ optim::internal::de_impl(
             }
         }
 
+        // choose the best result from the population run
+
         size_t min_objfn_val_index = index_min(objfn_vals);
         fp_t min_objfn_val = objfn_vals(min_objfn_val_index);
 
@@ -284,7 +286,8 @@ bool
 optim::de(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-    void* opt_data)
+    void* opt_data
+)
 {
     return internal::de_impl(init_out_vals, opt_objfn, opt_data, nullptr);
 }
@@ -295,7 +298,8 @@ optim::de(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t& settings)
+    algo_settings_t& settings
+)
 {
     return internal::de_impl(init_out_vals, opt_objfn, opt_data, &settings);
 }

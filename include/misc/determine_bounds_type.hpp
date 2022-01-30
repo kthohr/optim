@@ -30,7 +30,8 @@ determine_bounds_type(
     const bool vals_bound, 
     const size_t n_vals, 
     const ColVec_t& lower_bounds, 
-    const ColVec_t& upper_bounds)
+    const ColVec_t& upper_bounds
+)
 {
     ColVecInt_t ret_vec(n_vals);
 

@@ -39,9 +39,11 @@
  */
 
 bool 
-cg(ColVec_t& init_out_vals, 
-   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-   void* opt_data);
+cg(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief The Nonlinear Conjugate Gradient (CG) Optimization Algorithm
@@ -58,10 +60,12 @@ cg(ColVec_t& init_out_vals,
  */
 
 bool
-cg(ColVec_t& init_out_vals, 
-   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-   void* opt_data, 
-   algo_settings_t& settings);
+cg(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -74,7 +78,8 @@ cg_impl(
     ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t* settings_inp);
+    algo_settings_t* settings_inp
+);
 
 // update function
 
@@ -86,7 +91,8 @@ cg_update(
     const ColVec_t& direc, 
     const uint_t iter, 
     const uint_t cg_method, 
-    const fp_t cg_restart_threshold)
+    const fp_t cg_restart_threshold
+)
 {
     // threshold test
     fp_t ratio_value = std::abs( BMO_MATOPS_DOT_PROD(grad_p,grad) ) / BMO_MATOPS_DOT_PROD(grad_p,grad_p);

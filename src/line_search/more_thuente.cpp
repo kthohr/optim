@@ -37,7 +37,8 @@ optim::internal::line_search_mt(
     const fp_t* wolfe_cons_1_inp, 
     const fp_t* wolfe_cons_2_inp, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-    void* opt_data)
+    void* opt_data
+)
 {
     const size_t iter_max = 100;
 
@@ -195,7 +196,8 @@ optim::internal::mt_step(
     fp_t& d_step, 
     bool& bracket, 
     fp_t step_min, 
-    fp_t step_max)
+    fp_t step_max
+)
 {
     bool bound = false;
     uint_t info = 0;

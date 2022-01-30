@@ -39,9 +39,11 @@
  */
 
 bool 
-gd(ColVec_t& init_out_vals, 
-   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-   void* opt_data);
+gd(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief The Gradient Descent Optimization Algorithm
@@ -58,10 +60,11 @@ gd(ColVec_t& init_out_vals,
  */
 
 bool
-gd(ColVec_t& init_out_vals, 
-   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-   void* opt_data, 
-   algo_settings_t& settings);
+gd(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings);
 
 //
 // internal
@@ -70,10 +73,11 @@ namespace internal
 {
 
 bool 
-gd_basic_impl(ColVec_t& init_out_vals, 
-              std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-              void* opt_data, 
-              algo_settings_t* settings_inp);
+gd_basic_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp);
 
 }
 

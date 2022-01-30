@@ -41,11 +41,13 @@
  */
 
 bool 
-sumt(ColVec_t& init_out_vals, 
-     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-     void* opt_data,
-     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
-     void* constr_data);
+sumt(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
+    void* constr_data
+);
 
 /**
  * @brief Sequential Unconstrained Minimization Technique
@@ -64,12 +66,14 @@ sumt(ColVec_t& init_out_vals,
  */
 
 bool 
-sumt(ColVec_t& init_out_vals, 
-     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-     void* opt_data,
-     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
-     void* constr_data, 
-     algo_settings_t& settings);
+sumt(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
+    void* constr_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -83,20 +87,24 @@ struct sumt_data_t {
 
 inline
 fp_t
-mt_sup_norm(const fp_t a, 
-            const fp_t b, 
-            const fp_t c)
+mt_sup_norm(
+    const fp_t a, 
+    const fp_t b, 
+    const fp_t c
+)
 {
     return std::max( std::max(std::abs(a), std::abs(b)), std::abs(c) );
 }
 
 bool 
-sumt_impl(ColVec_t& init_out_vals, 
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-          void* opt_data,
-          std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
-          void* constr_data, 
-          algo_settings_t* settings_inp);
+sumt_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
+    void* constr_data, 
+    algo_settings_t* settings_inp
+);
 
 }
 

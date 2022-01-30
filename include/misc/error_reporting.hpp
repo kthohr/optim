@@ -36,7 +36,8 @@ void error_reporting(
     const size_t iter, 
     const size_t iter_max, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp);
+    algo_settings_t* settings_inp
+);
 
 void error_reporting(ColVec_t& out_vals, 
     const ColVec_t& x_p, 
@@ -44,7 +45,8 @@ void error_reporting(ColVec_t& out_vals,
     void* opt_data,
     bool& success, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp);
+    algo_settings_t* settings_inp
+);
 
 void error_reporting(
     ColVec_t& out_vals, 
@@ -57,7 +59,8 @@ void error_reporting(
     const size_t iter, 
     const size_t iter_max, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp);
+    algo_settings_t* settings_inp
+);
 
 //
 
@@ -72,7 +75,8 @@ void error_reporting(
     const size_t iter, 
     const size_t iter_max, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp);
+    algo_settings_t* settings_inp
+);
 
 //
 

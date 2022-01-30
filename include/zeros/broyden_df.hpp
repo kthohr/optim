@@ -38,9 +38,11 @@
  */
 
 bool
-broyden_df(ColVec_t& init_out_vals, 
-           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-           void* opt_data);
+broyden_df(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief Derivative-free variant of Broyden's method due to Li and Fukushima (2000)
@@ -56,10 +58,12 @@ broyden_df(ColVec_t& init_out_vals,
  */
 
 bool
-broyden_df(ColVec_t& init_out_vals, 
-           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-           void* opt_data, 
-           algo_settings_t& settings);
+broyden_df(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings
+);
 
 // derivative-free method with jacobian
 
@@ -80,11 +84,13 @@ broyden_df(ColVec_t& init_out_vals,
  */
 
 bool
-broyden_df(ColVec_t& init_out_vals, 
-           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-           void* opt_data,
-           std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
-           void* jacob_data);
+broyden_df(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    void* jacob_data
+);
 
 /**
  * @brief Derivative-free variant of Broyden's method due to Li and Fukushima (2000)
@@ -104,12 +110,14 @@ broyden_df(ColVec_t& init_out_vals,
  */
 
 bool
-broyden_df(ColVec_t& init_out_vals, 
-           std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-           void* opt_data,
-           std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
-           void* jacob_data, 
-           algo_settings_t& settings);
+broyden_df(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    void* jacob_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal functions
@@ -118,18 +126,22 @@ namespace internal
 {
 
 bool 
-broyden_df_impl(ColVec_t& init_out_vals, 
-                std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-                void* opt_data, 
-                algo_settings_t* settings_inp);
+broyden_df_impl(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp
+);
 
 bool
-broyden_df_impl(ColVec_t& init_out_vals, 
-                std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-                void* opt_data,
-                std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
-                void* jacob_data, 
-                algo_settings_t* settings_inp);
+broyden_df_impl(
+    ColVec_t& init_out_vals, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data,
+    std::function<Mat_t (const ColVec_t& vals_inp, void* jacob_data)> jacob_objfn, 
+    void* jacob_data, 
+    algo_settings_t* settings_inp
+);
 
 //
 
@@ -142,12 +154,14 @@ df_eta(uint_t k)
 
 inline
 fp_t 
-df_proc_1(const ColVec_t& x_vals, 
-          const ColVec_t& direc, 
-          fp_t sigma_1, 
-          uint_t k, 
-          std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
-          void* opt_data)
+df_proc_1(
+    const ColVec_t& x_vals, 
+    const ColVec_t& direc, 
+    fp_t sigma_1, 
+    uint_t k, 
+    std::function<ColVec_t (const ColVec_t& vals_inp, void* opt_data)> opt_objfn, 
+    void* opt_data
+)
 {
     const fp_t beta = 0.9;
     const fp_t eta_k = df_eta(k);

@@ -31,7 +31,8 @@ sampling_bounds_check(
     const ColVec_t& hard_lower_bounds, 
     const ColVec_t& hard_upper_bounds,
     ColVec_t& sampling_lower_bounds,
-    ColVec_t& sampling_upper_bounds)
+    ColVec_t& sampling_upper_bounds
+)
 {
     if (vals_bound) {
         for (size_t i = 0; i < n_vals; ++i) {

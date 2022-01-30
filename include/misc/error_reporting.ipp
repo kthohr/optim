@@ -35,7 +35,8 @@ error_reporting(
     const size_t iter, 
     const size_t iter_max, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     success = false;
 
@@ -93,7 +94,8 @@ error_reporting(
     void* opt_data,
     bool& success, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     if (conv_failure_switch == 0 || conv_failure_switch == 1) {
         out_vals = x_p;
@@ -124,7 +126,8 @@ error_reporting(
     const size_t iter, 
     const size_t iter_max, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     success = false;
 
@@ -194,7 +197,8 @@ error_reporting(
     const size_t iter, 
     const size_t iter_max, 
     const int conv_failure_switch, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> lam_objfn \
     = [opt_objfn] (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data) 

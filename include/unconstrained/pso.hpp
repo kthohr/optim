@@ -39,9 +39,11 @@
  */
 
 bool
-pso(ColVec_t& init_out_vals, 
+pso(
+    ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-    void* opt_data);
+    void* opt_data
+);
 
 /**
  * @brief Particle Swarm Optimization (PSO) Algorithm
@@ -58,10 +60,12 @@ pso(ColVec_t& init_out_vals,
  */
 
 bool
-pso(ColVec_t& init_out_vals, 
+pso(
+    ColVec_t& init_out_vals, 
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data, 
-    algo_settings_t& settings);
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -70,10 +74,12 @@ namespace internal
 {
 
 bool
-pso_impl(ColVec_t& init_out_vals, 
-         std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-         void* opt_data, 
-         algo_settings_t* settings_inp);
+pso_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp
+);
 
 }
 

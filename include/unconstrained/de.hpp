@@ -39,9 +39,11 @@
  */
 
 bool
-de(ColVec_t& init_out_vals, 
-   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-   void* opt_data);
+de(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief The Differential Evolution (DE) Optimization Algorithm
@@ -58,10 +60,12 @@ de(ColVec_t& init_out_vals,
  */
 
 bool
-de(ColVec_t& init_out_vals, 
-   std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-   void* opt_data, 
-   algo_settings_t& settings);
+de(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -70,10 +74,12 @@ namespace internal
 {
 
 bool
-de_impl(ColVec_t& init_out_vals, 
-        std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
-        void* opt_data, 
-        algo_settings_t* settings_inp);
+de_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp
+);
 
 }
 

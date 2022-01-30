@@ -33,7 +33,8 @@ optim::internal::sumt_impl(
     void* opt_data,
     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
     void* constr_data, 
-    algo_settings_t* settings_inp)
+    algo_settings_t* settings_inp
+)
 {
     // notation: 'p' stands for '+1'.
 
@@ -147,7 +148,8 @@ optim::sumt(
     std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, 
     void* opt_data,
     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
-    void* constr_data)
+    void* constr_data
+)
 {
     return internal::sumt_impl(init_out_vals, opt_objfn, opt_data, constr_fn, constr_data, nullptr);
 }
@@ -160,7 +162,8 @@ optim::sumt(
     void* opt_data,
     std::function<ColVec_t (const ColVec_t& vals_inp, Mat_t* jacob_out, void* constr_data)> constr_fn, 
     void* constr_data, 
-    algo_settings_t& settings)
+    algo_settings_t& settings
+)
 {
     return internal::sumt_impl(init_out_vals, opt_objfn, opt_data, constr_fn, constr_data, &settings);
 }

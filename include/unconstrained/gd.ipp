@@ -32,16 +32,17 @@ namespace internal
 
 inline
 ColVec_t
-gd_update(const ColVec_t& vals_inp,
-          const ColVec_t& grad,
-          const ColVec_t& grad_p,
-          const ColVec_t& direc,
-          std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> box_objfn,
-          void* opt_data,
-          const size_t iter,
-          gd_settings_t& gd_settings,
-          ColVec_t& adam_vec_m,
-          ColVec_t& adam_vec_v)
+gd_update(
+    const ColVec_t& vals_inp,
+    const ColVec_t& grad,
+    const ColVec_t& grad_p,
+    const ColVec_t& direc,
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> box_objfn,
+    void* opt_data,
+    const size_t iter,
+    gd_settings_t& gd_settings,
+    ColVec_t& adam_vec_m,
+    ColVec_t& adam_vec_v)
 {
     ColVec_t direc_out; // direction
 
@@ -170,9 +171,11 @@ gd_update(const ColVec_t& vals_inp,
 
 inline
 void
-gradient_clipping(ColVec_t& grad_, const gd_settings_t& gd_settings)
+gradient_clipping(
+    ColVec_t& grad_, 
+    const gd_settings_t& gd_settings
+)
 {
-
     fp_t grad_norm;
     
     if (gd_settings.clip_max_norm) {

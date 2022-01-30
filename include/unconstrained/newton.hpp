@@ -40,9 +40,11 @@
  */
 
 bool 
-newton(ColVec_t& init_out_vals, 
-       std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
-       void* opt_data);
+newton(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+    void* opt_data
+);
 
 /**
  * @brief Newton's Nonlinear Optimization Algorithm
@@ -60,10 +62,12 @@ newton(ColVec_t& init_out_vals,
  */
 
 bool
-newton(ColVec_t& init_out_vals, 
-       std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
-       void* opt_data, 
-       algo_settings_t& settings);
+newton(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t& settings
+);
 
 //
 // internal
@@ -72,10 +76,12 @@ namespace internal
 {
 
 bool 
-newton_impl(ColVec_t& init_out_vals, 
-            std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
-            void* opt_data, 
-            algo_settings_t* settings_inp);
+newton_impl(
+    ColVec_t& init_out_vals, 
+    std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, Mat_t* hess_out, void* opt_data)> opt_objfn, 
+    void* opt_data, 
+    algo_settings_t* settings_inp
+);
 
 }
 
