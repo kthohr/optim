@@ -71,12 +71,6 @@ OptimLib is available as a compiled shared library, or as header-only library, f
 
 OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. (Note that Eigen version 3.4.0 requires a C++14-compatible compiler.)
 
-If choosing a shared library build, set (one) of the following environment variables *before* running `configure`:
-``` bash
-export ARMA_INCLUDE_PATH=/path/to/armadillo
-export EIGEN_INCLUDE_PATH=/path/to/eigen
-```
-
 Before including the header files, define **one** of the following:
 ``` cpp
 #define OPTIM_ENABLE_ARMA_WRAPPERS
@@ -91,9 +85,11 @@ Example:
 
 ### Installation Method 1: Shared Library
 
-The library can be installed on Unix-alike systems via the standard `./configure && make` method:
+The library can be installed on Unix-alike systems via the standard `./configure && make` method.
 
-```bash
+First clone the library and any necessary submodules:
+
+``` bash
 # clone optim into the current directory
 git clone https://github.com/kthohr/optim ./optim
 
@@ -102,7 +98,18 @@ cd ./optim
 
 # clone necessary submodules
 git submodule update --init
+```
 
+Set (one) of the following environment variables *before* running `configure`:
+
+``` bash
+export ARMA_INCLUDE_PATH=/path/to/armadillo
+export EIGEN_INCLUDE_PATH=/path/to/eigen
+```
+
+Finally:
+
+``` bash
 # build and install with Eigen
 ./configure -i "/usr/local" -l eigen -p
 make

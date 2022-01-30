@@ -9,7 +9,86 @@
 Installation
 ============
 
+OptimLib is available as a compiled shared library, or as header-only library, for Unix-alike systems only (e.g., popular Linux-based distros, as well as macOS). Note that use of this library with Windows-based systems, with or without MSVC, **is not supported**.
+
+
+Requirements
+------------
+
+OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. (Note that Eigen version 3.4.0 requires a C++14-compatible compiler.)
+
+The following options should be declared **before** including the OptimLib header files. 
+
+- OpenMP functionality is enabled by default if the ``_OPENMP`` macro is detected (e.g., by invoking ``-fopenmp`` with GCC or Clang). 
+
+  - To explicitly enable OpenMP features, use:
+
+.. code:: cpp
+
+    #define OPTIM_USE_OPENMP
+
+  - To explicitly disable OpenMP functionality, use:
+
+.. code:: cpp
+
+    #define OPTIM_DONT_USE_OPENMP
+
+- To use OptimLib with Armadillo or Eigen:
+
+.. code:: cpp
+
+    #define OPTIM_ENABLE_ARMA_WRAPPERS
+    #define OPTIM_ENABLE_EIGEN_WRAPPERS
+
+  Example:
+
+.. code:: cpp
+
+    #define OPTIM_ENABLE_EIGEN_WRAPPERS
+    #include "optim.hpp"
+
+- To use OptimLib with RcppArmadillo or RcppEigen:
+
+.. code:: cpp
+
+    #define OPTIM_USE_RCPP_ARMADILLO
+    #define OPTIM_USE_RCPP_EIGEN
+
+  Example:
+
+.. code:: cpp
+
+    #define OPTIM_USE_RCPP_EIGEN
+    #include "optim.hpp"
+
+
+----
+
+Installation Method 1: Shared Library
+-------------------------------------
+
 The library can be installed on Unix-alike systems via the standard ``./configure && make`` method.
+
+If choosing a shared library build, set (one) of the following environment variables *before* running `configure`:
+
+.. code:: bash
+
+    export ARMA_INCLUDE_PATH=/path/to/armadillo
+    export EIGEN_INCLUDE_PATH=/path/to/eigen
+
+Before including the header files, define **one** of the following:
+
+.. code:: cpp
+
+    #define OPTIM_ENABLE_ARMA_WRAPPERS
+    #define OPTIM_ENABLE_EIGEN_WRAPPERS
+
+Example:
+
+.. code:: cpp
+
+    #define OPTIM_ENABLE_EIGEN_WRAPPERS
+    #include "optim.hpp"
 
 The primary configuration options can be displayed by calling ``./configure -h``, which results in:
 
@@ -44,42 +123,24 @@ The primary configuration options can be displayed by calling ``./configure -h``
     --header-only-version    Generate a header-only version of OptimLib
 
 
-OptimLib requires either the Armadillo or Eigen C++ linear algebra libraries. Set (one) of the following environment variables *before* running ``configure``:
-
-.. code:: bash
-    
-    export ARMA_INCLUDE_PATH=/path/to/armadillo
-    export EIGEN_INCLUDE_PATH=/path/to/eigen
-
-For example, to set the install path to ``/usr/local``, use Armadillo as the linear algebra library, and enable OpenMP features, we would use:
+For example, to set the install path to ``/usr/local``, use Armadillo as the linear algebra library, and enable OpenMP features, we would run:
 
 .. code:: bash
 
     ./configure -i "/usr/local" -l arma -p
-    make
+
+Following this with the standard ``make && make install`` will build the library and install into ``/usr/local``.
 
 ----
 
-The following options should be declared **before** including the OptimLib header files. 
+Installation Method 2: Header-only Library
+------------------------------------------
 
-- OpenMP functionality is enabled by default if the ``_OPENMP`` macro is detected (e.g., by invoking ``-fopenmp`` with GCC or Clang). 
+OptimLib is also available as a header-only library (i.e., without the need to compile a shared library). Simply run ``configure`` with the ``--header-only-version`` option:
 
-  - To explicitly enable OpenMP features, use:
+.. code:: bash
 
-.. code:: cpp
+    ./configure --header-only-version
 
-    #define OPTIM_USE_OPENMP
-
-  - To explicitly disable OpenMP functionality, use:
-
-.. code:: cpp
-
-    #define OPTIM_DONT_USE_OPENMP
-
-- To use OptimLib with Armadillo or Eigen:
-
-.. code:: cpp
-
-    #define OPTIM_ENABLE_ARMA_WRAPPERS
-    #define OPTIM_ENABLE_EIGEN_WRAPPERS
-
+This will create a new directory, ``header_only_version``, containing a copy of OptimLib, modified to work on an inline basis. 
+With this header-only version, simply include the header files (``#include "optim.hpp``) and set the include path to the ``head_only_version`` directory (e.g.,``-I/path/to/optimlib/header_only_version``).
