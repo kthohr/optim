@@ -42,7 +42,7 @@
 //
 
 #ifdef _MSC_VER
-    #error OptimLib: MSVC is not supported
+//    #error OptimLib: MSVC is not supported
 #endif
 
 //
@@ -76,15 +76,20 @@
 #endif
 
 // floating point number type
-
+#ifndef FLOAT_TYPE_KEY
+    #define FLOAT_TYPE_KEY 0
+#endif
+#ifndef DOUBLE_TYPE_KEY
+    #define DOUBLE_TYPE_KEY 1
+#endif
 #ifndef OPTIM_FPN_TYPE
-    #define OPTIM_FPN_TYPE double
+    #define OPTIM_FPN_TYPE DOUBLE_TYPE_KEY
 #endif
 
-#if OPTIM_FPN_TYPE == float
+#if OPTIM_FPN_TYPE == FLOAT_TYPE_KEY
     #undef OPTIM_FPN_SMALL_NUMBER
     #define OPTIM_FPN_SMALL_NUMBER fp_t(1e-05)
-#elif OPTIM_FPN_TYPE == double
+#elif OPTIM_FPN_TYPE == DOUBLE_TYPE_KEY
     #undef OPTIM_FPN_SMALL_NUMBER
     #define OPTIM_FPN_SMALL_NUMBER fp_t(1e-08)
 #else
@@ -96,7 +101,11 @@
 namespace optim
 {
     using uint_t = unsigned int;
-    using fp_t = OPTIM_FPN_TYPE;
+#if OPTIM_FPN_TYPE == FLOAT_TYPE_KEY
+    using fp_t = float;
+#else
+    using fp_t = double;
+#endif
 
     using rand_engine_t = std::mt19937_64;
 
