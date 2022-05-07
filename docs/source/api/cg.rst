@@ -16,7 +16,7 @@ Conjugate Gradient
 Algorithm Description
 ---------------------
 
-The Nonlinear Conjugate Gradient algorithm is used solve to optimization problems of the form
+The Nonlinear Conjugate Gradient (CG) algorithm is used solve to optimization problems of the form
 
 .. math::
 
@@ -24,7 +24,7 @@ The Nonlinear Conjugate Gradient algorithm is used solve to optimization problem
 
 where :math:`f` is convex and (at least) once differentiable. The algorithm requires the gradient function to be known. 
 
-The updating rule for BFGS is described below. Let :math:`x^{(i)}` denote the function input values at stage :math:`i` of the algorithm.
+The updating rule for CG is described below. Let :math:`x^{(i)}` denote the function input values at stage :math:`i` of the algorithm.
 
 1. Compute the descent direction using:
 
