@@ -23,7 +23,7 @@ where :math:`X` is a subset of :math:`\mathbb{R}^d`, to
 
 using a smooth, invertible mapping :math:`g: X \to \mathbb{R}^d`.
 
-OptimLib uses allows the user to specify upper and lower bounds for each element of the input vector, :math:`x_j \in [a_j, b_j]`, and uses the following specification for :math:`g`:
+OptimLib allows the user to specify upper and lower bounds for each element of the input vector, :math:`x_j \in [a_j, b_j]`, and uses the following specification for :math:`g`:
 
 .. math::
 
