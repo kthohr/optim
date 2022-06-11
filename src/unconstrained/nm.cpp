@@ -72,7 +72,7 @@ optim::internal::nm_impl(
 
     int omp_n_threads = 1;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
     if (settings.nm_settings.omp_n_threads > 0) {
         omp_n_threads = settings.nm_settings.omp_n_threads;
     } else {
@@ -248,7 +248,7 @@ optim::internal::nm_impl(
                 simplex_points.row(i) = simplex_points.row(0) + par_delta*(simplex_points.row(i) - simplex_points.row(0));
             }
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
             #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t i = 1; i < n_vals + 1; i++) {

@@ -96,7 +96,7 @@ optim::internal::de_prmm_impl(
     rand_engine_t rand_engine(settings.rng_seed_value);
     std::vector<rand_engine_t> engines;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
     if (settings.de_settings.omp_n_threads > 0) {
         omp_n_threads = settings.de_settings.omp_n_threads;
     } else {
@@ -131,13 +131,13 @@ optim::internal::de_prmm_impl(
     ColVec_t objfn_vals(n_pop);
     Mat_t X(n_pop,n_vals), X_next(n_pop,n_vals);
 
-#ifdef OPTIM_USE_OMP
-    #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec)
+#ifdef OPTIM_USE_OPENMP
+    #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
         thread_num = omp_get_thread_num();
 #endif
 
@@ -192,7 +192,7 @@ optim::internal::de_prmm_impl(
             ColVec_t objfn_vals_reset(n_pop_temp);
             Mat_t X_reset(n_pop_temp,n_vals);
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
             #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t j = 0; j < n_pop_temp; ++j) {
@@ -220,13 +220,13 @@ optim::internal::de_prmm_impl(
         //
         // first population: n_pop - n_pop_best
         
-#ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec,rand_pars)
+#ifdef OPTIM_USE_OPENMP
+        #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec,rand_pars)
 #endif
         for (size_t i = 0; i < n_pop - n_pop_best; ++i) {
             size_t thread_num = 0;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
             thread_num = omp_get_thread_num();
 #endif
 
@@ -303,13 +303,13 @@ optim::internal::de_prmm_impl(
         //
         // second population
 
-#ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec,rand_pars)
+#ifdef OPTIM_USE_OPENMP
+        #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec,rand_pars)
 #endif
         for (size_t i = n_pop - n_pop_best; i < n_pop; ++i) {
             size_t thread_num = 0;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
             thread_num = omp_get_thread_num();
 #endif
 
@@ -414,7 +414,7 @@ optim::internal::de_prmm_impl(
 
     if (return_population_mat) {
         if (vals_bound) {
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
         #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t i = 0; i < n_pop; ++i) {
