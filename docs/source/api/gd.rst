@@ -24,7 +24,7 @@ The Gradient Descent (GD) algorithm is used solve to optimization problems of th
 
 where :math:`f` is convex and (at least) once differentiable. 
 
-The updating rule for gradient descent is described below. Let :math:`x^{(i)}` denote the candidate solution vector at stage :math:`i` of the algorithm.
+The updating rule for GD is described below. Let :math:`x^{(i)}` denote the candidate solution vector at stage :math:`i` of the algorithm.
 
 1. Compute the descent direction :math:`d^{(i)}` using one of the methods described below.
 

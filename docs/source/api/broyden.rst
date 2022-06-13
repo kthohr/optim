@@ -16,13 +16,13 @@ Broyden
 Algorithm Description
 ---------------------
 
-Broyden's method is an algorithm for solving systems of nonlinear equations,
+Broyden's method is an algorithm for solving systems of nonlinear equations of the form:
 
 .. math::
 
     F(x^{(*)}) = \mathbf{0}
 
-where :math:`F : \mathbb{R}^n \to \mathbb{R}^m` is convex and differentiable. The algorithm uses an approximation to the Jacobian. 
+where :math:`F : \mathbb{R}^n \to \mathbb{R}^m` is convex and differentiable.
 
 The updating rule for Broyden's method is described below. Let :math:`x^{(i)}` denote the function input values at stage :math:`i` of the algorithm.
 
@@ -31,6 +31,8 @@ The updating rule for Broyden's method is described below. Let :math:`x^{(i)}` d
     .. math::
 
         d^{(i)} = - B^{(i)} F(x^{(i)})
+
+  where :math:`B` is an approximation to the inverse Jacobian matrix (the calculation of which is described in step 3).
 
 2. Update the candidate solution vector using:
 

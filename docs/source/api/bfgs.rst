@@ -32,6 +32,8 @@ The updating rule for BFGS is described below. Let :math:`x^{(i)}` denote the ca
 
         d^{(i)} = - W^{(i)} [\nabla_x f(x^{(i)})]
 
+  where :math:`W` is an approximation to the inverse Hessian matrix (the calculation of which is described in step 4).
+
 2. Compute the optimal step size using line search:
 
     .. math::

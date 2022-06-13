@@ -16,7 +16,7 @@ Differential Evolution
 Algorithm Description
 ---------------------
 
-Differential Evolution (DE) is a stochastic genetic search algorithm for global optimization for problems of the form
+Differential Evolution (DE) is a stochastic genetic search algorithm for global optimization of problems of the form
 
 .. math::
 

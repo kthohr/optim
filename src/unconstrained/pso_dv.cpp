@@ -85,7 +85,7 @@ optim::internal::pso_dv_impl(
     rand_engine_t rand_engine(settings.rng_seed_value);
     std::vector<rand_engine_t> engines;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
     if (settings.pso_settings.omp_n_threads > 0) {
         omp_n_threads = settings.pso_settings.omp_n_threads;
     } else {
@@ -122,13 +122,13 @@ optim::internal::pso_dv_impl(
     ColVec_t objfn_vals(n_pop);
     Mat_t P(n_pop, n_vals);
 
-#ifdef OPTIM_USE_OMP
-    #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec)
+#ifdef OPTIM_USE_OPENMP
+    #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec)
 #endif
     for (size_t i = 0; i < n_pop; ++i) {
         size_t thread_num = 0;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
         thread_num = omp_get_thread_num();
 #endif
 
@@ -175,13 +175,13 @@ optim::internal::pso_dv_impl(
         RowVec_t P_max = BMO_MATOPS_COLWISE_MAX(P);
         RowVec_t P_min = BMO_MATOPS_COLWISE_MIN(P);
 
-#ifdef OPTIM_USE_OMP
-        #pragma omp parallel for num_threads(omp_n_threads) private(rand_vec,rand_CR)
+#ifdef OPTIM_USE_OPENMP
+        #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec,rand_CR)
 #endif
         for (size_t i = 0; i < n_pop; ++i) {
             size_t thread_num = 0;
 
-#ifdef OPTIM_USE_OMP
+#ifdef OPTIM_USE_OPENMP
             thread_num = omp_get_thread_num();
 #endif
 
