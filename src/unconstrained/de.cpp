@@ -117,7 +117,11 @@ optim::internal::de_impl(
 #ifdef OPTIM_USE_OPENMP
     #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec)
 #endif
+#ifdef _MSC_VER
+    for (int64_t i = 0; i < n_pop; ++i) {
+#else
     for (size_t i = 0; i < n_pop; ++i) {
+#endif
         size_t thread_num = 0;
 
 #ifdef OPTIM_USE_OPENMP
@@ -164,7 +168,11 @@ optim::internal::de_impl(
 #ifdef OPTIM_USE_OPENMP
         #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec)
 #endif
-        for (size_t i = 0; i < n_pop; ++i) {
+#ifdef _MSC_VER
+    for (int64_t i = 0; i < n_pop; ++i) {
+#else
+    for (size_t i = 0; i < n_pop; ++i) {
+#endif
             size_t thread_num = 0;
 
 #ifdef OPTIM_USE_OPENMP
@@ -258,7 +266,11 @@ optim::internal::de_impl(
 #ifdef OPTIM_USE_OPENMP
         #pragma omp parallel for num_threads(omp_n_threads)
 #endif
-            for (size_t i = 0; i < n_pop; ++i) {
+#ifdef _MSC_VER
+        for (int64_t i = 0; i < n_pop; ++i) {
+#else
+        for (size_t i = 0; i < n_pop; ++i) {
+#endif
                 X_next.row(i) = inv_transform<RowVec_t>(X_next.row(i), bounds_type, lower_bounds, upper_bounds);
             }
         }

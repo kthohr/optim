@@ -125,7 +125,11 @@ optim::internal::pso_dv_impl(
 #ifdef OPTIM_USE_OPENMP
     #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec)
 #endif
+#ifdef _MSC_VER
+    for (int64_t i = 0; i < n_pop; ++i) {
+#else
     for (size_t i = 0; i < n_pop; ++i) {
+#endif
         size_t thread_num = 0;
 
 #ifdef OPTIM_USE_OPENMP
@@ -178,7 +182,11 @@ optim::internal::pso_dv_impl(
 #ifdef OPTIM_USE_OPENMP
         #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec,rand_CR)
 #endif
+#ifdef _MSC_VER
+        for (int64_t i = 0; i < n_pop; ++i) {
+#else
         for (size_t i = 0; i < n_pop; ++i) {
+#endif
             size_t thread_num = 0;
 
 #ifdef OPTIM_USE_OPENMP
