@@ -41,9 +41,6 @@
 
 //
 
-
-//
-
 #if defined(_OPENMP) && !defined(OPTIM_DONT_USE_OPENMP)
     #undef OPTIM_USE_OPENMP
     #define OPTIM_USE_OPENMP
@@ -108,6 +105,12 @@ namespace optim
 
     static const double eps_dbl = std::numeric_limits<fp_t>::epsilon();
     static const double inf = std::numeric_limits<fp_t>::infinity();
+
+#ifdef _MSC_VER
+    using ompint_t = int64_t;
+#else
+    using ompint_t = size_t;
+#endif
 }
 
 //
