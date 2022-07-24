@@ -71,19 +71,19 @@ Function Declarations
 ---------------------
 
 .. _broyden-func-ref1:
-.. doxygenfunction:: broyden(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *)
+.. doxygenfunction:: broyden(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *)
    :project: optimlib
 
 .. _broyden-func-ref2:
-.. doxygenfunction:: broyden(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: broyden(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 .. _broyden-func-ref3:
-.. doxygenfunction:: broyden(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *)
+.. doxygenfunction:: broyden(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *)
    :project: optimlib
 
 .. _broyden-func-ref4:
-.. doxygenfunction:: broyden(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *, algo_settings_t&)
+.. doxygenfunction:: broyden(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----

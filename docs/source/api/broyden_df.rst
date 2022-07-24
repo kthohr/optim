@@ -87,19 +87,19 @@ Function Declarations
 ---------------------
 
 .. _broyden-df-func-ref1:
-.. doxygenfunction:: broyden_df(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *)
+.. doxygenfunction:: broyden_df(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *)
    :project: optimlib
 
 .. _broyden-df-func-ref2:
-.. doxygenfunction:: broyden_df(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: broyden_df(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *, algo_settings_t&)
    :project: optimlib
 
 .. _broyden-df-func-ref3:
-.. doxygenfunction:: broyden_df(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *)
+.. doxygenfunction:: broyden_df(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *)
    :project: optimlib
 
 .. _broyden-df-func-ref4:
-.. doxygenfunction:: broyden_df(ColVec_t&, std::function<Vec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *, algo_settings_t&)
+.. doxygenfunction:: broyden_df(ColVec_t&, std::function<ColVec_tconst ColVec_t &vals_inp, void *opt_data>, void *, std::function<Mat_tconst ColVec_t &vals_inp, void *jacob_data>, void *, algo_settings_t&)
    :project: optimlib
 
 ----
