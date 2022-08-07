@@ -177,48 +177,36 @@ This is a well-known test function with many local minima. Newton-type methods (
 Code:
 
 ``` cpp
-#define OPTIM_ENABLE_ARMA_WRAPPERS
+#define OPTIM_ENABLE_EIGEN_WRAPPERS
 #include "optim.hpp"
+        
+#define OPTIM_PI 3.14159265358979
 
-//
-// Ackley function
-
-double ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+double 
+ackley_fn(const Eigen::VectorXd& vals_inp, Eigen::VectorXd* grad_out, void* opt_data)
 {
     const double x = vals_inp(0);
     const double y = vals_inp(1);
-    const double pi = arma::datum::pi;
 
-    double obj_val = -20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2*pi*x) + std::cos(2*pi*y)) ) + 22.718282L;
-
-    //
-
+    const double obj_val = 20 + std::exp(1) - 20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2 * OPTIM_PI * x) + std::cos(2 * OPTIM_PI * y)) );
+            
     return obj_val;
 }
-
+        
 int main()
 {
-    // initial values:
-    arma::vec x = arma::ones(2,1) + 1.0; // (2,2)
-
-    //
-
-    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
-
-    bool success = optim::de(x,ackley_fn,nullptr);
-
-    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
-
+    Eigen::VectorXd x = 2.0 * Eigen::VectorXd::Ones(2); // initial values: (2,2)
+        
+    bool success = optim::de(x, ackley_fn, nullptr);
+        
     if (success) {
-        std::cout << "de: Ackley test completed successfully.\n"
-                  << "elapsed time: " << elapsed_seconds.count() << "s\n";
+        std::cout << "de: Ackley test completed successfully." << std::endl;
     } else {
         std::cout << "de: Ackley test completed unsuccessfully." << std::endl;
     }
-
-    arma::cout << "\nde: solution to Ackley test:\n" << x << arma::endl;
-
+        
+    arma::cout << "de: solution to Ackley test:\n" << x << arma::endl;
+        
     return 0;
 }
 ```
@@ -226,7 +214,7 @@ int main()
 Compile and run:
 
 ``` bash
-g++ -Wall -std=c++11 -O3 -march=native -ffp-contract=fast -I/path/to/armadillo -I/path/to/optim/include optim_de_ex.cpp -o optim_de_ex.out -L/path/to/optim/lib -loptim
+g++ -Wall -std=c++14 -O3 -march=native -ffp-contract=fast -I/path/to/eigen -I/path/to/optim/include optim_de_ex.cpp -o optim_de_ex.out -L/path/to/optim/lib -loptim
 ./optim_de_ex.out
 ```
 
@@ -241,7 +229,51 @@ de: solution to Ackley test:
 ```
 On a standard laptop, OptimLib will compute a solution to within machine precision in a fraction of a second.
 
-Check the `/tests` directory for additional examples, and http://www.kthohr.com/optimlib.html for a detailed description of each algorithm.
+If using Armadillo:
+
+``` cpp
+#define OPTIM_ENABLE_ARMA_WRAPPERS
+#include "optim.hpp"
+        
+#define OPTIM_PI 3.14159265358979
+
+double 
+ackley_fn(const arma::vec& vals_inp, arma::vec* grad_out, void* opt_data)
+{
+    const double x = vals_inp(0);
+    const double y = vals_inp(1);
+
+    const double obj_val = 20 + std::exp(1) - 20*std::exp( -0.2*std::sqrt(0.5*(x*x + y*y)) ) - std::exp( 0.5*(std::cos(2 * OPTIM_PI * x) + std::cos(2 * OPTIM_PI * y)) );
+            
+    return obj_val;
+}
+        
+int main()
+{
+    arma::vec x = arma::ones(2,1) + 1.0; // initial values: (2,2)
+        
+    bool success = optim::de(x, ackley_fn, nullptr);
+        
+    if (success) {
+        std::cout << "de: Ackley test completed successfully." << std::endl;
+    } else {
+        std::cout << "de: Ackley test completed unsuccessfully." << std::endl;
+    }
+        
+    arma::cout << "de: solution to Ackley test:\n" << x << arma::endl;
+        
+    return 0;
+}
+```
+
+Compile and run:
+
+``` bash
+g++ -Wall -std=c++11 -O3 -march=native -ffp-contract=fast -I/path/to/armadillo -I/path/to/optim/include optim_de_ex.cpp -o optim_de_ex.out -L/path/to/optim/lib -loptim
+./optim_de_ex.out
+```
+
+Check the `/tests` directory for additional examples, and https://optimlib.readthedocs.io/en/latest/ for a detailed description of each algorithm.
 
 ### Logistic regression
 
@@ -412,7 +444,68 @@ newton: true values vs estimates:
 
 ## Automatic Differentiation
 
-By combining Eigen with the [Autodiff library](https://autodiff.github.io), OptimLib provides experimental support for automatic differentiation. See the [documentation](https://optimlib.readthedocs.io/en/latest/autodiff.html) for more details on this topic.
+By combining Eigen with the [Autodiff library](https://autodiff.github.io), OptimLib provides experimental support for automatic differentiation. 
+
+Example using forward-mode automatic differentiation with BFGS for the Sphere function:
+
+``` cpp
+#define OPTIM_ENABLE_EIGEN_WRAPPERS
+#include "optim.hpp"
+
+#include <autodiff/forward/real.hpp>
+#include <autodiff/forward/real/eigen.hpp>
+
+//
+
+autodiff::real
+opt_fnd(const autodiff::ArrayXreal& x)
+{
+    return x.cwiseProduct(x).sum();
+}
+
+double
+opt_fn(const Eigen::VectorXd& x, Eigen::VectorXd* grad_out, void* opt_data)
+{
+    autodiff::real u;
+    autodiff::ArrayXreal xd = x.eval();
+
+    if (grad_out) {
+        Eigen::VectorXd grad_tmp = autodiff::gradient(opt_fnd, autodiff::wrt(xd), autodiff::at(xd), u);
+
+        *grad_out = grad_tmp;
+    } else {
+        u = opt_fnd(xd);
+    }
+
+    return u.val();
+}
+
+int main()
+{
+    Eigen::VectorXd x(5);
+    x << 1, 2, 3, 4, 5;
+
+    bool success = optim::bfgs(x, opt_fn, nullptr);
+
+    if (success) {
+        std::cout << "bfgs: forward-mode autodiff test completed successfully.\n" << std::endl;
+    } else {
+        std::cout << "bfgs: forward-mode autodiff test completed unsuccessfully.\n" << std::endl;
+    }
+
+    std::cout << "solution: x = \n" << x << std::endl;
+
+    return 0;
+}
+```
+
+Compile with:
+
+``` bash
+g++ -Wall -std=c++17 -O3 -march=native -ffp-contract=fast -I/path/to/eigen -I/path/to/autodiff -I/path/to/optim/include optim_autodiff_ex.cpp -o optim_autodiff_ex.out -L/path/to/optim/lib -loptim
+```
+
+See the [documentation](https://optimlib.readthedocs.io/en/latest/autodiff.html) for more details on this topic.
 
 ## Author
 
