@@ -120,9 +120,9 @@ optim::internal::nm_impl(
     for (size_t i = 1; i < n_vals + 1; ++i) {
         if (!settings.nm_settings.custom_initial_simplex) {
             if (init_out_vals(i-1) != 0.0) {
-                simplex_points.row(i) = BMO_MATOPS_TRANSPOSE( init_out_vals + 0.05*init_out_vals(i-1) * unit_vec(i-1,n_vals) );
+                simplex_points.row(i) = BMO_MATOPS_TRANSPOSE( init_out_vals + 0.05*init_out_vals(i-1) * bmo::unit_vec(i-1,n_vals) );
             } else {
-                simplex_points.row(i) = BMO_MATOPS_TRANSPOSE( init_out_vals + 0.00025 * unit_vec(i-1,n_vals) );
+                simplex_points.row(i) = BMO_MATOPS_TRANSPOSE( init_out_vals + 0.00025 * bmo::unit_vec(i-1,n_vals) );
                 // simplex_points.row(i) = init_out_vals.t() + 0.05*arma::trans(unit_vec(i-1,n_vals));
             }
         }
@@ -165,7 +165,7 @@ optim::internal::nm_impl(
         // step 1
 
         // ColVecInt_t sort_vec = arma::sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
-        ColVecUInt_t sort_vec = get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
+        ColVecUInt_t sort_vec = bmo::get_sort_index(simplex_fn_vals); // sort from low (best) to high (worst) values
 
         simplex_fn_vals = BMO_MATOPS_EVAL(simplex_fn_vals(sort_vec));
         simplex_points = BMO_MATOPS_EVAL(BMO_MATOPS_ROWS(simplex_points, sort_vec));
@@ -284,7 +284,7 @@ optim::internal::nm_impl(
 
     //
 
-    ColVec_t prop_out = BMO_MATOPS_TRANSPOSE(simplex_points.row(index_min(simplex_fn_vals)));
+    ColVec_t prop_out = BMO_MATOPS_TRANSPOSE(simplex_points.row(bmo::index_min(simplex_fn_vals)));
     
     if (vals_bound) {
         prop_out = inv_transform(prop_out, bounds_type, lower_bounds, upper_bounds);

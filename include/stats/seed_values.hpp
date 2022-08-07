@@ -25,7 +25,7 @@ inline
 size_t
 generate_seed_value(const int ind_inp, const int n_threads, rand_engine_t& rand_engine)
 {
-    return static_cast<size_t>( (bmo_stats::runif<fp_t>(rand_engine) + ind_inp + n_threads) * 1000 );
+    return static_cast<size_t>( (bmo::stats::runif<fp_t>(rand_engine) + ind_inp + n_threads) * 1000 );
     // return static_cast<size_t>( (ind_inp + n_threads) * 1000 );
 }
 

@@ -89,11 +89,9 @@ optim::internal::pso_impl(
 
     sampling_bounds_check(vals_bound, n_vals, bounds_type, lower_bounds, upper_bounds, par_initial_lb, par_initial_ub);
 
-    // random sampling setup
+    // parallelization setup
 
     int omp_n_threads = 1;
-    rand_engine_t rand_engine(settings.rng_seed_value);
-    std::vector<rand_engine_t> engines;
 
 #ifdef OPTIM_USE_OPENMP
     if (settings.pso_settings.omp_n_threads > 0) {
@@ -103,9 +101,14 @@ optim::internal::pso_impl(
     }
 #endif
 
+    // random sampling setup
+
+    rand_engine_t rand_engine(settings.rng_seed_value);
+    std::vector<rand_engine_t> rand_engines_vec;
+
     for (int i = 0; i < omp_n_threads; ++i) {
         size_t seed_val = generate_seed_value(i, omp_n_threads, rand_engine);
-        engines.push_back(rand_engine_t(seed_val));
+        rand_engines_vec.push_back(rand_engine_t(seed_val));
     }
 
     // lambda function for box constraints
@@ -143,7 +146,7 @@ optim::internal::pso_impl(
         if (center_particle && i == n_pop - 1) {
             P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop-2) ) / static_cast<fp_t>(n_pop-1); // center vector
         } else {
-            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec);
 
             P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
         }
@@ -167,7 +170,7 @@ optim::internal::pso_impl(
     fp_t min_objfn_val_running = BMO_MATOPS_MIN_VAL(objfn_vals);
     fp_t min_objfn_val_check = min_objfn_val_running;
     
-    RowVec_t best_sol_running = P.row( index_min(objfn_vals) );
+    RowVec_t best_sol_running = P.row( bmo::index_min(objfn_vals) );
 
     //
     // begin loop
@@ -210,18 +213,18 @@ optim::internal::pso_impl(
 #endif
 
             if ( !(center_particle && i == n_pop - 1) ) {
-                bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec_1);
-                bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec_2);
+                bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec_1);
+                bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec_2);
 
-                // RowVec_t rand_vec_1 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
-                // RowVec_t rand_vec_2 = bmo_stats::runif_vec<fp_t, RowVec_t>(n_vals, engines[thread_num]);
+                // RowVec_t rand_vec_1 = bmo::stats::runif_vec<fp_t, RowVec_t>(n_vals, rand_engines_vec[thread_num]);
+                // RowVec_t rand_vec_2 = bmo::stats::runif_vec<fp_t, RowVec_t>(n_vals, rand_engines_vec[thread_num]);
 
                 V.row(i) = par_w * V.row(i) + par_c_cog * BMO_MATOPS_HADAMARD_PROD( rand_vec_1, (best_vecs.row(i) - P.row(i)) ) \
                     + par_c_soc * BMO_MATOPS_HADAMARD_PROD( rand_vec_2, (best_sol_running - P.row(i)) );
 
                 P.row(i) += V.row(i);
             } else {
-                P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop-2) ) / static_cast<fp_t>(n_pop-1); // center vector
+                P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop - 2) ) / static_cast<fp_t>(n_pop - 1); // center vector
             }
             
             //
@@ -240,7 +243,7 @@ optim::internal::pso_impl(
             }
         }
 
-        size_t min_objfn_val_index = index_min(best_vals);
+        size_t min_objfn_val_index = bmo::index_min(best_vals);
         fp_t min_objfn_val = best_vals(min_objfn_val_index);
 
         //
@@ -290,7 +293,7 @@ optim::internal::pso_impl(
 
     //
 
-    return true;
+    return success;
 }
 
 optimlib_inline

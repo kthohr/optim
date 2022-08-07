@@ -224,8 +224,8 @@ struct algo_settings_t
 
     size_t iter_max = 2000;
 
-    fp_t grad_err_tol  = 1E-08;
-    fp_t rel_sol_change_tol  = 1E-14;
+    fp_t grad_err_tol = 1E-08;
+    fp_t rel_sol_change_tol = 1E-14;
     fp_t rel_objfn_change_tol = 1E-08;
 
     // bounds
@@ -242,8 +242,6 @@ struct algo_settings_t
 
     size_t opt_iter;
     fp_t opt_error_value;
-
-    // algorithm-specific parameters
 
     // BFGS
     bfgs_settings_t bfgs_settings;

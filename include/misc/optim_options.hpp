@@ -140,11 +140,15 @@ namespace optim
     namespace optim
     {
         using Mat_t = arma::Mat<fp_t>;
+
         using ColVec_t = arma::Col<fp_t>;
         using RowVec_t = arma::Row<fp_t>;
+
         using ColVecInt_t = arma::Col<int>;
         using RowVecInt_t = arma::Row<int>;
+
         using ColVecUInt_t = arma::Col<unsigned long long>;
+        using RowVecUInt_t = arma::Row<unsigned long long>;
     }
 #elif defined(OPTIM_ENABLE_EIGEN_WRAPPERS) || defined(OPTIM_USE_RCPP_EIGEN)
     #ifndef OPTIM_ENABLE_EIGEN_WRAPPERS
@@ -169,11 +173,15 @@ namespace optim
     namespace optim
     {
         using Mat_t = Eigen::Matrix<fp_t, Eigen::Dynamic, Eigen::Dynamic>;
+
         using ColVec_t = Eigen::Matrix<fp_t, Eigen::Dynamic, 1>;
         using RowVec_t = Eigen::Matrix<fp_t, 1, Eigen::Dynamic>;
+
         using ColVecInt_t = Eigen::Matrix<int, Eigen::Dynamic, 1>;
         using RowVecInt_t = Eigen::Matrix<int, 1, Eigen::Dynamic>;
+
         using ColVecUInt_t = Eigen::Matrix<size_t, Eigen::Dynamic, 1>;
+        using RowVecUInt_t = Eigen::Matrix<size_t, 1, Eigen::Dynamic>;
     }
 #else
     #error OptimLib: you must enable the Armadillo OR Eigen wrappers

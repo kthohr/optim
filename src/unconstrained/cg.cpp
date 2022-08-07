@@ -87,10 +87,8 @@ optim::internal::cg_impl(
 
                 ret = opt_objfn(vals_inv_trans,&grad_obj,opt_data);
 
-                // Mat_t jacob_matrix = jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds);
                 ColVec_t jacob_vec = BMO_MATOPS_EXTRACT_DIAG( jacobian_adjust(vals_inp,bounds_type,lower_bounds,upper_bounds) );
 
-                // *grad_out = jacob_matrix * grad_obj; // no need for transpose as jacob_matrix is diagonal
                 *grad_out = BMO_MATOPS_HADAMARD_PROD(jacob_vec, grad_obj);
             } else {
                 ret = opt_objfn(vals_inv_trans, nullptr, opt_data);

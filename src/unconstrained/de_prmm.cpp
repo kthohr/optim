@@ -53,7 +53,6 @@ optim::internal::de_prmm_impl(
     const fp_t rel_objfn_change_tol = settings.rel_objfn_change_tol;
 
     size_t n_pop = settings.de_settings.n_pop;
-    // const size_t check_freq = settings.de_settings.check_freq;
 
     const fp_t par_initial_F = settings.de_settings.par_F;
     const fp_t par_initial_CR = settings.de_settings.par_CR;
@@ -90,11 +89,9 @@ optim::internal::de_prmm_impl(
 
     sampling_bounds_check(vals_bound, n_vals, bounds_type, lower_bounds, upper_bounds, par_initial_lb, par_initial_ub);
 
-    // random sampling setup
+    // parallelization setup
 
     int omp_n_threads = 1;
-    rand_engine_t rand_engine(settings.rng_seed_value);
-    std::vector<rand_engine_t> engines;
 
 #ifdef OPTIM_USE_OPENMP
     if (settings.de_settings.omp_n_threads > 0) {
@@ -104,9 +101,14 @@ optim::internal::de_prmm_impl(
     }
 #endif
 
+    // random sampling setup
+
+    rand_engine_t rand_engine(settings.rng_seed_value);
+    std::vector<rand_engine_t> rand_engines_vec;
+
     for (int i = 0; i < omp_n_threads; ++i) {
         size_t seed_val = generate_seed_value(i, omp_n_threads, rand_engine);
-        engines.push_back(rand_engine_t(seed_val));
+        rand_engines_vec.push_back(rand_engine_t(seed_val));
     }
 
     // lambda function for box constraints
@@ -141,7 +143,7 @@ optim::internal::de_prmm_impl(
         thread_num = omp_get_thread_num();
 #endif
 
-        bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
+        bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec);
 
         X_next.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
 
@@ -154,11 +156,11 @@ optim::internal::de_prmm_impl(
         objfn_vals(i) = prop_objfn_val;
 
         if (vals_bound) {
-            X_next.row(i) = transform<RowVec_t>( X_next.row(i), bounds_type, lower_bounds, upper_bounds);
+            X_next.row(i) = transform<RowVec_t>(X_next.row(i), bounds_type, lower_bounds, upper_bounds);
         }
     }
 
-    size_t min_objfn_val_index = index_min(objfn_vals);
+    size_t min_objfn_val_index = bmo::index_min(objfn_vals);
     fp_t min_objfn_val = objfn_vals(min_objfn_val_index);
 
     fp_t min_objfn_val_running = min_objfn_val;
@@ -183,7 +185,6 @@ optim::internal::de_prmm_impl(
     while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen + 1) {
         ++iter;
 
-        //
         // population reduction step
 
         if (iter == n_gen && n_reset < 4) {
@@ -217,7 +218,6 @@ optim::internal::de_prmm_impl(
 
         X = X_next;
 
-        //
         // first population: n_pop - n_pop_best
         
 #ifdef OPTIM_USE_OPENMP
@@ -230,7 +230,7 @@ optim::internal::de_prmm_impl(
             thread_num = omp_get_thread_num();
 #endif
 
-            bmo_stats::internal::runif_vec_inplace<fp_t>(4, engines[thread_num], rand_pars);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(4, rand_engines_vec[thread_num], rand_pars);
 
             if (rand_pars(0) < tau_F) {
                 F_vec(i) = F_l + (F_u-F_l) * rand_pars(1);
@@ -245,28 +245,27 @@ optim::internal::de_prmm_impl(
             uint_t c_1, c_2, c_3;
 
             do {
-                c_1 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
+                c_1 = bmo::stats::rind(0, n_pop-1, rand_engines_vec[thread_num]);
             } while (c_1 == i);
 
             do {
-                c_2 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
+                c_2 = bmo::stats::rind(0, n_pop-1, rand_engines_vec[thread_num]);
             } while (c_2==i || c_2==c_1);
 
             do {
-                c_3 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
+                c_3 = bmo::stats::rind(0, n_pop-1, rand_engines_vec[thread_num]);
             } while (c_3==i || c_3==c_1 || c_3==c_2);
 
             //
 
-            const size_t rand_ind = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
+            const size_t rand_ind = bmo::stats::rind(0, n_vals-1, rand_engines_vec[thread_num]);
 
-            // ColVec_t rand_unif = bmo_stats::runif_vec<fp_t>(n_vals, engines[thread_num]);
-            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
                 if ( rand_vec(k) < CR_vec(i) || k == rand_ind ) {
-                    fp_t r_s = bmo_stats::runif<fp_t>(engines[thread_num]);
+                    fp_t r_s = bmo::stats::runif<fp_t>(rand_engines_vec[thread_num]);
 
                     if ( r_s < fp_t(0.75) || n_pop >= 100 ) {
                         X_prop(k) = X(c_3,k) + F_vec(i) * (X(c_1,k) - X(c_2,k));
@@ -290,17 +289,15 @@ optim::internal::de_prmm_impl(
             }
         }
 
-        min_objfn_val_index = index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - n_pop_best - 1) );
+        min_objfn_val_index = bmo::index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - n_pop_best - 1) );
 
         best_val_main = objfn_vals(min_objfn_val_index);
-        // best_vec_main = X_next.rows(0,n_pop - n_pop_best - 1).row( objfn_vals.rows(0,n_pop - n_pop_best - 1).index_min() );
         best_vec_main = X_next.row( min_objfn_val_index );
 
         if (best_val_main < best_val_best) {
             xchg_vec = best_vec_main;
         }
 
-        //
         // second population
 
 #ifdef OPTIM_USE_OPENMP
@@ -313,7 +310,7 @@ optim::internal::de_prmm_impl(
             thread_num = omp_get_thread_num();
 #endif
 
-            bmo_stats::internal::runif_vec_inplace<fp_t>(4, engines[thread_num], rand_pars);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(4, rand_engines_vec[thread_num], rand_pars);
 
             if (rand_pars(0) < tau_F) {
                 F_vec(i) = F_l + (F_u-F_l) * rand_pars(1);
@@ -328,18 +325,18 @@ optim::internal::de_prmm_impl(
             uint_t c_1, c_2;
 
             do {
-                c_1 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
+                c_1 = bmo::stats::rind(0, n_pop-1, rand_engines_vec[thread_num]);
             } while(c_1 == i);
 
             do {
-                c_2 = bmo_stats::rind(0, n_pop-1, engines[thread_num]);
+                c_2 = bmo::stats::rind(0, n_pop-1, rand_engines_vec[thread_num]);
             } while(c_2==i || c_2==c_1);
 
             //
 
-            const size_t rand_ind = bmo_stats::rind(0, n_vals-1, engines[thread_num]);
+            const size_t rand_ind = bmo::stats::rind(0, n_vals-1, rand_engines_vec[thread_num]);
 
-            bmo_stats::internal::runif_vec_inplace<fp_t>(n_vals, engines[thread_num], rand_vec);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec);
             RowVec_t X_prop(n_vals);
 
             for (size_t k = 0; k < n_vals; ++k) {
@@ -362,7 +359,7 @@ optim::internal::de_prmm_impl(
             }
         }
 
-        min_objfn_val_index = n_pop - n_pop_best + index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, n_pop - n_pop_best, n_pop - 1) );
+        min_objfn_val_index = n_pop - n_pop_best + bmo::index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, n_pop - n_pop_best, n_pop - 1) );
 
         // best_val_best = objfn_vals.rows(n_pop - n_pop_best, n_pop - 1).min();
         best_val_best = objfn_vals(min_objfn_val_index);
@@ -391,7 +388,7 @@ optim::internal::de_prmm_impl(
 
         // assign running global minimum
 
-        min_objfn_val_index = index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - 1) );
+        min_objfn_val_index = bmo::index_min( BMO_MATOPS_MIDDLE_ROWS(objfn_vals, 0, n_pop - 1) );
         fp_t best_val_tmp = objfn_vals(min_objfn_val_index);
 
         if (best_val_tmp < min_objfn_val_running) {
@@ -437,7 +434,7 @@ optim::internal::de_prmm_impl(
 
     //
 
-    return true;
+    return success;
 }
 
 optimlib_inline
