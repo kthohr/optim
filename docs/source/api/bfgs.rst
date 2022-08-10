@@ -77,11 +77,11 @@ Function Declarations
 ---------------------
 
 .. _bfgs-func-ref1:
-.. doxygenfunction:: bfgs(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: bfgs(ColVec_t& init_out_vals, std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data)
    :project: optimlib
 
 .. _bfgs-func-ref2:
-.. doxygenfunction:: bfgs(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: bfgs(ColVec_t& init_out_vals, std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
    :project: optimlib
 
 ----
