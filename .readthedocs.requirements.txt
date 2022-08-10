@@ -3,4 +3,4 @@ breathe == 4.34.0
 sphinx-rtd-theme>=0.5.1
 sphinxcontrib-katex == 0.8.6
 sphinxcontrib-contentui == 0.2.5
-docutils == 0.17.1
+docutils == 0.16
