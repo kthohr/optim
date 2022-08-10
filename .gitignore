@@ -17,6 +17,7 @@ Makefile
 *.gcov
 *.dSYM
 
+!docs/Makefile
 docs/build
 docs/xml
 
