@@ -299,7 +299,7 @@ Code to run this example is given below.
         
         int main()
         {
-            Eigen::VectorXd x = Eigen::VectorXd::Zero(test_dim); // initial values (0,0)
+            Eigen::VectorXd x = Eigen::VectorXd::Zero(2); // initial values (0,0)
         
             bool success_2 = optim::bfgs(x, booth_fn, nullptr);
         
