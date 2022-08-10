@@ -4,5 +4,5 @@ requirements_file: .readthedocs.requirements.txt
 #     file: docs/environment.yml
 
 python:
-  version: 3.6
+  version: 3.10
   
