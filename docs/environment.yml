@@ -7,3 +7,4 @@ channels:
 
 dependencies:
   - breathe
+  - doxygen="1.9.3"

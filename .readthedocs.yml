@@ -5,6 +5,3 @@ requirements_file: .readthedocs.requirements.txt
 
 python:
   version: "3.8"
-
-doxygen:
-  version: "1.9.3"
