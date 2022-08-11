@@ -163,11 +163,11 @@ Function Declarations
 ---------------------
 
 .. _gd-func-ref1:
-.. doxygenfunction:: gd(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *)
+.. doxygenfunction:: gd(ColVec_t& init_out_vals, std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data)
    :project: optimlib
 
 .. _gd-func-ref2:
-.. doxygenfunction:: gd(ColVec_t&, std::function<fp_tconst ColVec_t &vals_inp, ColVec_t *grad_out, void *opt_data>, void *, algo_settings_t&)
+.. doxygenfunction:: gd(ColVec_t& init_out_vals, std::function<fp_t (const ColVec_t& vals_inp, ColVec_t* grad_out, void* opt_data)> opt_objfn, void* opt_data, algo_settings_t& settings)
    :project: optimlib
 
 ----
