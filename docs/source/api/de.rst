@@ -27,17 +27,17 @@ The updating rule for DE is described below.
 
 Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input values at stage :math:`i` of the algorithm, where each row corresponds to a different vector of candidate solutions.
 
-1. The Mutation Step. For unique random indices :math:`a,b,c \in \{1, \ldots, d\}`, set the mutation proposal :math:`X^{(*)}` as follows.
+1. **The Mutation Step.** For unique random indices :math:`a,b,c \in \{1, \ldots, d\}`, set the mutation proposal :math:`X^{(*)}` as follows.
 
-   1. If ``de_mutation_method = 1``, use the 'rand' method:
+   1. If ``de_settings.mutation_method = 1``, use the 'rand' method:
 
       .. math::
 
         X^{(*)} = X^{(i)}(c,:) + F \times \left( X^{(i)}(a,:) - X^{(i)}(b,:) \right)
 
-      where :math:`F` is the mutation parameter, set via ``de_par_F``.
+      where :math:`F` is the mutation parameter, set via ``de_settings.par_F``.
     
-   2. If ``de_mutation_method = 2``, use the 'best' method:
+   2. If ``de_settings.mutation_method = 2``, use the 'best' method:
 
       .. math::
 
@@ -49,7 +49,7 @@ Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input val
 
         X^{(i)} (\text{best},:) := \arg \min \left\{ f(X^{(i)}(1,:)), \ldots, f(X^{(i)}(N,:)) \right\}
 
-2. The Crossover Step.
+2. **The Crossover Step.**
 
    1. Choose a random integer :math:`r_k \in \{1, \ldots, d \}`.
 
@@ -61,9 +61,9 @@ Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input val
 
         X_c^{(*)} (j,k) = \begin{cases} X^*(j,k) & \text{ if } u_k \leq CR \text{ or } k = r_k \\ X^{(i)} (j,k) & \text{ else } \end{cases}
 
-      where :math:`CR \in [0,1]` is the crossover parameter, set via ``de_par_CR``.
+      where :math:`CR \in [0,1]` is the crossover parameter, set via ``de_settings.par_CR``.
 
-3. The Update Step.
+3. **The Update Step.**
 
       .. math::
 
@@ -71,7 +71,7 @@ Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input val
 
 The algorithm stops when at least one of the following conditions are met:
 
-  1. the relative improvement in the objective function from the best candidate solution is less than ``rel_objfn_change_tol`` between ``de_settings.check_freq`` number of generations;
+  1. the relative improvement in the objective function from the best candidate solution is less than ``rel_objfn_change_tol`` between the last ``de_settings.check_freq`` number of generations;
   
   2. the total number of generations exceeds ``de_settings.n_gen``.
 
@@ -109,9 +109,39 @@ Function Declarations
 ----
 
 Optimization Control Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
 The basic control parameters are:
+
+- ``size_t de_settings.n_pop``: size of population for each generation.
+
+  - Default value: ``200``.
+
+- ``size_t de_settings.n_gen``: number of generations.
+
+  - Default value: ``1000``.
+
+- ``size_t de_settings.mutation_method``: the mutation strategy, as described in step one of the algorithm description.
+
+  - Default value: ``1`` ("rand").
+
+- ``fp_t de_settings.par_F``: the mutation parameter.
+
+  - Default value: ``0.8``.
+
+- ``fp_t de_settings.par_CR``: the crossover parameter.
+
+  - Default value: ``0.9``.
+
+- ``size_t de_settings.check_freq``: how many generations to skip when evaluating whether the best candidate value has improved between generations (i.e., to check for potential convergence).
+
+  - Default value: ``(size_t)-1``.
+
+- Upper and lower bounds of the uniform distributions used to generate initial values (centered at ``init_out_vals``):
+
+  - ``ColVec_t de_settings.initial_lb``: defines the lower bounds of the search space.
+
+  - ``ColVec_t de_settings.initial_ub``: defines the upper bounds of the search space.
 
 - ``fp_t rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in best candidate solution should be before 'convergence' is declared.
 
@@ -167,8 +197,11 @@ Code to run this example is given below.
         int main()
         {
             arma::vec x = arma::ones(2,1) + 1.0; // initial values: (2,2)
+
+            optim::algorithm_settings_t settings;
+            settings.de_settings.check_freq = 100;
         
-            bool success = optim::de(x, ackley_fn, nullptr);
+            bool success = optim::de(x, ackley_fn, settings);
         
             if (success) {
                 std::cout << "de: Ackley test completed successfully." << std::endl;
@@ -206,7 +239,10 @@ Code to run this example is given below.
         {
             Eigen::VectorXd x = 2.0 * Eigen::VectorXd::Ones(2); // initial values: (2,2)
         
-            bool success = optim::de(x, ackley_fn, nullptr);
+            optim::algorithm_settings_t settings;
+            settings.de_settings.check_freq = 100;
+        
+            bool success = optim::de(x, ackley_fn, settings);
         
             if (success) {
                 std::cout << "de: Ackley test completed successfully." << std::endl;

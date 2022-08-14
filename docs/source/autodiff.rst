@@ -7,7 +7,7 @@
 Automatic Differentiation
 =========================
 
-Gradient-based optimization methods in OptimLib (such as BFGS and gradient descent) require a user-defined function that returns a gradient vector at each function evaluation. While this is best achieved by knowing the gradient in closed form, OptimLib also provides **experimental support** for automatic differentiation via the `autodiff library <https://autodiff.github.io>`_. 
+Gradient-based optimization methods in OptimLib (such as BFGS and Gradient Descent) require a user-defined function that returns a gradient vector at each function evaluation. While this is best achieved by knowing the gradient in closed form, OptimLib also provides **experimental support** for automatic differentiation with Eigen-based builds via the `autodiff library <https://autodiff.github.io>`_. 
 
 Requirements: an Eigen-based build of OptimLib, a copy of the ``autodiff`` header files, and a C++17 compatible compiler.
 

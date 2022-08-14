@@ -11,7 +11,7 @@ OptimLib is a lightweight C++ library of numerical optimization methods for nonl
 
 Features:
 
-- A C++11 library of local and global optimization algorithms, as well as root finding techniques.
+- A C++11/14/17 library of local and global optimization algorithms, as well as root finding techniques.
 
 - Derivative-free optimization using advanced, parallelized metaheuristic methods.
 

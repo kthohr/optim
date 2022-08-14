@@ -101,7 +101,7 @@ Function Declarations
 ----
 
 Optimization Control Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
 The basic control parameters are:
 
