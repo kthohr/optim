@@ -94,7 +94,7 @@ inv_transform(
             case 4: // upper and lower bounds
                 if (!std::isfinite(vals_trans_inp(i))) {
                     if (std::isnan(vals_trans_inp(i))) {
-                        vals_out(i) = (upper_bounds(i) - lower_bounds(i)) / 2.0;
+                        vals_out(i) = (upper_bounds(i) - lower_bounds(i)) / 2;
                     }
                     else if (vals_trans_inp(i) < 0.0) {
                         vals_out(i) = lower_bounds(i) + eps_dbl;

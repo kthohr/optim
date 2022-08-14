@@ -271,7 +271,7 @@ optim::internal::pso_impl(
     if (return_position_mat) {
         if (vals_bound) {
 #ifdef OPTIM_USE_OPENMP
-        #pragma omp parallel for num_threads(omp_n_threads)
+            #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t i = 0; i < n_pop; ++i) {
                 P.row(i) = inv_transform<RowVec_t>(P.row(i), bounds_type, lower_bounds, upper_bounds);

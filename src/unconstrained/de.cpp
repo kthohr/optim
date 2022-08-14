@@ -54,7 +54,7 @@ optim::internal::de_impl(
     const size_t n_gen = settings.de_settings.n_gen;
     const size_t check_freq = settings.de_settings.check_freq;
 
-    const uint_t mutation_method = settings.de_settings.mutation_method;
+    const size_t mutation_method = settings.de_settings.mutation_method;
 
     const fp_t par_F = settings.de_settings.par_F;
     const fp_t par_CR = settings.de_settings.par_CR;
@@ -256,7 +256,7 @@ optim::internal::de_impl(
     if (return_population_mat) {
         if (vals_bound) {
 #ifdef OPTIM_USE_OPENMP
-        #pragma omp parallel for num_threads(omp_n_threads)
+            #pragma omp parallel for num_threads(omp_n_threads)
 #endif
             for (size_t i = 0; i < n_pop; ++i) {
                 X_next.row(i) = inv_transform<RowVec_t>(X_next.row(i), bounds_type, lower_bounds, upper_bounds);
@@ -275,6 +275,10 @@ optim::internal::de_impl(
     error_reporting(init_out_vals, BMO_MATOPS_TRANSPOSE(best_sol_running), opt_objfn, opt_data, 
                     success, rel_objfn_change, rel_objfn_change_tol, iter, n_gen, 
                     conv_failure_switch, settings_inp);
+
+    if (check_freq > n_gen && iter > n_gen) {
+        success = true;
+    }
 
     //
     

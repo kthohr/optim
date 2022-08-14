@@ -120,7 +120,7 @@ struct de_settings_t
 
     int omp_n_threads = -1; // numbers of threads to use
 
-    int mutation_method = 1; // 1 = rand; 2 = best
+    size_t mutation_method = 1; // 1 = rand; 2 = best
 
     size_t check_freq = (size_t)-1;
 
