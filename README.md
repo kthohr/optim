@@ -205,7 +205,7 @@ int main()
         std::cout << "de: Ackley test completed unsuccessfully." << std::endl;
     }
         
-    arma::cout << "de: solution to Ackley test:\n" << x << arma::endl;
+    std::cout << "de: solution to Ackley test:\n" << x << std::endl;
         
     return 0;
 }
