@@ -251,7 +251,7 @@ optim::internal::nm_impl(
 #ifdef OPTIM_USE_OPENMP
             #pragma omp parallel for num_threads(omp_n_threads)
 #endif
-            for (size_t i = 1; i < n_vals + 1; i++) {
+            for (ompint_t i = 1; i < n_vals + 1; i++) {
                 simplex_fn_vals(i) = box_objfn( BMO_MATOPS_TRANSPOSE(simplex_points.row(i)), nullptr, opt_data);
             }
         }
