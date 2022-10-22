@@ -54,7 +54,8 @@ optim::internal::pso_impl(
 
     const bool center_particle = settings.pso_settings.center_particle;
 
-    const size_t n_pop = (center_particle) ? settings.pso_settings.n_pop + 1 : settings.pso_settings.n_pop;
+    const size_t n_center = (center_particle) ? 1 : 0;
+    const size_t n_pop = settings.pso_settings.n_pop;
     const size_t n_gen = settings.pso_settings.n_gen;
     const size_t check_freq = settings.pso_settings.check_freq;
 
@@ -131,7 +132,7 @@ optim::internal::pso_impl(
 
     ColVec_t rand_vec(n_vals);
     ColVec_t objfn_vals(n_pop);
-    Mat_t P(n_pop,n_vals);
+    Mat_t P(n_pop + n_center, n_vals);
 
 #ifdef OPTIM_USE_OPENMP
     #pragma omp parallel for num_threads(omp_n_threads) firstprivate(rand_vec)
@@ -143,13 +144,9 @@ optim::internal::pso_impl(
         thread_num = omp_get_thread_num();
 #endif
 
-        if (center_particle && i == n_pop - 1) {
-            P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop-2) ) / static_cast<fp_t>(n_pop-1); // center vector
-        } else {
-            bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec);
-
-            P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
-        }
+        bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec);
+        
+        P.row(i) = BMO_MATOPS_TRANSPOSE( par_initial_lb + BMO_MATOPS_HADAMARD_PROD( (par_initial_ub - par_initial_lb), rand_vec ) );
 
         fp_t prop_objfn_val = opt_objfn(BMO_MATOPS_TRANSPOSE(P.row(i)), nullptr, opt_data);
 
@@ -164,6 +161,11 @@ optim::internal::pso_impl(
         }
     }
 
+    if (center_particle) {
+        // taken outside the loop due to parallelization
+        P.row(n_pop) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop - 1) ) / static_cast<fp_t>(n_pop); // center vector
+    }
+
     ColVec_t best_vals = objfn_vals;
     Mat_t best_vecs = P;
 
@@ -171,6 +173,8 @@ optim::internal::pso_impl(
     fp_t min_objfn_val_check = min_objfn_val_running;
     
     RowVec_t best_sol_running = P.row( bmo::index_min(objfn_vals) );
+
+    OPTIM_PSO_TRACE(0, 0, min_objfn_val_running, min_objfn_val_check, best_sol_running, P);
 
     //
     // begin loop
@@ -180,7 +184,7 @@ optim::internal::pso_impl(
 
     RowVec_t rand_vec_1(n_vals);
     RowVec_t rand_vec_2(n_vals);
-    Mat_t V = BMO_MATOPS_ZERO_MAT(n_pop,n_vals);
+    Mat_t V = BMO_MATOPS_ZERO_MAT(n_pop, n_vals);
 
     while (rel_objfn_change > rel_objfn_change_tol && iter < n_gen) {
         ++iter;
@@ -212,20 +216,13 @@ optim::internal::pso_impl(
             thread_num = omp_get_thread_num();
 #endif
 
-            if ( !(center_particle && i == n_pop - 1) ) {
-                bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec_1);
-                bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec_2);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec_1);
+            bmo::stats::internal::runif_vec_inplace<fp_t>(n_vals, rand_engines_vec[thread_num], rand_vec_2);
 
-                // RowVec_t rand_vec_1 = bmo::stats::runif_vec<fp_t, RowVec_t>(n_vals, rand_engines_vec[thread_num]);
-                // RowVec_t rand_vec_2 = bmo::stats::runif_vec<fp_t, RowVec_t>(n_vals, rand_engines_vec[thread_num]);
+            V.row(i) = par_w * V.row(i) + par_c_cog * BMO_MATOPS_HADAMARD_PROD( rand_vec_1, (best_vecs.row(i) - P.row(i)) ) \
+                + par_c_soc * BMO_MATOPS_HADAMARD_PROD( rand_vec_2, (best_sol_running - P.row(i)) );
 
-                V.row(i) = par_w * V.row(i) + par_c_cog * BMO_MATOPS_HADAMARD_PROD( rand_vec_1, (best_vecs.row(i) - P.row(i)) ) \
-                    + par_c_soc * BMO_MATOPS_HADAMARD_PROD( rand_vec_2, (best_sol_running - P.row(i)) );
-
-                P.row(i) += V.row(i);
-            } else {
-                P.row(i) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop - 2) ) / static_cast<fp_t>(n_pop - 1); // center vector
-            }
+            P.row(i) += V.row(i);
             
             //
 
@@ -240,6 +237,24 @@ optim::internal::pso_impl(
             if (objfn_vals(i) < best_vals(i)) {
                 best_vals(i) = objfn_vals(i);
                 best_vecs.row(i) = P.row(i);
+            }
+        }
+
+        if (center_particle) {
+            // taken outside the loop due to parallelization
+            P.row(n_pop) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop - 1) ) / static_cast<fp_t>(n_pop); // center vector
+
+            fp_t prop_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(P.row(n_pop)), nullptr, opt_data);
+
+            if (!std::isfinite(prop_objfn_val)) {
+                prop_objfn_val = inf;
+            }
+        
+            objfn_vals(n_pop) = prop_objfn_val;
+                
+            if (objfn_vals(n_pop) < best_vals(n_pop)) {
+                best_vals(n_pop) = objfn_vals(n_pop);
+                best_vecs.row(n_pop) = P.row(n_pop);
             }
         }
 
@@ -273,7 +288,7 @@ optim::internal::pso_impl(
 #ifdef OPTIM_USE_OPENMP
             #pragma omp parallel for num_threads(omp_n_threads)
 #endif
-            for (size_t i = 0; i < n_pop; ++i) {
+            for (size_t i = 0; i < n_pop + n_center; ++i) {
                 P.row(i) = inv_transform<RowVec_t>(P.row(i), bounds_type, lower_bounds, upper_bounds);
             }
         }
