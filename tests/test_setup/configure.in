@@ -133,7 +133,7 @@ elif [[ "${OPTIM_DEBUG_BUILD}" == "y" ]]; then
     OPTIM_OPT_FLAGS="-g -O0"
 else
     if [[ "${OPTIM_OPT}" == "" ]]; then
-        OPTIM_OPT_FLAGS="-O3 -ffp-contract=fast -flto -DNDEBUG"
+        OPTIM_OPT_FLAGS="-O3 -ffp-contract=fast"
 
         if [ "$IS_ARM" -eq "1" ]; then
             OPTIM_OPT_FLAGS="-mcpu=native ${OPTIM_OPT_FLAGS}"
