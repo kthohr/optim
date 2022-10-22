@@ -36,7 +36,7 @@
 #endif
 
 #ifndef OPTIM_VERSION_PATCH
-    #define OPTIM_VERSION_PATCH 1
+    #define OPTIM_VERSION_PATCH 2
 #endif
 
 //
