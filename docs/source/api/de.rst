@@ -137,15 +137,13 @@ The basic control parameters are:
 
   - Default value: ``(size_t)-1``.
 
-- Upper and lower bounds of the uniform distributions used to generate initial values (centered at ``init_out_vals``):
+- Upper and lower bounds of the uniform distributions used to generate the initial population:
 
   - ``ColVec_t de_settings.initial_lb``: defines the lower bounds of the search space.
 
   - ``ColVec_t de_settings.initial_ub``: defines the upper bounds of the search space.
 
 - ``fp_t rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in best candidate solution should be before 'convergence' is declared.
-
-- ``size_t iter_max``: the maximum number of iterations/updates before the algorithm exits.
 
 - ``bool vals_bound``: whether the search space of the algorithm is bounded. If ``true``, then
 

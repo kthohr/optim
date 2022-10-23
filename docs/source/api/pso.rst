@@ -33,7 +33,7 @@ Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input val
 
    .. math::
 
-      V^{(i+1)}(j.:) = w V^{(i+1)}(j,:) + c_C \times R_C \odot (X_b^{(i)} (j,:) - X^{(i)}(j,:)) + c_S \times R_S \odot (g_b - X^{(i)}(j,:))
+      V^{(i+1)}(j.:) = w \times V^{(i)}(j,:) + c_C \times R_C \odot (X_b^{(i)} (j,:) - X^{(i)}(j,:)) + c_S \times R_S \odot (g_b - X^{(i)}(j,:))
     
    Each position vector is updated using:
 
@@ -105,9 +105,69 @@ Optimization Control Parameters
 
 The basic control parameters are:
 
-- ``fp_t rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in best candidate solution should be before 'convergence' is declared.
+- ``size_t pso_settings.n_pop``: size of population for each generation.
 
-- ``size_t iter_max``: the maximum number of iterations/updates before the algorithm exits.
+  - Default value: ``200``.
+
+- ``size_t pso_settings.n_gen``: number of generations.
+
+  - Default value: ``1000``.
+
+- ``size_t pso_settings.center_particle``: whether to add a particle that averages across the population in each generation.
+
+  - Default value: ``true``.
+
+- ``fp_t pso_settings.inertia_method``: set inertia method (``1`` 1 for linear decreasing between ``w_min`` and ``w_max``, or ``2`` for dampening).
+
+  - Default value: ``1``.
+
+- ``fp_t pso_settings.par_w``: initial value of the weight parameter :math:`w`.
+
+  - Default value: ``1.0``.
+
+- ``fp_t pso_settings.par_w_min``: lower bound on the weight parameter :math:`w`.
+
+  - Default value: ``0.1``.
+
+- ``fp_t pso_settings.par_w_max``: upper bound on the weight parameter :math:`w`.
+
+  - Default value: ``0.99``.
+
+- ``fp_t pso_settings.par_w_damp``: dampening parameter for ``inertia_method`` equal to ``2``.
+
+  - Default value: ``0.99``.
+
+- ``fp_t pso_settings.velocity_method``: set velocity method (``1`` for fixed values or ``2`` for linear change from initial to final values).
+
+  - Default value: ``1``.
+
+- ``fp_t pso_settings.par_c_cog``: initial value for :math:`c_C`.
+
+  - Default value: ``2.0``.
+
+- ``fp_t pso_settings.par_c_soc``: initial value for :math:`c_S`.
+
+  - Default value: ``2.0``.
+
+- ``fp_t pso_settings.par_final_c_cog``: final value for :math:`c_C`.
+
+  - Default value: ``0.5``.
+
+- ``fp_t pso_settings.par_final_c_soc``: final value for :math:`c_S`.
+
+  - Default value: ``2.5``.
+
+- ``size_t pso_settings.check_freq``: how many generations to skip when evaluating whether the best candidate value has improved between generations (i.e., to check for potential convergence).
+
+  - Default value: ``(size_t)-1``.
+
+- Upper and lower bounds of the uniform distributions used to generate the initial population:
+
+  - ``ColVec_t pso_settings.initial_lb``: defines the lower bounds of the search space.
+
+  - ``ColVec_t pso_settings.initial_ub``: defines the upper bounds of the search space.
+
+- ``fp_t rel_objfn_change_tol``: the error tolerance value controlling how small the relative change in best candidate solution should be before 'convergence' is declared.
 
 - ``bool vals_bound``: whether the search space of the algorithm is bounded. If ``true``, then
 
