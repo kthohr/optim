@@ -157,7 +157,7 @@ struct pso_settings_t
 {
     bool center_particle = true;
 
-    size_t n_pop = 100;
+    size_t n_pop = 200;
     size_t n_gen = 1000;
 
     int omp_n_threads = -1; // numbers of threads to use
