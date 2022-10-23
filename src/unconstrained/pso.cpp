@@ -61,7 +61,7 @@ optim::internal::pso_impl(
 
     const uint_t inertia_method = settings.pso_settings.inertia_method;
 
-    fp_t par_w = settings.pso_settings.par_initial_w;
+    fp_t par_w = settings.pso_settings.par_w;
     const fp_t par_w_max = settings.pso_settings.par_w_max;
     const fp_t par_w_min = settings.pso_settings.par_w_min;
     const fp_t par_damp = settings.pso_settings.par_w_damp;
@@ -69,11 +69,11 @@ optim::internal::pso_impl(
     const uint_t velocity_method = settings.pso_settings.velocity_method;
 
     fp_t par_c_cog = settings.pso_settings.par_c_cog;
-    fp_t par_c_soc = settings.pso_settings.par_c_soc;
-
-    const fp_t par_initial_c_cog = settings.pso_settings.par_initial_c_cog;
+    const fp_t par_initial_c_cog = par_c_cog;
     const fp_t par_final_c_cog = settings.pso_settings.par_final_c_cog;
-    const fp_t par_initial_c_soc = settings.pso_settings.par_initial_c_soc;
+
+    fp_t par_c_soc = settings.pso_settings.par_c_soc;
+    const fp_t par_initial_c_soc = par_c_soc;
     const fp_t par_final_c_soc = settings.pso_settings.par_final_c_soc;
 
     const bool return_position_mat = settings.pso_settings.return_position_mat;

@@ -160,13 +160,13 @@ struct pso_settings_t
     size_t n_pop = 200;
     size_t n_gen = 1000;
 
+    size_t check_freq = (size_t)-1;
+
     int omp_n_threads = -1; // numbers of threads to use
 
     int inertia_method = 1; // 1 for linear decreasing between w_min and w_max; 2 for dampening
 
-    size_t check_freq = (size_t)-1;
-
-    fp_t par_initial_w = 1.0;
+    fp_t par_w = 1.0;
     fp_t par_w_damp = 0.99;
 
     fp_t par_w_min = 0.10;
@@ -177,9 +177,7 @@ struct pso_settings_t
     fp_t par_c_cog = 2.0;
     fp_t par_c_soc = 2.0;
 
-    fp_t par_initial_c_cog = 2.5;
     fp_t par_final_c_cog   = 0.5;
-    fp_t par_initial_c_soc = 0.5;
     fp_t par_final_c_soc   = 2.5;
 
     ColVec_t initial_lb; // this will default to -0.5
