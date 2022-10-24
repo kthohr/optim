@@ -131,7 +131,7 @@ optim::internal::pso_impl(
     // initialize
 
     ColVec_t rand_vec(n_vals);
-    ColVec_t objfn_vals(n_pop);
+    ColVec_t objfn_vals(n_pop + n_center);
     Mat_t P(n_pop + n_center, n_vals);
 
 #ifdef OPTIM_USE_OPENMP
