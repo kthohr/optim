@@ -164,6 +164,14 @@ optim::internal::pso_impl(
     if (center_particle) {
         // taken outside the loop due to parallelization
         P.row(n_pop) = BMO_MATOPS_COLWISE_SUM( BMO_MATOPS_MIDDLE_ROWS(P, 0, n_pop - 1) ) / static_cast<fp_t>(n_pop); // center vector
+
+        fp_t prop_objfn_val = box_objfn( BMO_MATOPS_TRANSPOSE(P.row(n_pop)), nullptr, opt_data);
+
+        if (!std::isfinite(prop_objfn_val)) {
+            prop_objfn_val = inf;
+        }
+        
+        objfn_vals(n_pop) = prop_objfn_val;
     }
 
     ColVec_t best_vals = objfn_vals;
