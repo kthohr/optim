@@ -27,7 +27,7 @@ The updating rule for PSO is described below.
 
 Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input values at stage :math:`i` of the algorithm, where each row corresponds to a different vector of candidate solutions.
 
-1. Update the velocity and position matrices. Sample two :math:`d`-dimensional iid uniform random vectors, :math:`R_C, R_S`.
+1. Update the velocity and position matrices. Sample two :math:`d`-dimensional IID uniform random vectors, :math:`R_C, R_S`.
 
    Update each velocity vector using:
 

@@ -172,7 +172,7 @@ To illustrate OptimLib at work, consider searching for the global minimum of the
 
 ![Ackley](https://github.com/kthohr/kthohr.github.io/blob/master/pics/ackley_fn_3d.png)
 
-This is a well-known test function with many local minima. Newton-type methods (such as BFGS) are sensitive to the choice of initial values, and will perform rather poorly here. As such, we will employ a global search method; in this case: Differential Evolution.
+This is a well-known test function with many local minima. Newton-type methods (such as BFGS) are sensitive to the choice of initial values, and will perform rather poorly here. As such, we will employ a global search method--in this case: Differential Evolution.
 
 Code:
 
@@ -211,14 +211,14 @@ int main()
 }
 ```
 
-Compile and run:
+On x86-based computers, this example can be compiled using:
 
 ``` bash
 g++ -Wall -std=c++14 -O3 -march=native -ffp-contract=fast -I/path/to/eigen -I/path/to/optim/include optim_de_ex.cpp -o optim_de_ex.out -L/path/to/optim/lib -loptim
-./optim_de_ex.out
 ```
 
 Output:
+
 ```
 de: Ackley test completed successfully.
 elapsed time: 0.028167s
@@ -227,9 +227,10 @@ de: solution to Ackley test:
   -1.2702e-17
   -3.8432e-16
 ```
+
 On a standard laptop, OptimLib will compute a solution to within machine precision in a fraction of a second.
 
-If using Armadillo:
+The Armadillo-based version of this example:
 
 ``` cpp
 #define OPTIM_ENABLE_ARMA_WRAPPERS
