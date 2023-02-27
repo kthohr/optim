@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2022 Keith O'Hara
+  ##   Copyright (C) 2016-2023 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -29,7 +29,7 @@
  * @brief Newton's Nonlinear Optimization Algorithm
  *
  * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
- * @param opt_objfn the function to be minimized, taking three arguments:
+ * @param opt_objfn the function to be minimized, taking four arguments:
  *   - \c vals_inp a vector of inputs;
  *   - \c grad_out a vector to store the gradient;
  *   - \c hess_out a matrix to store the Hessian; and
@@ -50,7 +50,7 @@ newton(
  * @brief Newton's Nonlinear Optimization Algorithm
  *
  * @param init_out_vals a column vector of initial values, which will be replaced by the solution upon successful completion of the optimization algorithm.
- * @param opt_objfn the function to be minimized, taking three arguments:
+ * @param opt_objfn the function to be minimized, taking four arguments:
  *   - \c vals_inp a vector of inputs;
  *   - \c grad_out a vector to store the gradient;
  *   - \c hess_out a matrix to store the Hessian; and

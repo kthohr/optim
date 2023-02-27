@@ -30,7 +30,7 @@ html_static_path = ['_static']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'OptimLib'
-copyright = '2016-2022 Keith O\'Hara'
+copyright = '2016-2023 Keith O\'Hara'
 author = 'Keith O\'Hara'
 
 exclude_patterns = []

@@ -1,6 +1,6 @@
 /*################################################################################
   ##
-  ##   Copyright (C) 2016-2022 Keith O'Hara
+  ##   Copyright (C) 2016-2023 Keith O'Hara
   ##
   ##   This file is part of the OptimLib C++ library.
   ##
@@ -227,7 +227,7 @@ optim::internal::nm_impl(
                 // inside contraction: f_r >= simplex_fn_vals(n_vals)
                 
                 // x_ic = centroid - par_beta*(x_r - centroid);
-                ColVec_t x_ic = centroid + par_beta*( BMO_MATOPS_TRANSPOSE(simplex_points.row(n_vals)) - centroid );
+                ColVec_t x_ic = centroid + par_beta * ( BMO_MATOPS_TRANSPOSE(simplex_points.row(n_vals)) - centroid );
 
                 fp_t f_ic = box_objfn(x_ic, nullptr, opt_data);
 

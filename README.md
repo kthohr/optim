@@ -18,6 +18,7 @@ Features:
 * Released under a permissive, non-GPL license.
 
 ### Contents:
+
 * [Algorithms](#algorithms)
 * [Documentation](#documentation)
 * [General API](#api)
