@@ -25,8 +25,6 @@
 
 namespace optim
 {
-    #include "BaseMatrixOps/include/BaseMatrixOps.hpp"
-
     // misc/utility files
     #include "misc/optim_misc.hpp"
 

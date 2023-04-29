@@ -36,7 +36,7 @@
 #endif
 
 #ifndef OPTIM_VERSION_PATCH
-    #define OPTIM_VERSION_PATCH 2
+    #define OPTIM_VERSION_PATCH 3
 #endif
 
 //
@@ -167,8 +167,8 @@ namespace optim
         #define BMO_ENABLE_EIGEN_WRAPPERS
     #endif
 
-    template<typename eT, int iTr, int iTc>
-    using EigenMat = Eigen::Matrix<eT,iTr,iTc>;
+    // template<typename eT, int iTr, int iTc>
+    // using EigenMat = Eigen::Matrix<eT,iTr,iTc>;
 
     namespace optim
     {
@@ -200,3 +200,22 @@ namespace optim
 #ifndef BMO_RNG_ENGINE_TYPE
     #define BMO_RNG_ENGINE_TYPE optim::rand_engine_t
 #endif
+
+#ifndef BMO_CORE_TYPES
+    #define BMO_CORE_TYPES
+
+    namespace bmo
+    {
+        using fp_t = OPTIM_FPN_TYPE;
+
+        using ColVec_t = optim::ColVec_t;
+        using RowVec_t = optim::RowVec_t;
+        using ColVecInt_t = optim::ColVecInt_t;
+        using RowVecInt_t = optim::RowVecInt_t;
+        using ColVecUInt_t = optim::ColVecUInt_t;
+
+        using Mat_t = optim::Mat_t;
+    }
+#endif
+
+#include "BaseMatrixOps/include/BaseMatrixOps.hpp"
