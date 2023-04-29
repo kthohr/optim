@@ -16,13 +16,13 @@ Limited Memory BFGS
 Algorithm Description
 ---------------------
 
-The limited memory variant of the Broyden–Fletcher–Goldfarb–Shanno (L-BFGS) algorithm is a quasi-Newton optimization method that can be used solve to optimization problems of the form
+The limited memory variant of the Broyden–Fletcher–Goldfarb–Shanno (L-BFGS) algorithm is a quasi-Newton optimization method that can be used solve to optimization problems of the form:
 
 .. math::
 
     \min_{x \in X} f(x)
 
-where :math:`f` is convex and twice differentiable. The BFGS algorithm requires that the gradient of :math:`f` be known and forms an approximation to the Hessian. 
+where :math:`f` is convex and twice differentiable. The BFGS algorithm requires that the gradient of :math:`f` be known, and forms an approximation to the Hessian of :math:`f` using changes in the gradient vector over iterations of the algorithm. 
 
 The updating rule for L-BFGS is described below. Let :math:`x^{(i)}` denote the candidate solution vector at stage :math:`i` of the algorithm.
 
