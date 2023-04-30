@@ -27,35 +27,37 @@ The updating rule for PSO is described below.
 
 Let :math:`X^{(i)}` denote the :math:`N \times d` dimensional array of input values at stage :math:`i` of the algorithm, where each row corresponds to a different vector of candidate solutions.
 
-1. Update the velocity and position matrices. Sample two :math:`d`-dimensional IID uniform random vectors, :math:`R_C, R_S`.
+1. **Update the velocity and position matrices.** Sample two :math:`d`-dimensional IID uniform random vectors, :math:`R_C, R_S`.
 
-   Update each velocity vector using:
+   Update each velocity vector as follows:
 
    .. math::
 
       V^{(i+1)}(j.:) = w \times V^{(i)}(j,:) + c_C \times R_C \odot (X_b^{(i)} (j,:) - X^{(i)}(j,:)) + c_S \times R_S \odot (g_b - X^{(i)}(j,:))
     
-   Each position vector is updated using:
+   Each position vector is then updated by element-wise addition of the updated velocity vector:
 
    .. math::
 
       X^{(i+1)}(j,:) = X^{(i)}(j,:) + V^{(i+1)}(j,:)
 
-2. Update local-best particle.
+2. **Update local-best particle.** 
+
+   Set:
 
    .. math::
 
       X_b^{(i+1)}(j,:) = \begin{cases} X^{(i+1)}(j,:) & \text{ if } f(X^{(i+1)}(j,:)) < f(X_b^{(i)}(j,:)) \\ X_b^{(i)}(j,:) & \text{ else } \end{cases}
 
-3. Update the global-best particle.
+3. **Update the global-best particle.**
 
-   Let
+   Let:
 
    .. math::
 
       j^{(*)} = \arg \min_{j \in \{1, \ldots, N\}} f(X^{(i+1)} (j,:))
 
-   Then
+   Then:
 
    .. math::
 

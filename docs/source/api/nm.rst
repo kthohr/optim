@@ -99,7 +99,7 @@ The algorithm stops when at least one of the following conditions are met:
 
      .. math::
 
-        \dfrac{\max \{ | f(x^{(i+1)}(1,:)) - f(x^{(i)}(1,:)) |, | f(x^{(i+1)}(n+1,:)) - f(x^{(i)}(1,:)) | \} }{ \max_j | f(x^{(i+1)}(j,:)) | + \epsilon};
+        \dfrac{\max \{ | f(x^{(i+1)}(1,:)) - f(x^{(i)}(1,:)) |, | f(x^{(i+1)}(n+1,:)) - f(x^{(i)}(1,:)) | \} }{ \max_j | f(x^{(i+1)}(j,:)) | + \epsilon}
 
      is less than ``rel_objfn_change_tol``.
 
