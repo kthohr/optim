@@ -155,7 +155,7 @@ In addition to these:
 
 - ``int print_level``: Set print level.
 
-  - Level 1: Print iteration count and error value.
+  - Level 1: Print iteration count and the relative improvement in the objective function value between iterations.
 
   - Level 2: Level 1 and print best input values and corresponding objective function value.
 
