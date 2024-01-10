@@ -15,13 +15,17 @@ include(FetchContent)
 
 # Dependencies
 
-FetchContent_Declare(
-  Eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG 3.4.0
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE)
-FetchContent_MakeAvailable(Eigen)
+if(LINALG_LIB STREQUAL "arma")
+    find_package(Armadillo REQUIRED)
+else()
+    FetchContent_Declare(
+        Eigen
+        GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+        GIT_TAG 3.4.0
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE)
+    FetchContent_MakeAvailable(Eigen)
+endif()
 
 if(OPENMP)
     find_package(OpenMP REQUIRED)
@@ -72,7 +76,12 @@ add_library(optim SHARED
     src/constrained/sumt.cpp
 )
 target_include_directories(optim PUBLIC include)
-target_link_libraries(optim PRIVATE Eigen3::Eigen)
+if(LINALG_LIB STREQUAL "arma")
+    target_include_directories(optim PRIVATE ${ARMADILLO_INCLUDE_DIRS})
+    target_link_libraries(optim PRIVATE ${ARMADILLO_LIBRARIES})
+else()
+    target_link_libraries(optim PRIVATE Eigen3::Eigen)
+endif()
 if(OPENMP)
     target_link_libraries(optim PRIVATE OpenMP::OpenMP_CXX)
 endif()
