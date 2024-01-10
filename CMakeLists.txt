@@ -13,6 +13,8 @@ set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The build type")
 
 include(FetchContent)
 
+# Dependencies
+
 FetchContent_Declare(
   Eigen
   GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
@@ -20,6 +22,10 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE
   GIT_PROGRESS TRUE)
 FetchContent_MakeAvailable(Eigen)
+
+if(OPENMP)
+    find_package(OpenMP REQUIRED)
+endif()
 
 # Optimization flags
 
@@ -35,10 +41,6 @@ else() # default to release
     else() # default to x86
         add_compile_options(-march=native)
     endif()
-
-    if(OPENMP)
-        add_compile_options(-fopenmp)
-    endif()
 endif()
 
 # Other flags
@@ -50,6 +52,8 @@ else() # default to eigen
 endif()
 
 add_compile_options(-Wall -DOPTIM_FPN_TYPE=${FP_TYPE} -lblas -llapack)
+
+# Set up targets
 
 add_library(optim SHARED
     src/line_search/more_thuente.cpp
@@ -68,4 +72,7 @@ add_library(optim SHARED
     src/constrained/sumt.cpp
 )
 target_include_directories(optim PUBLIC include)
-target_link_libraries(optim Eigen3::Eigen)
+target_link_libraries(optim PRIVATE Eigen3::Eigen)
+if(OPENMP)
+    target_link_libraries(optim PRIVATE OpenMP::OpenMP_CXX)
+endif()
