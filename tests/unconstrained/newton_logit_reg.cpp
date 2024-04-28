@@ -87,7 +87,7 @@ int main()
     int n_dim = 5;     // dimension of theta
     int n_samp = 1000; // sample length
 
-    Mat_t X = optim::bmo::stats::rsnorm_mat<optim::fp_t>(n_samp,n_dim);
+    Mat_t X = bmo::stats::rsnorm_mat<optim::fp_t>(n_samp,n_dim);
     ColVec_t theta_0 = BMO_MATOPS_ARRAY_ADD_SCALAR(3.0 * BMO_MATOPS_RANDU_VEC(n_dim), 1.0);
 
     BMO_MATOPS_COUT << "\nTrue theta:\n" << theta_0 << "\n";
